@@ -1,0 +1,15 @@
+:root {
+    --primary-color: #FA5007;
+    --secondary-color: #6C757D;
+
+    --text-color: #192034;
+}
+
+.auth-bg {
+    margin: 0;
+    padding: 0;
+    height: 100vh;
+    width: 100vw;
+    background-color: var(--text-color);
+    overflow: hidden;
+}

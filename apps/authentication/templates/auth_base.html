@@ -1,0 +1,35 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}{% endblock title %}</title>
+
+    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/kaiadmin.min.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/poupeai.css' %}" />
+
+    {% block head %}{% endblock head %}
+</head>
+<body>
+    <div class="auth-bg" id="particles-js"></div>
+
+    <div class="container position-absolute top-0 start-0 z-1">
+        <div class="row vh-100 vw-100 justify-content-center align-items-center">
+            <div class="col-md-3">
+                <div class="card">
+                    {% block card %}{% endblock card %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+    <script>
+        particlesJS.load('particles-js', "{% static 'js/particlesjs-config.json' %}", function() {});
+    </script>
+    
+</body>
+</html>
