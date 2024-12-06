@@ -86,9 +86,9 @@ danger-color : #f3545d
 -------------------------------------------------------------------*/
 /*   Typography    */
 body, h1, .h1, h2, .h2, h3, .h3, h4, .h4, h5, .h5, h6, .h6, p, .navbar, .brand, .btn-simple, .alert, a, .td-name, td, button.close {
+  font-family: 'Roboto', sans-serif;
   -moz-osx-font-smoothing: grayscale;
-  -webkit-font-smoothing: antialiased;
-  font-family: 'Public Sans', sans-serif; }
+  -webkit-font-smoothing: antialiased; }
 
 body, html {
   font-size: 14px;
@@ -3161,7 +3161,7 @@ label.error {
 
 .navbar .navbar-nav .notification {
   position: absolute;
-  background-color: #31CE36;
+  background-color: var(--primary-color);
   text-align: center;
   border-radius: 10px;
   min-width: 17px;

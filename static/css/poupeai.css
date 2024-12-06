@@ -13,3 +13,17 @@
     background-color: var(--text-color);
     overflow: hidden;
 }
+
+.breadcrumb-item {
+    color: var(--secondary-color);
+}
+
+.breadcrumb-item a {
+    color: var(--secondary-color);
+    text-decoration: none;
+}
+
+.breadcrumb-item a:hover {
+    color: var(--primary-color);
+    text-decoration: none;
+}
