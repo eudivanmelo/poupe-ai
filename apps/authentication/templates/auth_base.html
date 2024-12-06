@@ -16,7 +16,7 @@
 <body>
     <div class="auth-bg" id="particles-js"></div>
 
-    <div class="container position-absolute top-0 start-0 z-1">
+    <div class="container position-absolute top-0 start-0 z-20">
         <div class="row vh-100 vw-100 justify-content-center align-items-center">
             <div class="col-md-3">
                 <div class="card">
@@ -25,6 +25,8 @@
             </div>
         </div>
     </div>
+
+    {% block body %}{% endblock body %}
 
     <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
     <script>

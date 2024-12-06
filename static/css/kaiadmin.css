@@ -2523,7 +2523,7 @@ label {
   height: inherit !important;
   border-width: 2px; }
   .form-control:focus {
-    border-color: #3e93ff; }
+    border-color: var(--text-color); }
 
 /*     Form Control Sizes    */
 .form-control-lg, .input-group-lg > .form-control, .input-group-lg > .input-group-append > .btn,
