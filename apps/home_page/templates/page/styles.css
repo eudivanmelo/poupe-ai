@@ -1,0 +1,90 @@
+/* Reset básico */
+body, h1, p, ul, li, a {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+    color: #333;
+    line-height: 1.6;
+}
+
+header {
+    background-color: #1b1b2f;
+    color: #fff;
+    padding: 20px 10%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+header .logo {
+    font-size: 24px;
+    font-weight: bold;
+}
+
+header .logo span {
+    color: #ffa500;
+}
+
+header nav ul {
+    list-style: none;
+    display: flex;
+    gap: 15px;
+}
+
+header nav ul li a {
+    text-decoration: none;
+    color: #fff;
+    transition: color 0.3s;
+}
+
+header nav ul li a:hover {
+    color: #ffa500;
+}
+
+header .btn-entrar {
+    background-color: #ffa500;
+    color: #fff;
+    padding: 10px 20px;
+    text-decoration: none;
+    border-radius: 5px;
+    transition: background-color 0.3s;
+}
+
+header .btn-entrar:hover {
+    background-color: #ff8c00;
+}
+
+.hero {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 50px 10%;
+    background-color: #1b1b2f;
+    color: #fff;
+}
+
+.hero h1 {
+    font-size: 48px;
+    line-height: 1.2;
+}
+
+.hero h1 span {
+    color: #ffa500;
+}
+
+.hero-image img {
+    max-width: 100%;
+    height: auto;
+}
+
+footer {
+    text-align: center;
+    padding: 10px 0;
+    background-color: #1b1b2f;
+    color: #fff;
+}
