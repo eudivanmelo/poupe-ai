@@ -1,8 +1,89 @@
 {% extends "users_base.html" %}
 
+{% load static %}
+
 {% block title %}Transações - Poupe.AI{% endblock title %}
 
 {% block page_title %}Transações{% endblock %}
 
 {% block content %}
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header d-flex justify-content-between">
+                <div class="card-title">
+                    Transações
+                </div>
+                <div class="d-flex gap-3">
+                    <input type="text" class="form-control form-control-sm" placeholder="Pesquisar">
+
+                    <button class="btn btn-icon btn-round btn-primary">
+                        <i class="fa fa-plus"></i>
+                    </button>
+                </div>
+            </div>
+
+            <div class="card-body p-0">
+                <table class="table table-head-bg mt-0">
+                    <thead>
+                      <tr>
+                        <th scope="col">Situação</th>
+                        <th scope="col">Tipo</th>
+                        <th scope="col">Descrição</th>
+                        <th scope="col">Categoria</th>
+                        <th scope="col">Conta</th>
+                        <th scope="col">Data e Hora</th>
+                        <th scope="col">Valor</th>
+                        <th scope="col">Ações</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td>
+                            <i class="fas fa-check-circle text-success"></i>
+                        </td>
+                        <td>
+                            <span class="badge badge-danger">Despesa</span>
+                        </td>
+                        <td>Otto</td>
+                        <td>@mdo</td>
+                      </tr>
+                      <tr>
+                        <td>
+                            <i class="fas fa-clock text-secondary"></i>
+                        </td>
+                        <td>
+                            <span class="badge badge-danger">Despesa</span>
+                        </td>
+                        <td>Thornton</td>
+                        <td>@fat</td>
+                      </tr>
+                      <tr>
+                        <td>
+                            <i class="fas fa-exclamation-triangle text-warning"></i>
+                        </td>
+                        <td>
+                            <span class="badge badge-danger">Despesa</span>
+                        </td>
+                        <td>@twitter</td>
+                      </tr>
+                      <tr>
+                        <td>
+                            <i class="fas fa-calendar-times text-danger"></i>
+                        </td>
+                        <td>
+                            <span class="badge badge-success">Receita</span>
+                        </td>
+                        <td>@twitter</td>
+                      </tr>
+                    </tbody>
+                  </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="https://cdn.datatables.net/v/bs5/dt-2.1.8/datatables.min.js"></script>
 {% endblock %}

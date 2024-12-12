@@ -27,3 +27,12 @@
     color: var(--primary-color);
     text-decoration: none;
 }
+
+.table-head-bg thead {
+    border: 1px solid #D0D7E8 !important; 
+}
+
+.table-head-bg thead th, .table-striped-bg tbody tr:nth-of-type(odd) {
+    background: #D0D7E8 !important;
+    color: #000000 !important;
+    border: 0px !important; }
