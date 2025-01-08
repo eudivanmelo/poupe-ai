@@ -10,4 +10,5 @@ urlpatterns = [
     path('my-goals/', mygoals_view, name='my-goals'),
     path('help/', help_view, name='help'),
     path('profile/', profile_view, name='profile'),
+    path('account/deletion/', account_deletion_view, name='account-deletion'),
 ]
