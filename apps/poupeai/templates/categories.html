@@ -1,10 +1,229 @@
 {% extends "users_base.html" %}
 
-{% block title %}Categorias - Poupe.AI{% endblock title %}
+{% load static %}
+
+{% block title %}
+    Categorias - Poupe.AI
+{% endblock title %}
 
 {% block page_title %}
-Categorias
+    Categorias
+{% endblock %}
+
+{% block head %}
+<link rel="stylesheet" href="{% static 'css/categories.css' %}" />
 {% endblock %}
 
 {% block content %}
+<div class="row">
+    <div class="col-12">
+        <div class="card shadow-sm">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <div class="card-title">Categorias</div>
+                <div class="d-flex gap-3">
+
+                    <button class="btn btn-icon btn-round btn-primary" id="add-category"><i
+                            class="fa fa-plus"></i></button>
+                </div>
+            </div>
+
+            <div class="card-body">
+                <ul class="nav nav-line mb-3 justify-content-between" id="categoryTabs" role="tablist">
+                    <li class="nav-item col-4" role="presentation">
+                        <a class="nav-link active m-0 fs-5 text-center despesas" id="despesas-tab" data-bs-toggle="pill"
+                            href="#despesas" role="tab" aria-controls="despesas" aria-selected="true"
+                            data-total="{{ total_despesas|floatformat:2 }}"
+                            data-total-cat="{{ total_cat_despesas }}">Despesas</a>
+                    </li>
+                    <li class="nav-item col-4" role="presentation">
+                        <a class="nav-link m-0 fs-5 text-center receitas" id="receitas-tab" data-bs-toggle="pill"
+                            href="#receitas" role="tab" aria-controls="receitas" aria-selected="false"
+                            data-total="{{ total_receitas|floatformat:2 }}"
+                            data-total-cat="{{ total_cat_receitas }}">Receitas</a>
+                    </li>
+                    <li class="nav-item col-4" role="presentation">
+                        <a class="nav-link m-0 fs-5 text-center contas" id="contas-tab" data-bs-toggle="pill"
+                            href="#contas" role="tab" aria-controls="contas" aria-selected="false"
+                            data-total="{{ total_contas|floatformat:2 }}"
+                            data-total-cat="{{ total_cat_contas }}">Contas</a>
+                    </li>
+                </ul>
+
+                <div class="tab-content" id="categoryTabsContent">
+                    <!-- Despesas -->
+                    <div class="tab-pane fade show active" id="despesas" role="tabpanel" aria-labelledby="despesas-tab">
+                        <div class="row">
+                            {% for category in categories_despesas %}
+                                <div class="col-12 col-sm-6 col-lg-4 mb-3" id="category-{{ category.id }}">
+                                    <div
+                                        class="d-flex justify-content-between align-items-center border p-3 rounded shadow-sm">
+                                        <div class="d-flex align-items-center">
+                                            <span class="circle"
+                                                style="background-color: {{ category.cor }}; width: 20px; height: 20px; border-radius: 50%;"></span>
+                                            <div class="ms-3">
+                                                <span class="d-block text-truncate" style="max-width: 180px;">{{ category.nome }}</span>
+                                                <span class="d-block d-sm-inline">R$ {{ category.valor|floatformat:2 }}</span>
+                                            </div>
+                                        </div>
+
+                                        <div class="dropdown d-flex align-items-center">
+                                            <button class="btn btn-link text-dark p-0" type="button"
+                                                id="dropdownMenu{{ category.id }}" data-bs-toggle="dropdown"
+                                                aria-expanded="false">
+                                                <i class="fas fa-ellipsis-v"></i>
+                                            </button>
+                                            <ul class="dropdown-menu dropdown-menu-end"
+                                                aria-labelledby="dropdownMenu{{ category.id }}">
+                                                <li><button class="dropdown-item fs-5 edit-category-btn"
+                                                        data-id="{{ category.id }}" data-nome="{{ category.nome }}"
+                                                        data-cor="{{ category.cor }}">Editar</button></li>
+                                                <li><button class="dropdown-item fs-5"
+                                                        id="delete-category-{{ category.id }}" data-id="{{ category.id }}"
+                                                        data-nome="{{ category.nome }}">Excluir</button></li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                                {% empty %}
+                                    <div class="col-12"><div
+                                        class="d-flex justify-content-center align-items-center p-3">Nenhuma categoria encontrada</div></div>
+                            {% endfor %}
+                        </div>
+                    </div>
+
+                    <!-- Receitas -->
+                    <div class="tab-pane fade" id="receitas" role="tabpanel" aria-labelledby="receitas-tab">
+                        <div class="row">
+                            {% for category in categories_receitas %}
+                                <div class="col-12 col-sm-6 col-lg-4 mb-3" id="category-{{ category.id }}">
+                                    <div
+                                        class="d-flex justify-content-between align-items-center border p-3 rounded shadow-sm">
+                                        <div class="d-flex align-items-center">
+                                            <span class="circle"
+                                                style="background-color: {{ category.cor }}; width: 20px; height: 20px; border-radius: 50%;"></span>
+                                            <div class="ms-3">
+                                                <span class="d-block text-truncate" style="max-width: 180px;">{{ category.nome }}</span>
+                                                <span class="d-block d-sm-inline">R$ {{ category.valor|floatformat:2 }}</span>
+                                            </div>
+                                        </div>
+
+                                        <div class="dropdown d-flex align-items-center">
+                                            <button class="btn btn-link text-dark p-0" type="button"
+                                                id="dropdownMenu{{ category.id }}" data-bs-toggle="dropdown"
+                                                aria-expanded="false">
+                                                <i class="fas fa-ellipsis-v"></i>
+                                            </button>
+                                            <ul class="dropdown-menu dropdown-menu-end"
+                                                aria-labelledby="dropdownMenu{{ category.id }}">
+                                                <li><button class="dropdown-item fs-5 edit-category-btn"
+                                                        data-id="{{ category.id }}" data-nome="{{ category.nome }}"
+                                                        data-cor="{{ category.cor }}">Editar</button></li>
+                                                <li><button class="dropdown-item fs-5"
+                                                        id="delete-category-{{ category.id }}" data-id="{{ category.id }}"
+                                                        data-nome="{{ category.nome }}">Excluir</button></li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                                {% empty %}
+                                    <div class="col-12"><div
+                                        class="d-flex justify-content-center align-items-center p-3">Nenhuma categoria encontrada</div></div>
+                            {% endfor %}
+                        </div>
+                    </div>
+
+                    <!-- Contas -->
+                    <div class="tab-pane fade" id="contas" role="tabpanel" aria-labelledby="contas-tab">
+                        <div class="row">
+                            {% for category in categories_contas %}
+                                <div class="col-12 col-sm-6 col-lg-4 mb-3" id="category-{{ category.id }}">
+                                    <div
+                                        class="d-flex justify-content-between align-items-center border p-3 rounded shadow-sm">
+                                        <div class="d-flex align-items-center">
+                                            <span class="circle"
+                                                style="background-color: {{ category.cor }}; width: 20px; height: 20px; border-radius: 50%;"></span>
+                                            <div class="ms-3">
+                                                <span class="d-block text-truncate" style="max-width: 180px;">{{ category.nome }}</span>
+                                                <span class="d-block d-sm-inline">R$ {{ category.valor|floatformat:2 }}</span>
+                                            </div>
+                                        </div>
+
+                                        <div class="dropdown d-flex align-items-center">
+                                            <button class="btn btn-link text-dark p-0" type="button"
+                                                id="dropdownMenu{{ category.id }}" data-bs-toggle="dropdown"
+                                                aria-expanded="false">
+                                                <i class="fas fa-ellipsis-v"></i>
+                                            </button>
+                                            <ul class="dropdown-menu dropdown-menu-end"
+                                                aria-labelledby="dropdownMenu{{ category.id }}">
+                                                <li><button class="dropdown-item fs-5 edit-category-btn"
+                                                        data-id="{{ category.id }}" data-nome="{{ category.nome }}"
+                                                        data-cor="{{ category.cor }}">Editar</button></li>
+                                                <li><button class="dropdown-item fs-5"
+                                                        id="delete-category-{{ category.id }}" data-id="{{ category.id }}"
+                                                        data-nome="{{ category.nome }}">Excluir</button></li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                                {% empty %}
+                                    <div class="col-12"><div
+                                        class="d-flex justify-content-center align-items-center p-3">Nenhuma categoria encontrada</div></div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="card-footer bg-light d-flex justify-content-between">
+                <div>
+                    <strong>Categorias:</strong> <span id="total-categorias">{{ total_cat_despesas }}</span>
+                </div>
+                <div class="text-end">
+                    <strong>Total:</strong> <span id="total-value">R$ {{ total_despesas|floatformat:2 }}</span>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<!-- Modal Adicionar Categoria -->
+<div class="modal fade" id="addCategoryModal" tabindex="-1" aria-labelledby="addCategoryModalLabel" aria-hidden="true">
+    <div class="modal-dialog custom-modal-position">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addCategoryModalLabel">Adicionar Categoria</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="addCategoryForm">
+                    <div class="mb-3">
+                        <label for="categoryName" class="form-label">Nome</label>
+                        <input type="text" class="form-control" id="categoryName" required>
+                    </div>
+
+                    <div class="mb-3 d-flex justify-content-between align-items-center">
+                        <label for="categoryColor" class="form-label" style="flex-shrink: 0;">Cor da Categoria</label>
+                        <input type="color" class="form-control" id="categoryColor"
+                            style="width: 30px; height: 30px; border-radius: 50%; padding: 0;" hidden>
+                        <div id="colorPicker" class="circle"
+                            style="width: 30px; height: 30px; border-radius: 50%; background-color: #000; cursor: pointer;">
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="submit" class="btn btn-primary" id="saveCategoryBtn">Salvar Categoria</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{% static 'js/categories.js' %}"></script>
+<script src="{% static 'js/plugin/sweetalert/sweetalert.min.js' %}"></script>
 {% endblock %}
