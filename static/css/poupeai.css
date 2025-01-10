@@ -13,3 +13,96 @@
     background-color: var(--text-color);
     overflow: hidden;
 }
+
+.breadcrumb-item {
+    color: var(--secondary-color);
+}
+
+.breadcrumb-item a {
+    color: var(--secondary-color);
+    text-decoration: none;
+}
+
+.breadcrumb-item a:hover {
+    color: var(--primary-color);
+    text-decoration: none;
+}
+
+.table-head-bg thead {
+    border: 1px solid #D0D7E8 !important;
+}
+
+.table-head-bg thead th,
+.table-striped-bg tbody tr:nth-of-type(odd) {
+    background: #D0D7E8 !important;
+    color: #000000 !important;
+    border: 0px !important;
+}
+
+.no-wrap {
+    white-space: nowrap;
+}
+
+@media (min-width: 576px) {
+    .no-wrap-md {
+        white-space: nowrap;
+    }
+}
+
+@media (min-width: 768px) {
+    .no-wrap-lg {
+        white-space: nowrap;
+    }
+}
+
+@media (min-width: 992px) {
+    .no-wrap-xl {
+        white-space: nowrap;
+    }
+}
+
+@media (min-width: 1200px) {
+    .no-wrap-xxl {
+        white-space: nowrap;
+    }
+}
+
+.form-check-input:focus {
+    border-color: var(--primary-color);
+    outline: 0;
+    box-shadow: 0 0 0 .25rem var(--primary-color);
+    opacity: 0.75;
+}
+
+.form-check-input:checked {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+}
+
+.form-switch .form-check-input:focus {
+    --bs-form-switch-bg: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='-4 -4 8 8'%3e%3ccircle r='3' fill='%23FF8C42'/%3e%3c/svg%3e");
+}
+
+.form-control:focus {
+    border-color: var(--secondary-color);
+}
+
+.form-select {
+    border-width: 2px;
+    border-color: #ebedf2;
+    font-size: 1rem;
+    padding: 0.6rem 1rem;
+    height: inherit !important;
+}
+
+.form-select:focus {
+    border-color: var(--secondary-color);
+}
+
+.proof {
+    object-fit: cover;
+}
+
+
+
+
