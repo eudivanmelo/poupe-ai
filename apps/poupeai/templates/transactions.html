@@ -19,7 +19,7 @@
           <div class="d-flex gap-3">
             <input type="text" class="form-control form-control-sm" placeholder="Pesquisar" />
 
-            <button class="btn btn-icon btn-round btn-primary"><i class="fa fa-plus"></i></button>
+            <button class="btn btn-icon btn-round btn-primary" data-bs-toggle="modal" data-bs-target="#createModal"><i class="fa fa-plus"></i></button>
           </div>
         </div>
 
@@ -51,7 +51,7 @@
                 <td class="d-none d-lg-table-cell">2025-01-07 10:15</td>
                 <td>R$ 150,00</td>
                 <td>
-                  <a class="btn btn-icon btn-link btn-info"><i class="fas fa-eye"></i></a>
+                  <button class="btn btn-icon btn-link btn-info" id="detail-transaction-1"><i class="fas fa-eye"></i></button>
                   <button class="btn btn-icon btn-link btn-warning" id="edit-transaction-1" data-item-id="1"><i class="fas fa-edit"></i></button>
                   <button class="btn btn-icon btn-link btn-danger" id="delete-transaction-1" data-item-id="1"><i class="fas fa-trash"></i></button>
                 </td>
@@ -69,7 +69,7 @@
                 <td class="d-none d-lg-table-cell">2025-01-07 15:45</td>
                 <td>R$ 2.000,00</td>
                 <td>
-                  <a class="btn btn-icon btn-link btn-info"><i class="fas fa-eye"></i></a>
+                  <button class="btn btn-icon btn-link btn-info" id="detail-transaction-2"><i class="fas fa-eye"></i></button>
                   <button class="btn btn-icon btn-link btn-warning" id="edit-transaction-2" data-item-id="2"><i class="fas fa-edit"></i></button>
                   <button class="btn btn-icon btn-link btn-danger" id="delete-transaction-2" data-item-id="2"><i class="fas fa-trash"></i></button>
                 </td>
@@ -87,7 +87,7 @@
                 <td class="d-none d-lg-table-cell">2025-01-06 11:30</td>
                 <td>R$ 450,00</td>
                 <td>
-                  <a class="btn btn-icon btn-link btn-info"><i class="fas fa-eye"></i></a>
+                  <button class="btn btn-icon btn-link btn-info" id="detail-transaction-3"><i class="fas fa-eye"></i></button>
                   <button class="btn btn-icon btn-link btn-warning" id="edit-transaction-3" data-item-id="3"><i class="fas fa-edit"></i></button>
                   <button class="btn btn-icon btn-link btn-danger" id="delete-transaction-3" data-item-id="3"><i class="fas fa-trash"></i></button>
                 </td>
@@ -105,7 +105,7 @@
                 <td class="d-none d-lg-table-cell">2025-01-06 08:00</td>
                 <td>R$ 800,00</td>
                 <td>
-                  <a class="btn btn-icon btn-link btn-info"><i class="fas fa-eye"></i></a>
+                  <button class="btn btn-icon btn-link btn-info" id="detail-transaction-4"><i class="fas fa-eye"></i></button>
                   <button class="btn btn-icon btn-link btn-warning" id="edit-transaction-4" data-item-id="4"><i class="fas fa-edit"></i></button>
                   <button class="btn btn-icon btn-link btn-danger" id="delete-transaction-4" data-item-id="4"><i class="fas fa-trash"></i></button>                </td>
               </tr>
@@ -122,7 +122,7 @@
                 <td class="d-none d-lg-table-cell">2025-01-05 14:00</td>
                 <td>R$ 320,00</td>
                 <td>
-                  <a class="btn btn-icon btn-link btn-info"><i class="fas fa-eye"></i></a>
+                  <button class="btn btn-icon btn-link btn-info" id="detail-transaction-5"><i class="fas fa-eye"></i></button>
                   <button class="btn btn-icon btn-link btn-warning" id="edit-transaction-5" data-item-id="5"><i class="fas fa-edit"></i></button>
                   <button class="btn btn-icon btn-link btn-danger" id="delete-transaction-5" data-item-id="5"><i class="fas fa-trash"></i></button>
                 </td>
@@ -287,6 +287,172 @@
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
           <button type="button" class="btn btn-primary">Salvar Alterações</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal fade" id="detailModal" tabindex="-1" aria-labelledby="detailModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="detailModalLabel">Detalhes da Transação</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <div class="row d-flex align-items-stretch">
+            <div class="col-md-6 col-sm-12">
+              <ul class="list-group list-group-flush">
+                <li class="list-group-item gap-2">
+                  <strong>Descrição:</strong>
+                  <span>Compra de materiais de escritório</span>
+                </li>
+                <li class="list-group-item gap-2">
+                  <strong>Valor:</strong>
+                  <span>R$ 150,00</span>
+                </li>
+                <li class="list-group-item gap-2">
+                  <strong>Tipo:</strong>
+                  <span>Despesa</span>
+                </li>
+                <li class="list-group-item gap-2">
+                  <strong>Categoria:</strong>
+                  <span>Operacional</span>
+                </li>
+                <li class="list-group-item gap-2">
+                  <strong>Data e Hora da Transação:</strong>
+                  <span>2025-01-07 10:15</span>
+                </li>
+                <li class="list-group-item gap-2">
+                  <strong>Data de Vencimento:</strong>
+                  <span>2025-01-07</span>
+                </li>
+                <li class="list-group-item gap-2">
+                  <strong>Conta:</strong>
+                  <span>Conta Corrente</span>
+                </li>
+                
+                <li class="list-group-item gap-2">
+                  <strong>Fixa:</strong>
+                  <span>Não</span>
+                </li>
+              </ul>
+            </div>
+            <div class="col-md-6 col-sm-12" style="max-height: 300px;">
+              <strong>Comprovante de Pagamento:</strong>
+              <div class="overflow-auto h-100">
+                <img src="{% static 'imgs/comprovante.webp' %}" alt="Comprovante" />
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+          <button id="modal-edit-button" type="button" onPress={EditTransction(1)} class="btn btn-primary">Editar Transação</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal fade" id="createModal" tabindex="-1" aria-labelledby="createModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="createModalLabel">Adicionar um nova transação</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <form class="row needs-validation">
+            {% csrf_token %}
+
+            <div class="col-md-6 col-sm-12">
+              <div class="form-group">
+                <label for="descriptionInput" class="form-label">Descrição</label>
+                <input name="description" type="text" class="form-control" id="descriptionInput" placeholder="Ex: Compra de supermercado" required />
+                {% if form.description.errors %}
+                  <div class="invalid-feedback">
+                    {% for error in form.description.errors %}
+                      <p>{{ error }}</p>
+                    {% endfor %}
+                  </div>
+                {% endif %}
+              </div>
+              <div class="form-group">
+                <label for="valueInput" class="form-label">Valor (R$)</label>
+                <input name="value" type="number" class="form-control" id="valueInput" placeholder="0,00" step="0.01" required />
+                <div id="emailHelp" class="form-text">Valores negativos serão considerados despesas!</div>
+                {% if form.value.errors %}
+                  <div class="invalid-feedback">
+                    {% for error in form.value.errors %}
+                      <p>{{ error }}</p>
+                    {% endfor %}
+                  </div>
+                {% endif %}
+              </div>
+              <div class="form-group">
+                <label for="categoryInput" class="form-label">Categoria</label>
+                <select name="category" class="form-select" aria-label="Categoria">
+                  <option value="1" selected>Transporte</option>
+                  <option value="2">Alimentação</option>
+                  <option value="3">Lazer</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="accountInput" class="form-label">Conta</label>
+                <select name="account" class="form-select" aria-label="Conta bancária">
+                  <option value="1">Conta Poupança</option>
+                  <option value="2" selected>Conta Corrente</option>
+                  <option value="3">Cartão de Crédito</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="col-md-6 col-sm-12">
+              <div class="form-group">
+                <label for="expirationDateInput" class="form-label">Data de Vencimento</label>
+                <input name="expirationDate" type="date" class="form-control" id="expirationDateInput" required />
+                {% if form.expirationDate.errors %}
+                  <div class="invalid-feedback">
+                    {% for error in form.expirationDate.errors %}
+                      <p>{{ error }}</p>
+                    {% endfor %}
+                  </div>
+                {% endif %}
+              </div>
+              <div class="form-group my-0 py-0">
+                <div class="form-check form-switch p-0 m-0 d-flex justify-content-between">
+                  <label class="form-check-label" for="fixedInput">Fixa?</label>
+                  <input name="fixed" class="form-check-input" type="checkbox" id="fixedInput" />
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="paymentDateInput" class="form-label">Data de Pagamento</label>
+                <input name="paymentDate" type="date" class="form-control" id="paymentDateInput" />
+                {% if form.paymentDate.errors %}
+                  <div class="invalid-feedback">
+                    {% for error in form.paymentDate.errors %}
+                      <p>{{ error }}</p>
+                    {% endfor %}
+                  </div>
+                {% endif %}
+              </div>
+              <div class="form-group">
+                <label for="accountInput" class="form-label">Comprovante</label>
+                <input name="receipt" type="file" class="form-control" id="receiptInput" />
+                {% if form.receipt.errors %}
+                  <div class="invalid-feedback">
+                    {% for error in form.receipt.errors %}
+                      <p>{{ error }}</p>
+                    {% endfor %}
+                  </div>
+                {% endif %}
+              </div>
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+          <button type="button" class="btn btn-primary">Adicionar Transação</button>
         </div>
       </div>
     </div>
