@@ -1,10 +1,172 @@
-{% extends "users_base.html" %}
+{% extends 'users_base.html' %}
 
-{% block title %}Dashboard - Poupe.AI{% endblock title %}
+{% block title %}
+  Dashboard - Poupe.AI
+{% endblock %}
 
 {% block page_title %}
-Dashboard
+  Dashboard
 {% endblock %}
 
 {% block content %}
+  <div class="row d-flex justify-content-between align-items-end p-0 m-0">
+    <div class="col p-0" style="margin-top: -15px;">Como está sua saúde financeira hoje?</div>
+
+    <div class="col d-flex justify-content-end gap-2 px-0" style="margin-top: -30px;">
+      <button class="btn btn-secondary btn-rounded" data-toggle="modal" data-target="#modalIAReport">Relatório de IA</button>
+      <button class="btn btn-primary btn-rounded" data-toggle="modal" data-target="#modalAddTransaction">Nova Transação</button>
+    </div>
+  </div>
+
+  <div class="row mt-3">
+    <div class="col-sm-6 col-md-3">
+      <div class="card card-stats card-round">
+        <div class="card-body">
+          <div class="row align-items-center">
+            <div class="col-icon">
+              <div class="icon-big text-center icon-primary bubble-shadow-small">
+                <i class="fas fa-wallet"></i>
+              </div>
+            </div>
+            <div class="col col-stats ms-3 ms-sm-0">
+              <div class="numbers">
+                <p class="card-category">Saldo Total</p>
+                <h4 class="card-title">R$ 1.248,49</h4>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-sm-6 col-md-3">
+      <div class="card card-stats card-round">
+        <div class="card-body">
+          <div class="row align-items-center">
+            <div class="col-icon">
+              <div class="icon-big text-center icon-info bubble-shadow-small">
+                <i class="fas fa-money-bill-alt"></i>
+              </div>
+            </div>
+            <div class="col col-stats ms-3 ms-sm-0">
+              <div class="numbers">
+                <p class="card-category">Gastos Mensal</p>
+                <h4 class="card-title">R$ 8.023,54</h4>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-sm-6 col-md-3">
+      <div class="card card-stats card-round">
+        <div class="card-body">
+          <div class="row align-items-center">
+            <div class="col-icon">
+              <div class="icon-big text-center icon-success bubble-shadow-small">
+                <i class="fas fa-chart-line"></i>
+              </div>
+            </div>
+            <div class="col col-stats ms-3 ms-sm-0">
+              <div class="numbers">
+                <p class="card-category">Entradas Mensais</p>
+                <h4 class="card-title">R$ 1.418,23</h4>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-sm-6 col-md-3">
+      <div class="card card-stats card-round">
+        <div class="card-body">
+          <div class="row align-items-center">
+            <div class="col-icon">
+              <div class="icon-big text-center icon-secondary bubble-shadow-small">
+                <i class="fas fa-luggage-cart"></i>
+              </div>
+            </div>
+            <div class="col col-stats ms-3 ms-sm-0">
+              <div class="numbers">
+                <p class="card-category">Despesas Fíxas</p>
+                <h4 class="card-title">R$ 1.345,55</h4>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-8">
+      <div class="card card-round">
+        <div class="card-header">
+          <div class="card-head-row card-tools-still-right">
+            <div class="card-title">Análise do Saldo</div>
+            <div class="card-tools">
+              <div class="dropdown">
+                <button class="btn btn-icon btn-clean me-0" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-ellipsis-h"></i></button>
+                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton" style="">
+                  <a class="dropdown-item" href="#">Hoje</a>
+                  <a class="dropdown-item" href="#">Ultimo semana</a>
+                  <a class="dropdown-item" href="#">Ultimo mês</a>
+                  <a class="dropdown-item" href="#">Ultimo ano</a>
+                  <div class="dropdown-divider"></div>
+                  <a class="dropdown-item" href="#">Exportar</a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="chart-container" style="min-height: 375px">
+            <div class="chartjs-size-monitor" style="position: absolute; inset: 0px; overflow: hidden; pointer-events: none; visibility: hidden; z-index: -1;">
+              <div class="chartjs-size-monitor-expand" style="position:absolute;left:0;top:0;right:0;bottom:0;overflow:hidden;pointer-events:none;visibility:hidden;z-index:-1;">
+                <div style="position:absolute;width:1000000px;height:1000000px;left:0;top:0"></div>
+              </div>
+              <div class="chartjs-size-monitor-shrink" style="position:absolute;left:0;top:0;right:0;bottom:0;overflow:hidden;pointer-events:none;visibility:hidden;z-index:-1;">
+                <div style="position:absolute;width:200%;height:200%;left:0; top:0"></div>
+              </div>
+            </div>
+            <canvas id="statisticsChart" width="305" height="375" style="display: block; width: 305px; height: 375px;" class="chartjs-render-monitor"></canvas>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="card card-round">
+        <div class="card-header">
+          <div class="card-head-row card-tools-still-right">
+            <div class="card-title">Cartões de Crédito</div>
+            <div class="card-tools">
+              <div class="dropdown">
+                <button class="btn btn-icon btn-clean me-0" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-ellipsis-h"></i></button>
+                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton" style="">
+                  <a class="dropdown-item" href="#">Hoje</a>
+                  <a class="dropdown-item" href="#">Ultimo semana</a>
+                  <a class="dropdown-item" href="#">Ultimo mês</a>
+                  <a class="dropdown-item" href="#">Ultimo ano</a>
+                  <div class="dropdown-divider"></div>
+                  <a class="dropdown-item" href="#">Exportar</a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="chart-container" style="min-height: 375px">
+            <div class="chartjs-size-monitor" style="position: absolute; inset: 0px; overflow: hidden; pointer-events: none; visibility: hidden; z-index: -1;">
+              <div class="chartjs-size-monitor-expand" style="position:absolute;left:0;top:0;right:0;bottom:0;overflow:hidden;pointer-events:none;visibility:hidden;z-index:-1;">
+                <div style="position:absolute;width:1000000px;height:1000000px;left:0;top:0"></div>
+              </div>
+              <div class="chartjs-size-monitor-shrink" style="position:absolute;left:0;top:0;right:0;bottom:0;overflow:hidden;pointer-events:none;visibility:hidden;z-index:-1;">
+                <div style="position:absolute;width:200%;height:200%;left:0; top:0"></div>
+              </div>
+            </div>
+            <canvas id="barChart" width="381" height="300" style="display: block; width: 381px; height: 300px;" class="chartjs-render-monitor"></canvas>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 {% endblock %}
