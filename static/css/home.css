@@ -1,0 +1,111 @@
+/* Reset básico */
+body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Arial', sans-serif;
+    background-color: #f5f5f5;
+    color: #192034;
+    line-height: 1.5;
+    box-sizing: border-box;
+}
+
+/* Cabeçalho */
+header {
+    background-color: #192034;
+    color: #fff;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 20px;
+    border-bottom: 10px;
+    border-bottom-style: outset;
+    border-color: #0b0b1f38;
+}
+
+header .logo {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #fff;
+}
+
+header nav {
+    display: flex;
+    position: relative; 
+    left: 250px;
+    gap: 20px;
+}
+
+header nav a {
+    color: #fff;
+    text-decoration: none;
+    font-weight: bold;
+    transition: color 0.3s;
+}
+
+header nav a:hover {
+    color: #FA5007;
+}
+
+header .cta-button {
+    background-color: #FA5007;
+    padding: 10px 15px;
+    border-radius: 5px;
+    text-decoration: none;
+    color: #fff;
+    font-weight: bold;
+    transition: background-color 0.3s;
+}
+
+header .cta-button:hover {
+    background-color: #FA5007;
+}
+
+.main {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 50px 10%;
+    background-color: #192034;
+    color: #fff;
+}
+
+.main h1 {
+    font-size: 48px;
+    line-height: 1.2;
+}
+
+.main h1 span {
+    color: #FA5007;
+}
+
+.main-image img {
+    max-width: 90%;
+    height: auto;
+}
+
+.teste{
+    width:150px;
+    border-radius: 75px;
+}
+
+.teste1{
+    position: relative;
+    bottom: 100px;
+    width:150px;
+    border-radius: 75px;
+}
+
+.teste2{
+    position: relative;
+    top: 100px;
+    right: 150px;
+    width:150px;
+    border-radius: 75px;
+}
+
+footer {
+    text-align: center;
+    padding: 10px 0;
+    background-color: #192034;
+    color: #fff;
+}
