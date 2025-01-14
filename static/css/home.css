@@ -16,7 +16,7 @@ header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 15px 20px;
+    padding: 10px 15px;
     border-bottom: 10px;
     border-bottom-style: outset;
     border-color: #0b0b1f38;
@@ -79,23 +79,23 @@ header .cta-button:hover {
 }
 
 .main-image img {
-    max-width: 90%;
+    max-width: 80%;
     height: auto;
 }
 
-.teste{
+.dev{
     width:150px;
     border-radius: 75px;
 }
 
-.teste1{
+.dev1{
     position: relative;
     bottom: 100px;
-    width:150px;
-    border-radius: 75px;
+    width: 150px;
+    border-radius:90px;
 }
 
-.teste2{
+.dev2{
     position: relative;
     top: 100px;
     right: 150px;
@@ -103,6 +103,12 @@ header .cta-button:hover {
     border-radius: 75px;
 }
 
+.poster {
+    width: 400px;
+    box-shadow: 5px 5px 5px black;
+    position: relative;
+    top: 75px;
+}
 footer {
     text-align: center;
     padding: 10px 0;
