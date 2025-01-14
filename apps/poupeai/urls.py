@@ -11,4 +11,5 @@ urlpatterns = [
     path('help/', help_view, name='help'),
     path('profile/', profile_view, name='profile'),
     path('account/deletion/', account_deletion_view, name='account-deletion'),
+    path('user/admin/', admin_view, name='admin-dashboard'),
 ]
