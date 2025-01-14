@@ -1,4 +1,4 @@
-/* Reset básico */
+
 body {
     margin: 0;
     padding: 0;
@@ -9,7 +9,6 @@ body {
     box-sizing: border-box;
 }
 
-/* Cabeçalho */
 header {
     background-color: #192034;
     color: #fff;
@@ -57,9 +56,18 @@ header .cta-button {
 }
 
 header .cta-button:hover {
-    background-color: #FA5007;
+    background-color: #c73e03;
+    color:#192034;
 }
 
+.logo span {
+    color: #FA5007;
+}
+
+.text {
+    font-size: 1rem;
+    line-height: 1.6;
+}
 .main {
     display: flex;
     justify-content: space-between;
@@ -104,14 +112,84 @@ header .cta-button:hover {
 }
 
 .poster {
-    width: 400px;
+    width: 350px;
     box-shadow: 5px 5px 5px black;
     position: relative;
     top: 75px;
+    left: 20px;
 }
+
+.poster-2 {
+    width: 200px;
+    box-shadow: 5px 5px 5px black;
+    position: relative;
+    top: 75px;
+    bottom: 300px;
+}
+
+
 footer {
     text-align: center;
     padding: 10px 0;
     background-color: #192034;
     color: #fff;
+}
+
+@media (max-width: 768px) {
+    header {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    header nav {
+        flex-direction: column;
+        align-items: center;
+        gap: 10px;
+        margin-top: 10px;
+    }
+
+    .main {
+        flex-direction: column;
+        padding: 20px;
+        text-align: center;
+    }
+
+    .main h1 {
+        font-size: 2rem;
+    }
+
+    .poster, .poster-2 {
+        width: 100%;
+        box-shadow: none;
+        margin: 10px 0;
+    }
+
+    .dev, .dev1, .dev2 {
+        position: static;
+        margin: 10px 0;
+        width: 100px;
+    }
+}
+
+@media (max-width: 480px) {
+    header .logo {
+        font-size: 1.2rem;
+    }
+
+    header .cta-button {
+        padding: 8px 12px;
+        font-size: 0.9rem;
+    }
+
+    .main h1 {
+        font-size: 1.5rem;
+    }
+
+    .poster, .poster-2 {
+        width: 90%;
+    }
+
+    .main-image img {
+        width: 100%;
+    }
 }
