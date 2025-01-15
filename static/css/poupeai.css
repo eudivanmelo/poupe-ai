@@ -103,6 +103,7 @@
     object-fit: cover;
 }
 
-
-
-
+.table-sm tbody tr td,
+.table-sm thead tr th {
+    padding: 3px 10px !important;
+}

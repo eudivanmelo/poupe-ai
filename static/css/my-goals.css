@@ -1,0 +1,134 @@
+.dropdown-menu .dropdown-item {
+    background-color: transparent;
+    color: #000000;
+}
+
+.dropdown-menu .dropdown-item.active,
+.dropdown-menu .dropdown-item:active {
+    background-color: #6C757D;
+    color: white;
+}
+
+.custom-btn {
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: none;
+    border-radius: 50%;
+    background-color: transparent;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    padding: 0;
+    margin: 0;
+    overflow: hidden;
+    box-sizing: border-box;
+}
+
+.custom-btn i {
+    font-size: 16px;
+    line-height: 1;
+    color: inherit;
+}
+
+.custom-btn:hover,
+.custom-btn:focus,
+.custom-btn:active {
+    background-color: rgba(108, 117, 125, 0.2);
+    transform: scale(1.1);
+    outline: none;
+    box-shadow: none;
+}
+
+.btn-icon.btn-round {
+    padding: 0.5rem;
+    border-radius: 50%;
+}
+
+.d-flex {
+    gap: 1rem;
+}
+
+.text-end p {
+    margin: 0;
+}
+
+.goal-card {
+    background-color: #fff;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.goal-card .header {
+    gap: 10px;
+}
+
+.goal-card .info .label {
+    font-size: 0.85rem;
+    color: #6c757d;
+}
+
+@media (max-width: 576px) {
+
+    .goal-card .header .title {
+        font-size: 1rem;
+    }
+
+    .goal-card .info .value {
+        font-size: 0.9rem;
+    }
+}
+
+.circular-progress {
+    position: relative;
+    width: 100px;
+    height: 100px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.circular-progress svg {
+    transform: rotate(-90deg);
+}
+
+.progress-ring__circle {
+    transition: stroke-dashoffset 0.35s ease-in-out;
+    transform-origin: center;
+    stroke-dasharray: 251.2;
+    stroke-dashoffset: 0;
+    stroke-linecap: round;
+}
+
+.progress-ring__circle--value {
+    stroke-dasharray: 251.2;
+    stroke-dashoffset: calc(251.2 * 0.1);
+    stroke-linecap: round;
+}
+
+.progress-value {
+    position: absolute;
+    font-size: 1.3rem;
+    font-weight: bold;
+}
+
+.progress-info {
+    margin-top: 10px;
+}
+
+.progress-info p {
+    margin: 0;
+    font-weight: normal;
+}
+
+.negative-mb {
+    margin-bottom: -0.6rem !important;
+}
+
+#goalColorCircle {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background-color: #3498db;
+}

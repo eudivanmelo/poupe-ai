@@ -7,6 +7,8 @@ from .mygoals import mygoals_view
 from .profile import profile_view
 from .transactions import transactions_view
 from .account_deletion import account_deletion_view
+from .admin_dashboard import admin_view
+from .notifications import *
 
 __all__ = [
     'accounts_view',
@@ -18,4 +20,6 @@ __all__ = [
     'profile_view',
     'transactions_view',
     'account_deletion_view',
+    'admin_view',
+    'notifications_view',
 ]

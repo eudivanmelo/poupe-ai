@@ -3,21 +3,16 @@
 {% load static %}
 
 {% block title %}
-  Dashboard - Poupe.AI
+  Administração - Poupe.AI
 {% endblock %}
 
 {% block page_title %}
-  Dashboard
+  Painel do Administrador
 {% endblock %}
 
 {% block content %}
   <div class="row d-flex justify-content-between align-items-end p-0 m-0">
-    <div class="col p-0" style="margin-top: -15px;">Como está sua saúde financeira hoje?</div>
-
-    <div class="col d-flex justify-content-end gap-2 px-0" style="margin-top: -30px;">
-      <button class="btn btn-secondary btn-rounded" data-bs-toggle="modal" data-bs-target="#reportIaModal">Relatório de IA</button>
-      <button class="btn btn-primary btn-rounded" data-bs-toggle="modal" data-bs-target="#createModal">Nova Transação</button>
-    </div>
+    <div class="col p-0" style="margin-top: -15px;">Mantenha tudo sob controle para seus usuários.</div>
   </div>
 
   <div class="row mt-3">
@@ -27,13 +22,13 @@
           <div class="row align-items-center">
             <div class="col-icon">
               <div class="icon-big text-center icon-primary bubble-shadow-small">
-                <i class="fas fa-wallet"></i>
+                <i class="fas fa-user-friends"></i>
               </div>
             </div>
             <div class="col col-stats ms-3 ms-sm-0">
               <div class="numbers">
-                <p class="card-category">Saldo Total</p>
-                <h4 class="card-title">R$ 1.248,49</h4>
+                <p class="card-category">Numero de Usuários</p>
+                <h4 class="card-title">199</h4>
               </div>
             </div>
           </div>
@@ -46,13 +41,13 @@
           <div class="row align-items-center">
             <div class="col-icon">
               <div class="icon-big text-center icon-info bubble-shadow-small">
-                <i class="fas fa-money-bill-alt"></i>
+                <i class="fas fa-folder-open"></i>
               </div>
             </div>
             <div class="col col-stats ms-3 ms-sm-0">
               <div class="numbers">
-                <p class="card-category">Gastos Mensal</p>
-                <h4 class="card-title">R$ 8.023,54</h4>
+                <p class="card-category">Categorias</p>
+                <h4 class="card-title">22</h4>
               </div>
             </div>
           </div>
@@ -65,13 +60,13 @@
           <div class="row align-items-center">
             <div class="col-icon">
               <div class="icon-big text-center icon-success bubble-shadow-small">
-                <i class="fas fa-chart-line"></i>
+                <i class="fas fa-clipboard-list"></i>
               </div>
             </div>
             <div class="col col-stats ms-3 ms-sm-0">
               <div class="numbers">
-                <p class="card-category">Entradas Mensais</p>
-                <h4 class="card-title">R$ 1.418,23</h4>
+                <p class="card-category">Assinaturas</p>
+                <h4 class="card-title">8</h4>
               </div>
             </div>
           </div>
@@ -84,12 +79,12 @@
           <div class="row align-items-center">
             <div class="col-icon">
               <div class="icon-big text-center icon-secondary bubble-shadow-small">
-                <i class="fas fa-luggage-cart"></i>
+                <i class="fas fa-chart-line"></i>
               </div>
             </div>
             <div class="col col-stats ms-3 ms-sm-0">
               <div class="numbers">
-                <p class="card-category">Despesas Fíxas</p>
+                <p class="card-category">Receita</p>
                 <h4 class="card-title">R$ 1.345,55</h4>
               </div>
             </div>
@@ -100,11 +95,11 @@
   </div>
 
   <div class="row">
-    <div class="col-md-8">
+    <div class="col-md-12">
       <div class="card card-round">
         <div class="card-header">
           <div class="card-head-row card-tools-still-right">
-            <div class="card-title">Análise do Saldo</div>
+            <div class="card-title">Novos Usuários</div>
             <div class="card-tools">
               <div class="dropdown">
                 <button class="btn btn-icon btn-clean me-0" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-ellipsis-h"></i></button>
@@ -135,41 +130,6 @@
         </div>
       </div>
     </div>
-    <div class="col-md-4">
-      <div class="card card-round">
-        <div class="card-header">
-          <div class="card-head-row card-tools-still-right">
-            <div class="card-title">Cartões de Crédito</div>
-            <div class="card-tools">
-              <div class="dropdown">
-                <button class="btn btn-icon btn-clean me-0" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-ellipsis-h"></i></button>
-                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton" style="">
-                  <a class="dropdown-item" href="#">Hoje</a>
-                  <a class="dropdown-item" href="#">Ultimo semana</a>
-                  <a class="dropdown-item" href="#">Ultimo mês</a>
-                  <a class="dropdown-item" href="#">Ultimo ano</a>
-                  <div class="dropdown-divider"></div>
-                  <a class="dropdown-item" href="#">Exportar</a>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="card-body">
-          <div class="chart-container" style="min-height: 375px">
-            <div class="chartjs-size-monitor" style="position: absolute; inset: 0px; overflow: hidden; pointer-events: none; visibility: hidden; z-index: -1;">
-              <div class="chartjs-size-monitor-expand" style="position:absolute;left:0;top:0;right:0;bottom:0;overflow:hidden;pointer-events:none;visibility:hidden;z-index:-1;">
-                <div style="position:absolute;width:1000000px;height:1000000px;left:0;top:0"></div>
-              </div>
-              <div class="chartjs-size-monitor-shrink" style="position:absolute;left:0;top:0;right:0;bottom:0;overflow:hidden;pointer-events:none;visibility:hidden;z-index:-1;">
-                <div style="position:absolute;width:200%;height:200%;left:0; top:0"></div>
-              </div>
-            </div>
-            <canvas id="cards-analytics-chart" width="381" height="300" style="display: block; width: 381px; height: 300px;" class="chartjs-render-monitor"></canvas>
-          </div>
-        </div>
-      </div>
-    </div>
   </div>
 
   <div class="row">
@@ -177,7 +137,7 @@
       <div class="card card-round w-100">
         <div class="card-header">
           <div class="card-head-row card-tools-still-right">
-            <div class="card-title">Ultimas Transações</div>
+            <div class="card-title">Ultimos Cadastros</div>
             <div class="card-tools">
               <div class="dropdown">
                 <button class="btn btn-icon btn-clean me-0" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-ellipsis-h"></i></button>
@@ -199,177 +159,79 @@
               <thead>
                 <tr class="text-uppercase">
                   <th>Data</th>
-                  <th>Valor</th>
-                  <th>Categoria</th>
+                  <th>Usuário</th>
+                  <th>Tipo</th>
                 </tr>
               </thead>
               <tbody>
                 <tr class="no-wrap-lg">
                   <td>12/09/2021</td>
-                  <td>R$ 150,00</td>
+                  <td>Fulano</td>
                   <td>
-                    <span class="badge badge-secondary">Viagem</span>
+                    <span class="badge badge-secondary">Grátis</span>
                   </td>
                 </tr>
                 <tr class="no-wrap-lg">
                   <td>12/09/2021</td>
-                  <td>R$ 150,00</td>
+                  <td>Cicrano</td>
                   <td>
-                    <span class="badge badge-secondary">Viagem</span>
+                    <span class="badge badge-success">Paga</span>
                   </td>
                 </tr>
                 <tr class="no-wrap-lg">
                   <td>12/09/2021</td>
-                  <td>R$ 150,00</td>
+                  <td>Fulano</td>
                   <td>
-                    <span class="badge badge-secondary">Viagem</span>
+                    <span class="badge badge-secondary">Grátis</span>
                   </td>
                 </tr>
                 <tr class="no-wrap-lg">
                   <td>12/09/2021</td>
-                  <td>R$ 150,00</td>
+                  <td>Cicrano</td>
                   <td>
-                    <span class="badge badge-secondary">Viagem</span>
+                    <span class="badge badge-success">Paga</span>
                   </td>
                 </tr>
                 <tr class="no-wrap-lg">
                   <td>12/09/2021</td>
-                  <td>R$ 150,00</td>
+                  <td>Fulano</td>
                   <td>
-                    <span class="badge badge-secondary">Viagem</span>
+                    <span class="badge badge-secondary">Grátis</span>
                   </td>
                 </tr>
                 <tr class="no-wrap-lg">
                   <td>12/09/2021</td>
-                  <td>R$ 150,00</td>
+                  <td>Cicrano</td>
                   <td>
-                    <span class="badge badge-secondary">Viagem</span>
+                    <span class="badge badge-success">Paga</span>
                   </td>
                 </tr>
                 <tr class="no-wrap-lg">
                   <td>12/09/2021</td>
-                  <td>R$ 150,00</td>
+                  <td>Fulano</td>
                   <td>
-                    <span class="badge badge-secondary">Viagem</span>
+                    <span class="badge badge-secondary">Grátis</span>
                   </td>
                 </tr>
                 <tr class="no-wrap-lg">
                   <td>12/09/2021</td>
-                  <td>R$ 150,00</td>
+                  <td>Cicrano</td>
                   <td>
-                    <span class="badge badge-secondary">Viagem</span>
+                    <span class="badge badge-success">Paga</span>
                   </td>
                 </tr>
                 <tr class="no-wrap-lg">
                   <td>12/09/2021</td>
-                  <td>R$ 150,00</td>
+                  <td>Fulano</td>
                   <td>
-                    <span class="badge badge-secondary">Viagem</span>
+                    <span class="badge badge-secondary">Grátis</span>
                   </td>
                 </tr>
                 <tr class="no-wrap-lg">
                   <td>12/09/2021</td>
-                  <td>R$ 150,00</td>
+                  <td>Cicrano</td>
                   <td>
-                    <span class="badge badge-secondary">Viagem</span>
-                  </td>
-                </tr>
-                <tr class="no-wrap-lg">
-                  <td>12/09/2021</td>
-                  <td>R$ 150,00</td>
-                  <td>
-                    <span class="badge badge-secondary">Viagem</span>
-                  </td>
-                </tr>
-                <tr class="no-wrap-lg">
-                  <td>12/09/2021</td>
-                  <td>R$ 150,00</td>
-                  <td>
-                    <span class="badge badge-secondary">Viagem</span>
-                  </td>
-                </tr>
-                <tr class="no-wrap-lg">
-                  <td>12/09/2021</td>
-                  <td>R$ 150,00</td>
-                  <td>
-                    <span class="badge badge-secondary">Viagem</span>
-                  </td>
-                </tr>
-                <tr class="no-wrap-lg">
-                  <td>12/09/2021</td>
-                  <td>R$ 150,00</td>
-                  <td>
-                    <span class="badge badge-secondary">Viagem</span>
-                  </td>
-                </tr>
-                <tr class="no-wrap-lg">
-                  <td>12/09/2021</td>
-                  <td>R$ 150,00</td>
-                  <td>
-                    <span class="badge badge-secondary">Viagem</span>
-                  </td>
-                </tr>
-                <tr class="no-wrap-lg">
-                  <td>12/09/2021</td>
-                  <td>R$ 150,00</td>
-                  <td>
-                    <span class="badge badge-secondary">Viagem</span>
-                  </td>
-                </tr>
-                <tr class="no-wrap-lg">
-                  <td>12/09/2021</td>
-                  <td>R$ 150,00</td>
-                  <td>
-                    <span class="badge badge-secondary">Viagem</span>
-                  </td>
-                </tr>
-                <tr class="no-wrap-lg">
-                  <td>12/09/2021</td>
-                  <td>R$ 150,00</td>
-                  <td>
-                    <span class="badge badge-secondary">Viagem</span>
-                  </td>
-                </tr>
-                <tr class="no-wrap-lg">
-                  <td>12/09/2021</td>
-                  <td>R$ 150,00</td>
-                  <td>
-                    <span class="badge badge-secondary">Viagem</span>
-                  </td>
-                </tr>
-                <tr class="no-wrap-lg">
-                  <td>12/09/2021</td>
-                  <td>R$ 150,00</td>
-                  <td>
-                    <span class="badge badge-secondary">Viagem</span>
-                  </td>
-                </tr>
-                <tr class="no-wrap-lg">
-                  <td>12/09/2021</td>
-                  <td>R$ 150,00</td>
-                  <td>
-                    <span class="badge badge-secondary">Viagem</span>
-                  </td>
-                </tr>
-                <tr class="no-wrap-lg">
-                  <td>12/09/2021</td>
-                  <td>R$ 150,00</td>
-                  <td>
-                    <span class="badge badge-secondary">Viagem</span>
-                  </td>
-                </tr>
-                <tr class="no-wrap-lg">
-                  <td>12/09/2021</td>
-                  <td>R$ 150,00</td>
-                  <td>
-                    <span class="badge badge-secondary">Viagem</span>
-                  </td>
-                </tr>
-                <tr class="no-wrap-lg">
-                  <td>12/09/2021</td>
-                  <td>R$ 150,00</td>
-                  <td>
-                    <span class="badge badge-secondary">Viagem</span>
+                    <span class="badge badge-success">Paga</span>
                   </td>
                 </tr>
               </tbody>
@@ -382,7 +244,7 @@
       <div class="card card-round">
         <div class="card-header">
           <div class="card-head-row card-tools-still-right">
-            <div class="card-title">Análise de Categorias</div>
+            <div class="card-title">Uso de Categorias</div>
             <div class="card-tools">
               <div class="dropdown">
                 <button class="btn btn-icon btn-clean me-0" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-ellipsis-h"></i></button>
@@ -413,27 +275,53 @@
         </div>
       </div>
     </div>
-    <div class="col-md-4">
-      <div class="card card-round">
+    <div class="col-md-4 d-flex align-items-stretch">
+      <div class="card card-round w-100">
         <div class="card-header">
           <div class="card-head-row card-tools-still-right">
-            <div class="card-title">Dicas IA</div>
+            <div class="card-title">Log</div>
             <div class="card-tools">
               <div class="dropdown">
                 <button class="btn btn-icon btn-clean me-0" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-ellipsis-h"></i></button>
                 <div class="dropdown-menu" aria-labelledby="dropdownMenuButton" style="">
-                  <a class="dropdown-item" href="#">Gerar nova dica</a>
+                  <a class="dropdown-item" href="#">Hoje</a>
+                  <a class="dropdown-item" href="#">Ultimo semana</a>
+                  <a class="dropdown-item" href="#">Ultimo mês</a>
+                  <a class="dropdown-item" href="#">Ultimo ano</a>
                   <div class="dropdown-divider"></div>
-                  <a class="dropdown-item" href="#">Reportar</a>
+                  <a class="dropdown-item" href="#">Exportar</a>
                 </div>
               </div>
             </div>
           </div>
         </div>
         <div class="card-body p-0">
-          <div class="p-3" style="min-height: 375px; max-height: 375px;">
-            <h5>What is Lorem Ipsum?</h5>
-            <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages.</p>
+          <div class="table-responsive overflow-auto" style="max-height: 375px; min-height: 375px;">
+            <table class="table table-sm table-head-bg mt-0">
+              <thead>
+                <tr class="text-uppercase">
+                  <th>Data</th>
+                  <th>Tipo</th>
+                  <th>Mensagem</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr class="no-wrap-lg">
+                  <td>12/09/2021</td>
+                  <td>
+                    <span class="badge badge-danger">Erro</span>
+                  </td>
+                  <td>Erro ao carregar categorias.</td>
+                </tr>
+                <tr class="no-wrap-lg">
+                  <td>12/09/2021</td>
+                  <td>
+                    <span class="badge badge-warning">Alerta</span>
+                  </td>
+                  <td>Página 'admin.html' não encontrada.</td>
+                </tr>
+              </tbody>
+            </table>
           </div>
         </div>
       </div>
