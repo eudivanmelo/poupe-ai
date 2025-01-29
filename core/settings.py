@@ -70,7 +70,7 @@ DATABASES = {
 }
 
 # TODO Habilitar o modelo de usuário customizado
-# AUTH_USER_MODEL = 'authentication.User'
+AUTH_USER_MODEL = 'authentication.CustomUser'
 
 # Password validation
 # https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators
