@@ -13,5 +13,6 @@ class PasswordRecoveryAdmin(admin.ModelAdmin):
     search_fields = ['id_user', 'token']
     ordering = ['id_user', 'create_at', 'expiration_date']
 
+
 admin.site.register(CustomUser, CustomUserAdmin)
 admin.site.register(PasswordRecovery, PasswordRecoveryAdmin)
