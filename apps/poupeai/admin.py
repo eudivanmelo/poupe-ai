@@ -1,5 +1,5 @@
 from django.contrib import admin
-from apps.poupeai.models import Account, Goal
+from apps.poupeai.models import Account, Goal, Category
 
 class AccountAdmin(admin.ModelAdmin):
     model = Account
@@ -13,7 +13,13 @@ class GoalAdmin(admin.ModelAdmin):
     search_fields = ['user', 'name']
     ordering = ['user', 'name', 'created_at']
     
+class CategoryAdmin(admin.ModelAdmin):
+    model = Category
+    list_display = ['name', 'color', 'type', 'created_at']
+    search_fields = ['name']
+    ordering = ['name', 'created_at']
     
 admin.site.register(Account, AccountAdmin)
 admin.site.register(Goal, GoalAdmin)
+admin.site.register(Category, CategoryAdmin)
 
