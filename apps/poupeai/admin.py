@@ -1,11 +1,13 @@
 from django.contrib import admin
-from apps.poupeai.models import Account, Goal, Category, Transaction, Brand, CreditCard
+from apps.poupeai.models import Account, Goal, Category, Transaction, Brand, CreditCard, CardTransaction, Invoice
 
 class AccountAdmin(admin.ModelAdmin):
     model = Account
     list_display = ['user', 'name', 'balance', 'created_at']
     search_fields = ['user', 'name']
     ordering = ['user', 'name', 'created_at']
+
+admin.site.register(Account, AccountAdmin)
     
 class GoalAdmin(admin.ModelAdmin):
     model = Goal
@@ -36,8 +38,20 @@ class CreditCardAdmin(admin.ModelAdmin):
     list_display = ['user', 'name', 'brand', 'limit', 'closing_day', 'due_day', 'created_at']
     search_fields = ['user__name', 'user__email', 'name', 'brand__name']
     ordering = ['user', 'name', 'limit']
-    
-admin.site.register(Account, AccountAdmin)
+
+class CardTransactionAdmin(admin.ModelAdmin):
+    list_display = ('transaction', 'credit_card', 'invoice')
+    search_fields = ('transaction__description', 'credit_card__name', 'invoice__month')
+
+admin.site.register(CardTransaction, CardTransactionAdmin)
+
+class InvoiceAdmin(admin.ModelAdmin):
+    list_display = ('credit_card', 'month', 'year', 'total_amount', 'paid_amount', 'remaining_balance', 'paid')
+    list_filter = ('paid', 'month', 'year')
+    search_fields = ('credit_card__name',)
+
+admin.site.register(Invoice, InvoiceAdmin)
+
 admin.site.register(Goal, GoalAdmin)
 admin.site.register(Category, CategoryAdmin)
 admin.site.register(Transaction, TransactionAdmin)

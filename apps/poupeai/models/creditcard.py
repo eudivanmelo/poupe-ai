@@ -35,3 +35,15 @@ class CreditCard(models.Model):
     class Meta:
         verbose_name = "Cartão de Crédito"
         verbose_name_plural = "Cartões de Crédito"
+
+class Invoice(models.Model):
+    credit_card = models.ForeignKey(CreditCard, on_delete=models.CASCADE)
+    month = models.PositiveSmallIntegerField()
+    year = models.PositiveSmallIntegerField()
+    total_amount = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
+    paid_amount = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
+    remaining_balance = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
+    paid = models.BooleanField(default=False)
+
+    def __str__(self):
+        return f"Fatura {self.month}/{self.year} - R$ {self.total_amount:.2f} {'(Paga)' if self.paid else '(Pendente)'}"
