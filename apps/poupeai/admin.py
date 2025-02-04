@@ -1,5 +1,5 @@
 from django.contrib import admin
-from apps.poupeai.models import Account, Goal, Category, Transaction, Brand, CreditCard, CardTransaction, Invoice
+from apps.poupeai.models import Account, Goal, Category, Transaction, Brand, CreditCard, CardTransaction, Invoice, AccountTransaction
 
 class AccountAdmin(admin.ModelAdmin):
     model = Account
@@ -51,6 +51,12 @@ class InvoiceAdmin(admin.ModelAdmin):
     search_fields = ('credit_card__name',)
 
 admin.site.register(Invoice, InvoiceAdmin)
+
+class AccountTransactionAdmin(admin.ModelAdmin):
+    list_display = ('transaction', 'account', 'expiration_date', 'payment_date', 'type')
+    search_fields = ('transaction__description', 'credit_card__name', 'invoice__month')
+
+admin.site.register(AccountTransaction, AccountTransactionAdmin)
 
 admin.site.register(Goal, GoalAdmin)
 admin.site.register(Category, CategoryAdmin)
