@@ -1,7 +1,7 @@
 from .account import Account
 from .goal import Goal
 from .category import Category
-from .transaction import Transaction, CardTransaction
+from .transaction import Transaction, CardTransaction, AccountTransaction
 from .creditcard import Brand, CreditCard, Invoice
 
 __all__ = [
@@ -10,6 +10,7 @@ __all__ = [
     'Category',
     'Transaction',
     'CardTransaction',
+    'AccountTransaction',
     'Brand',
     'CreditCard',
     'Invoice',
