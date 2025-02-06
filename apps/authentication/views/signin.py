@@ -1,6 +1,15 @@
 from django.shortcuts import render
+from django.urls import reverse_lazy
+from django.contrib.auth.views import LoginView
+from apps.authentication.forms import SignInForm
 from django.contrib import messages
 
-def signin_view(request):
-    messages.error(request, 'Invalid username or password')
-    return render(request, 'signin.html')
+class SignInView(LoginView):
+    template_name = 'signin.html'
+    authentication_form = SignInForm
+    next_page = reverse_lazy('dashboard')
+    
+    def form_invalid(self, form):
+        messages.error(self.request, "Usuário ou senha inválidos!")
+        return super().form_invalid(form)
+    
