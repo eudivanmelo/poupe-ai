@@ -81,8 +81,7 @@ AUTH_USER_MODEL = 'authentication.CustomUser'
 
 # Google Authentication
 SOCIAL_AUTH_USER_MODEL = AUTH_USER_MODEL
-SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = '913404232516-ucpjvs2718c7g0qp314e41tpm53jk1s5.apps.googleusercontent.com'
-SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = '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'
+#
 
 SOCIAL_AUTH_PIPELINE = (
     'social_core.pipeline.social_auth.social_details',
