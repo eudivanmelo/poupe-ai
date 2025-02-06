@@ -56,7 +56,7 @@ Poupe.AI{% endblock title %} {% block card %}
 
   <hr class="my-4" />
 
-  <button type="submit" class="btn btn-secondary w-100">
+  <a href="{% url "social:begin" "google-oauth2" %}" class="btn btn-secondary w-100">
     <span class="btn-label">
       <svg
         xmlns="http://www.w3.org/2000/svg"
@@ -84,7 +84,7 @@ Poupe.AI{% endblock title %} {% block card %}
       </svg>
     </span>
     Fazer login com Google
-  </button>
+  </a>
 
   <a href="{% url 'sign-up' %}" class="btn btn-link w-100 link-dark mt-4"
     >Não tem uma conta? Clique aqui!</a
