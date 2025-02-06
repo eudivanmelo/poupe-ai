@@ -24,8 +24,6 @@ INSTALLED_APPS = [
 
     'apps.authentication',
     'apps.poupeai',
-    'apps.home_page',
-    
 ]
 
 MIDDLEWARE = [
