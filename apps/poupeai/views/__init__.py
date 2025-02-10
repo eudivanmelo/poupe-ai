@@ -8,9 +8,11 @@ from .profile import profile_view
 from .transactions import transactions_view
 from .account_deletion import account_deletion_view
 from .admin_dashboard import admin_view
+from .home import home_view
 from .notifications import *
 
 __all__ = [
+    'home_view',
     'accounts_view',
     'categories_view',
     'creditcard_view',
