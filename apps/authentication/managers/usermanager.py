@@ -1,7 +1,7 @@
 from django.contrib.auth.models import BaseUserManager
 
 class CustomUserManager(BaseUserManager):
-    def create_user(self, email, password=None, **extra_fields):
+    def create_user(self, email=None, password=None, **extra_fields):
         """
         Gerenciador de modelo de usuário personalizado, onde email são os identificadores 
         exclusivos para autenticação em vez de nomes de usuário.
