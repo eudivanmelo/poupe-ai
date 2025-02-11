@@ -1,6 +1,6 @@
 from django.db import models
 
-transactions_type = (
+TRANSACTION_TYPES = (
     ('income', 'Receita'),
     ('expense', 'Despesa'),
 )
@@ -8,12 +8,14 @@ transactions_type = (
 class Category(models.Model):
     name = models.CharField(max_length=255)
     color = models.CharField(max_length=7)
-    type = models.CharField(max_length=7, choices=transactions_type)
-    
+    type = models.CharField(max_length=7, choices=TRANSACTION_TYPES)
+
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    
+
+    class Meta:
+        verbose_name = "Categoria"
+        verbose_name_plural = "Categorias"
+
     def __str__(self):
         return self.name
-    
-    
