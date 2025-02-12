@@ -4,7 +4,7 @@ from django.urls import reverse_lazy
 def categories_view(request):
     categories_despesas = [
         {"id": 1, "nome": "Aluguel", "valor": 1000.50, "cor": "#ff0000"},
-        {"id": 2, "nome": "Supermercado", "valor": 500.00, "cor": "#00ff00"},
+        {"id": 2, "nome": "Supermercado de Arroz", "valor": 500.00, "cor": "#00ff00"},
         {"id": 3, "nome": "Transporte", "valor": 150.00, "cor": "#ff6600"},
         {"id": 4, "nome": "Internet", "valor": 120.00, "cor": "#00ffff"},
         {"id": 5, "nome": "Saúde", "valor": 300.00, "cor": "#ff99cc"},

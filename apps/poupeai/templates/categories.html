@@ -50,10 +50,10 @@ Categorias
                 <div class="tab-content" id="categoryTabsContent">
                     <!-- Despesas -->
                     <div class="tab-pane fade show active" id="despesas" role="tabpanel" aria-labelledby="despesas-tab">
-                        <div class="row">
+                        <div class="grid-container">
                             {% for category in categories_despesas %}
-                            <div class="col-12 col-sm-6 col-lg-4 mb-3" id="category-{{ category.id }}">
-                                <div class="d-flex justify-content-between align-items-center border p-3 rounded shadow-sm category-card">
+                            <div class="category-card p-3 border rounded shadow-sm" id="category-{{ category.id }}">
+                                <div class="d-flex justify-content-between align-items-center">
                                     <div class="d-flex align-items-center">
                                         <span class="circle me-3"
                                             style="background-color: {{ category.cor }}; width: 25px; height: 25px; border-radius: 50%; border: 2px solid #fff;"></span>
@@ -96,11 +96,10 @@ Categorias
 
                     <!-- Receitas -->
                     <div class="tab-pane fade" id="receitas" role="tabpanel" aria-labelledby="receitas-tab">
-                        <div class="row">
+                        <div class="grid-container">
                             {% for category in categories_receitas %}
-                            <div class="col-12 col-sm-6 col-lg-4 mb-3" id="category-{{ category.id }}">
-                                <div
-                                    class="d-flex justify-content-between align-items-center border p-3 rounded shadow-sm category-card">
+                            <div class="category-card p-3 border rounded shadow-sm" id="category-{{ category.id }}">
+                                <div class="d-flex justify-content-between align-items-center">
                                     <div class="d-flex align-items-center">
                                         <span class="circle me-3"
                                             style="background-color: {{ category.cor }}; width: 25px; height: 25px; border-radius: 50%; border: 2px solid #fff;"></span>
@@ -117,12 +116,16 @@ Categorias
                                         </button>
                                         <ul class="dropdown-menu dropdown-menu-end"
                                             aria-labelledby="dropdownMenu{{ category.id }}">
-                                            <li><button class="dropdown-item fs-6 edit-category-btn"
+                                            <li>
+                                                <button class="dropdown-item fs-6 edit-category-btn"
                                                     data-id="{{ category.id }}" data-nome="{{ category.nome }}"
-                                                    data-cor="{{ category.cor }}">Editar</button></li>
-                                            <li><button class="dropdown-item fs-6"
+                                                    data-cor="{{ category.cor }}">Editar</button>
+                                            </li>
+                                            <li>
+                                                <button class="dropdown-item fs-6"
                                                     id="delete-category-{{ category.id }}" data-id="{{ category.id }}"
-                                                    data-nome="{{ category.nome }}">Excluir</button></li>
+                                                    data-nome="{{ category.nome }}">Excluir</button>
+                                            </li>
                                         </ul>
                                     </div>
                                 </div>
@@ -182,18 +185,6 @@ Categorias
         </div>
     </div>
 </div>
-
-<script>
-    document.querySelectorAll('.dropdown').forEach(dropdown => {
-        dropdown.addEventListener('show.bs.dropdown', () => {
-            dropdown.closest('.category-card').classList.add('dropdown-open');
-        });
-
-        dropdown.addEventListener('hide.bs.dropdown', () => {
-            dropdown.closest('.category-card').classList.remove('dropdown-open');
-        });
-    });
-</script>
 {% endblock %}
 
 {% block scripts %}
