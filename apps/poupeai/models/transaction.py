@@ -1,6 +1,7 @@
 from django.db import models
 from apps.authentication.models import CustomUser
-from apps.poupeai.models import Category, Account
+from .account import Account
+from .category import Category
 from .creditcard import CreditCard, Invoice
 
 TRANSACTION_TYPES = (
