@@ -1,5 +1,5 @@
 from .accounts import accounts_view
-from .categories import categories_view
+from .categories import CategoriesView
 from .creditcard import creditcard_view
 from .dashboard import dashboard_view
 from .help import help_view
@@ -14,7 +14,7 @@ from .notifications import *
 __all__ = [
     'home_view',
     'accounts_view',
-    'categories_view',
+    'CategoriesView',
     'creditcard_view',
     'dashboard_view',
     'help_view',
