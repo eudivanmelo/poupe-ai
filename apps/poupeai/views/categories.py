@@ -1,9 +1,12 @@
 from django.views.generic import TemplateView
 from django.urls import reverse_lazy
-from apps.poupeai.mixins import BreadcrumbMixin
+from apps.poupeai.mixins import BreadcrumbMixin, PageNameMixin
 
-class CategoriesView(BreadcrumbMixin, TemplateView):
+class CategoriesView(BreadcrumbMixin, PageNameMixin, TemplateView):
     template_name = "categories.html"
+
+    def get_name(self):
+        return "categories"
     
     def get_breadcrumbs(self):
         return [
@@ -41,7 +44,6 @@ class CategoriesView(BreadcrumbMixin, TemplateView):
             "total_receitas": total_receitas,
             "total_cat_despesas": total_cat_despesas,
             "total_cat_receitas": total_cat_receitas,
-            "name": "categories"
         })
         
         return context
