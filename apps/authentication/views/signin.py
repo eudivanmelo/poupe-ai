@@ -6,7 +6,7 @@ from django.contrib.auth import logout
 from django.utils.http import url_has_allowed_host_and_scheme
 
 class SignInView(LoginView):
-    template_name = 'signin.html'
+    template_name = 'authentication/signin.html'
     authentication_form = SignInForm
     next_page = reverse_lazy('dashboard')
     
