@@ -80,7 +80,7 @@ def creditcard_view(request):
         "accounts": accounts,
         "invoices": invoices,
         "credit_card_brands": credit_card_brands,
-        "name": "credit-card",
+        "name": "credit-cards",
     }
 
-    return render(request, 'credit-card.html', context)
+    return render(request, 'poupeai/credit_card_page.html', context)

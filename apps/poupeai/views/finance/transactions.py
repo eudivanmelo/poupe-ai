@@ -7,4 +7,4 @@ def transactions_view(request):
         {"name":"Transações", "url": None},
     ]
     context = {"breadcrumbs": breadcrumbs, "name" : "transactions"}
-    return render(request, 'transactions.html', context)
+    return render(request, 'poupeai/transactions_page.html', context)

@@ -54,7 +54,7 @@ def mygoals_view(request):
     context = {
         "breadcrumbs": breadcrumbs, 
         "goals": goals, 
-        "name" : "my-goals"
+        "name" : "goals"
     }
 
-    return render(request, 'my-goals.html', context)
+    return render(request, 'poupeai/goals_page.html', context)

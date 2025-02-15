@@ -3,7 +3,7 @@ from django.urls import reverse_lazy
 from apps.poupeai.mixins import BreadcrumbMixin, PageNameMixin
 
 class CategoriesView(BreadcrumbMixin, PageNameMixin, TemplateView):
-    template_name = "categories.html"
+    template_name = "poupeai/categories_page.html"
 
     def get_name(self):
         return "categories"

@@ -1,4 +1,4 @@
-{% extends "users_base.html" %}
+{% extends 'poupeai/poupeai_base.html' %}
 
 {% load static %}
 
@@ -50,7 +50,7 @@
             </div>
 
             <div class="card-footer d-flex">
-                <a href="{% url 'account-deletion' %}" class="text-secondary text-decoration-none small">Solicitar Exclusão da Conta</a>
+                <a href="{% url 'profile-deletion' %}" class="text-secondary text-decoration-none small">Solicitar Exclusão da Conta</a>
             </div>
         </div>
     </div>
