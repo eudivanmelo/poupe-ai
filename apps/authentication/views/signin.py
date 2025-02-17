@@ -11,7 +11,8 @@ class SignInView(LoginView):
     next_page = reverse_lazy('dashboard')
     
     def dispatch(self, request, *args, **kwargs):
-        logout(request)
+        if request.user.is_authenticated:
+            logout(request)
         return super().dispatch(request, *args, **kwargs)
     
     def get_success_url(self):
