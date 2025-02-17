@@ -5,7 +5,7 @@
 {% block title %}Cartões de Crédito - Poupe.AI{% endblock title %}
 
 {% block head %}
-<link rel="stylesheet" href="{% static 'css/credit-card.css' %}">
+<link rel="stylesheet" href="{% static 'css/credit-cards.css' %}">
 {% endblock %}
 
 {% block page_title %}Cartões de Crédito{% endblock %}
@@ -25,9 +25,9 @@
             </div>
 
             <div class="card-body px-0 px-md-3">
-                <div class="row">
+                <div class="grid-container">
                     {% for card in credit_cards %}
-                        <div class="col-12 col-sm-6 col-lg-4 mb-3" id="credit-card-{{ card.id }}">
+                        <div id="credit-card-{{ card.id }}">
                             <div class="align-items-center border p-3 rounded shadow-sm">
                                 <div class="d-flex justify-content-between align-items-center py-1">
                                     <div>
@@ -49,7 +49,7 @@
                                             <ul class="dropdown-menu dropdown-menu-end"
                                                 aria-labelledby="dropdownMenu{{ card.id }}">
                                                 <li>
-                                                    <button class="dropdown-item fs-5 edit-card-btn" data-id="{{ card.id }}"
+                                                    <button class="dropdown-item fs-6 edit-card-btn" data-id="{{ card.id }}"
                                                         data-name="{{ card.name }}"
                                                         data-limit="{{ card.limit }}"
                                                         data-additional-data="{{ card.additional_data }}"
@@ -58,7 +58,7 @@
                                                         data-due-day="{{ card.due_day }}">Editar</button>
                                                 </li>
                                                 <li>
-                                                    <button class="dropdown-item fs-5 delete-card-btn"
+                                                    <button class="dropdown-item fs-6 delete-card-btn"
                                                         id="delete-credit-card-{{ card.id }}"
                                                         data-id="{{ card.id }}"
                                                         data-name="{{ card.name }}">Excluir</button>
@@ -184,13 +184,13 @@
 
 <!-- Modal Nova Depesa -->
 <div class="modal fade" id="expenseModal" tabindex="-1" aria-labelledby="expenseModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg modal-dialog-centered modal-fullscreen-sm-down">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="expenseModalLabel">Nova Despesa</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <div class="modal-body custom-scroll">
+            <div class="modal-body">
                 <form id="expenseForm" method="post" action="#" enctype="multipart/form-data">
                     {% csrf_token %}
 
@@ -264,7 +264,7 @@
 
 <!-- Modal de Cadastro de Cartão de Crédito -->
 <div class="modal fade" id="creditCardModal" tabindex="-1" aria-labelledby="creditCardModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg modal-dialog-centered modal-fullscreen-sm-down">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="creditCardModalLabel">Adicionar Cartão de Crédito</h5>
@@ -330,6 +330,6 @@
 {% endblock %}
 
 {% block scripts %}
-<script src="{% static 'js/credit-card.js' %}"></script>
+<script src="{% static 'js/credit-cards.js' %}"></script>
 <script src="{% static 'js/plugin/sweetalert/sweetalert.min.js' %}"></script>
 {% endblock %}

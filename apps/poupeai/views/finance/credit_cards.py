@@ -83,4 +83,4 @@ def creditcard_view(request):
         "name": "credit-cards",
     }
 
-    return render(request, 'poupeai/credit_card_page.html', context)
+    return render(request, 'poupeai/credit_cards_page.html', context)
