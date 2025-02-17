@@ -7,4 +7,4 @@ def accounts_view(request):
         {"name":"Contas", "url": None},
     ]
     context = {"breadcrumbs": breadcrumbs, "name" : "accounts"}
-    return render(request, 'accounts.html', context)
+    return render(request, 'poupeai/accounts_page.html', context)

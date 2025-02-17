@@ -1,9 +1,9 @@
 from django.views.generic import TemplateView
 from django.urls import reverse_lazy
-from apps.poupeai.mixins import BreadcrumbMixin, PageNameMixin
+from apps.poupeai.mixins import PoupeAIMixin
 
-class CategoriesView(BreadcrumbMixin, PageNameMixin, TemplateView):
-    template_name = "categories.html"
+class CategoriesView(PoupeAIMixin, TemplateView):
+    template_name = "poupeai/categories_page.html"
 
     def get_name(self):
         return "categories"

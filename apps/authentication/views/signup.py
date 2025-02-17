@@ -6,7 +6,7 @@ from django.urls import reverse_lazy
 from django.contrib.auth import logout
 
 class SignUpView(FormView):
-    template_name = 'signup.html'
+    template_name = 'authentication/signup.html'
     form_class = SignUpForm
     success_url = reverse_lazy("sign-in")
     
