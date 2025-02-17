@@ -7,4 +7,4 @@ def help_view(request):
         {"name":"Ajuda e Suporte", "url": None},
     ]
     context = {"breadcrumbs": breadcrumbs, "name" : "help"}
-    return render(request, 'help.html', context)
+    return render(request, 'poupeai/help_page.html', context)

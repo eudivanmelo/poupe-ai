@@ -11,7 +11,7 @@ urlpatterns = [
     path('my-goals/', mygoals_view, name='my-goals'),
     path('help/', help_view, name='help'),
     path('profile/', profile_view, name='profile'),
-    path('account/deletion/', account_deletion_view, name='account-deletion'),
+    path('profile/deletion/', profile_deletion_view, name='profile-deletion'),
     path('user/admin/', admin_view, name='admin-dashboard'),
     path('notifications/', notifications_view, name='notifications'),
 ]
