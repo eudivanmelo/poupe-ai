@@ -5,7 +5,7 @@
 {% block title %}Minhas Metas - Poupe.AI{% endblock title %}
 
 {% block head %}
-<link rel="stylesheet" href="{% static 'css/my-goals.css' %}">
+<link rel="stylesheet" href="{% static 'css/goals.css' %}">
 {% endblock %}
 
 {% block page_title %}Minhas Metas{% endblock %}
@@ -25,10 +25,10 @@
             </div>
 
             <div class="card-body px-0 px-md-3">
-                <div class="row">
+                <div class="grid-container">
                     {% for goal in goals %}
-                    <div class="col-12 col-sm-6 col-lg-4 mb-3" id="my-goal-{{ goal.id }}">
-                        <div class="goal-card rounded border p-3 d-flex flex-column">
+                    <div class="mb-3" id="my-goal-{{ goal.id }}">
+                        <div class="goal-card rounded border p-3 d-flex flex-column  h-100">
                             <div class="header d-flex justify-content-between align-items-start">
                                 <div>
                                     <p class="title mb-1 fw-bold fs-5 text-truncate">{{ goal.name }}</p>
@@ -209,6 +209,6 @@
 {% endblock %}
 
 {% block scripts %}
-<script src="{% static 'js/my-goals.js' %}"></script>
+<script src="{% static 'js/goals.js' %}"></script>
 <script src="{% static 'js/plugin/sweetalert/sweetalert.min.js' %}"></script>
 {% endblock %}
