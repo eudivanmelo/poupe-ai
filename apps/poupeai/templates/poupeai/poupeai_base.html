@@ -260,7 +260,7 @@
                     </div>
                     <span class="profile-username"
                       ><span class="op-7">Olá,</span>
-                      <span class="fw-bold">Fulano</span></span
+                      <span class="fw-bold">{{request.user.name}}</span></span
                     >
                   </a>
                   <ul class="dropdown-menu dropdown-user animated fadeIn">
@@ -275,8 +275,8 @@
                             />
                           </div>
                           <div class="u-text">
-                            <h4>Fulano</h4>
-                            <p class="text-muted">fulano@example.com</p>
+                            <h4>{{request.user.name}}</h4>
+                            <p class="text-muted">{{request.user.email}}</p>
                             <a
                               href="{% url 'profile' %}"
                               class="btn btn-xs btn-primary btn-sm"
@@ -348,6 +348,9 @@
 
     <!-- Kaiadmin JS -->
     <script src="{% static 'js/kaiadmin.js' %}"></script>
+
+    <!-- Custom JS -->
+    <script src="{% static 'js/poupeai.js' %}"></script>
 
     <!-- Additional scripts -->
     {% block scripts %} {% endblock %} {% block end_body %} {% endblock %}
