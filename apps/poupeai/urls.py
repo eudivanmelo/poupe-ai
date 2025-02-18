@@ -10,8 +10,8 @@ urlpatterns = [
     path('credit-cards/', CreditCardsView.as_view(), name='credit-cards'),
     path('goals/', GoalsView.as_view(), name='goals'),
     path('help/', help_view, name='help'),
-    path('profile/', profile_view, name='profile'),
-    path('profile/deletion/', profile_deletion_view, name='profile-deletion'),
+    path('profile/', ProfileView.as_view(), name='profile'),
+    path('profile/deletion/', ProfileDeletionView.as_view(), name='profile-deletion'),
     path('user/admin/', admin_view, name='admin-dashboard'),
     path('notifications/', notifications_view, name='notifications'),
 ]
