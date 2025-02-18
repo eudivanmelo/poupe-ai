@@ -6,14 +6,14 @@
     <!-- Metadata -->
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>
-      {% block title %}
-
-      {% endblock %}
-    </title>
+    <title>{% block title %} {% endblock %}</title>
 
     <!-- Favicon -->
-    <link rel="icon" href="{% static 'favicon/favicon-64.ico' %}" type="image/x-icon" />
+    <link
+      rel="icon"
+      href="{% static 'favicon/favicon-64.ico' %}"
+      type="image/x-icon"
+    />
 
     <!-- CSS Stylesheets -->
     <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}" />
@@ -21,15 +21,16 @@
     <link rel="stylesheet" href="{% static 'css/poupeai.css' %}" />
 
     <!-- Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap"
+      rel="stylesheet"
+    />
 
     <!-- Load custom fonts -->
     <link rel="stylesheet" href="{% static 'css/fonts.min.css' %}" />
 
     <!-- Additional head content -->
-    {% block head %}
-
-    {% endblock %}
+    {% block head %} {% endblock %}
   </head>
 
   <body>
@@ -37,54 +38,84 @@
       <div class="sidebar" data-background-color="dark">
         <div class="sidebar-logo">
           <div class="logo-header" data-background-color="dark">
-            <a href="#" class="logo"><img src="{% static 'imgs/logo-dark.svg' %}" alt="navbar brand" class="navbar-brand" height="20" /></a>
+            <a href="#" class="logo"
+              ><img
+                src="{% static 'imgs/logo-dark.svg' %}"
+                alt="navbar brand"
+                class="navbar-brand"
+                height="20"
+            /></a>
             <div class="nav-toggle">
-              <button class="btn btn-toggle toggle-sidebar"><i class="gg-menu-right"></i></button>
-              <button class="btn btn-toggle sidenav-toggler"><i class="gg-menu-left"></i></button>
+              <button class="btn btn-toggle toggle-sidebar">
+                <i class="gg-menu-right"></i>
+              </button>
+              <button class="btn btn-toggle sidenav-toggler">
+                <i class="gg-menu-left"></i>
+              </button>
             </div>
-            <button class="topbar-toggler more"><i class="gg-more-vertical-alt"></i></button>
+            <button class="topbar-toggler more">
+              <i class="gg-more-vertical-alt"></i>
+            </button>
           </div>
         </div>
         <div class="sidebar-wrapper scrollbar scrollbar-inner">
           <div class="sidebar-content">
             <ul class="nav nav-primary">
-              <li class="nav-item {% if name == 'dashboard' %}active{% endif %}">
+              <li
+                class="nav-item {% if name == 'dashboard' %}active{% endif %}"
+              >
                 <a href="{% url 'dashboard' %}" class="nav-link">
                   <i class="fas fa-home"></i>
                   <p>Dashboard</p>
                 </a>
               </li>
-              <li class="nav-item {% if name == 'categories' %}active{% endif %}">
+              <li
+                class="nav-item {% if name == 'categories' %}active{% endif %}"
+              >
                 <a href="{% url 'categories' %}" class="nav-link">
                   <i class="fas fa-tags"></i>
                   <p>Categorias</p>
                 </a>
               </li>
-              <li class="nav-item {% if name == 'transactions' %}active{% endif %}">
+              <li
+                class="nav-item {% if name == 'transactions' %}active{% endif %}"
+              >
                 <a href="{% url 'transactions' %}" class="nav-link">
                   <i class="fas fa-exchange-alt"></i>
                   <p>Transações</p>
                 </a>
               </li>
-              <li class="nav-item {% if name == 'accounts' %}active{% endif %}" class="nav-link">
+              <li
+                class="nav-item {% if name == 'accounts' %}active{% endif %}"
+                class="nav-link"
+              >
                 <a href="{% url 'accounts' %}">
                   <i class="fas fa-piggy-bank"></i>
                   <p>Contas</p>
                 </a>
               </li>
-              <li class="nav-item {% if name == 'credit-cards' %}active{% endif %}" class="nav-link">
+              <li
+                class="nav-item {% if name == 'credit-cards' %}active{% endif %}"
+                class="nav-link"
+              >
                 <a href="{% url 'credit-cards' %}">
                   <i class="fas fa-credit-card"></i>
                   <p>Cartões de Crédito</p>
                 </a>
               </li>
-              <li class="nav-item {% if name == 'goals' %}active{% endif %}" class="nav-link">
+              <li
+                class="nav-item {% if name == 'goals' %}active{% endif %}"
+                class="nav-link"
+              >
                 <a href="{% url 'goals' %}">
                   <i class="fas fa-bullseye"></i>
                   <p>Minhas Metas</p>
                 </a>
               </li>
-              <li class="nav-item {% if name == 'help' %}active{% endif %}" class="nav-link">
+              <li
+                class="nav-item {% if name == 'help' %}active{% endif %}"
+                class="nav-link"
+              >
                 <a href="{% url 'help' %}">
                   <i class="fas fa-question-circle"></i>
                   <p>Ajuda e Suporte</p>
@@ -98,44 +129,93 @@
         <div class="main-header">
           <div class="main-header-logo">
             <div class="logo-header" data-background-color="dark">
-              <a href="#" class="logo"><img src="{% static 'imgs/logo-dark.svg' %}" alt="navbar brand" class="navbar-brand" height="20" /></a>
+              <a href="#" class="logo"
+                ><img
+                  src="{% static 'imgs/logo-dark.svg' %}"
+                  alt="navbar brand"
+                  class="navbar-brand"
+                  height="20"
+              /></a>
               <div class="nav-toggle">
-                <button class="btn btn-toggle toggle-sidebar"><i class="gg-menu-right"></i></button>
-                <button class="btn btn-toggle sidenav-toggler"><i class="gg-menu-left"></i></button>
+                <button class="btn btn-toggle toggle-sidebar">
+                  <i class="gg-menu-right"></i>
+                </button>
+                <button class="btn btn-toggle sidenav-toggler">
+                  <i class="gg-menu-left"></i>
+                </button>
               </div>
-              <button class="topbar-toggler more"><i class="gg-more-vertical-alt"></i></button>
+              <button class="topbar-toggler more">
+                <i class="gg-more-vertical-alt"></i>
+              </button>
             </div>
           </div>
-          <nav class="navbar navbar-header navbar-header-transparent navbar-expand-lg border-bottom">
+          <nav
+            class="navbar navbar-header navbar-header-transparent navbar-expand-lg border-bottom"
+          >
             <div class="container-fluid">
-              <nav class="navbar navbar-header-left navbar-expand-lg navbar-form nav-search p-0 d-none d-lg-flex">
+              <nav
+                class="navbar navbar-header-left navbar-expand-lg navbar-form nav-search p-0 d-none d-lg-flex"
+              >
                 <div class="input-group">
                   <div class="input-group-prepend">
-                    <button type="submit" class="btn btn-search pe-1"><i class="fa fa-search search-icon"></i></button>
+                    <button type="submit" class="btn btn-search pe-1">
+                      <i class="fa fa-search search-icon"></i>
+                    </button>
                   </div>
-                  <input type="text" placeholder="Pesquisar ..." class="form-control" />
+                  <input
+                    type="text"
+                    placeholder="Pesquisar ..."
+                    class="form-control"
+                  />
                 </div>
               </nav>
 
               <ul class="navbar-nav topbar-nav ms-md-auto align-items-center">
-                <li class="nav-item topbar-icon dropdown hidden-caret d-flex d-lg-none">
-                  <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false" aria-haspopup="true"><i class="fa fa-search"></i></a>
+                <li
+                  class="nav-item topbar-icon dropdown hidden-caret d-flex d-lg-none"
+                >
+                  <a
+                    class="nav-link dropdown-toggle"
+                    data-bs-toggle="dropdown"
+                    href="#"
+                    role="button"
+                    aria-expanded="false"
+                    aria-haspopup="true"
+                    ><i class="fa fa-search"></i
+                  ></a>
                   <ul class="dropdown-menu dropdown-search animated fadeIn">
                     <form class="navbar-left navbar-form nav-search">
                       <div class="input-group">
-                        <input type="text" placeholder="Pesquisar ..." class="form-control" />
+                        <input
+                          type="text"
+                          placeholder="Pesquisar ..."
+                          class="form-control"
+                        />
                       </div>
                     </form>
                   </ul>
                 </li>
                 <li class="nav-item topbar-icon dropdown hidden-caret">
-                  <a class="nav-link dropdown-toggle" href="#" id="notifDropdown" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                  <a
+                    class="nav-link dropdown-toggle"
+                    href="#"
+                    id="notifDropdown"
+                    role="button"
+                    data-bs-toggle="dropdown"
+                    aria-haspopup="true"
+                    aria-expanded="false"
+                  >
                     <i class="fa fa-bell"></i>
                     <span class="notification">4</span>
                   </a>
-                  <ul class="dropdown-menu notif-box animated fadeIn" aria-labelledby="notifDropdown">
+                  <ul
+                    class="dropdown-menu notif-box animated fadeIn"
+                    aria-labelledby="notifDropdown"
+                  >
                     <li>
-                      <div class="dropdown-title">Você tem 1 nova notificação</div>
+                      <div class="dropdown-title">
+                        Você tem 1 nova notificação
+                      </div>
                     </li>
                     <li>
                       <div class="notif-scroll scrollbar-outer">
@@ -145,7 +225,9 @@
                               <i class="fa fa-credit-card"></i>
                             </div>
                             <div class="notif-content">
-                              <span class="block">Vencimento Fatura: Nubank</span>
+                              <span class="block"
+                                >Vencimento Fatura: Nubank</span
+                              >
                               <span class="time">5 minutos atrás</span>
                             </div>
                           </a>
@@ -153,34 +235,64 @@
                       </div>
                     </li>
                     <li>
-                      <a class="see-all" href="{% url 'notifications' %}">Veja todas as notificações<i class="fa fa-angle-right"></i></a>
+                      <a class="see-all" href="{% url 'notifications' %}"
+                        >Veja todas as notificações<i
+                          class="fa fa-angle-right"
+                        ></i
+                      ></a>
                     </li>
                   </ul>
                 </li>
 
                 <li class="nav-item topbar-user dropdown hidden-caret">
-                  <a class="dropdown-toggle profile-pic" data-bs-toggle="dropdown" href="#" aria-expanded="false">
+                  <a
+                    class="dropdown-toggle profile-pic"
+                    data-bs-toggle="dropdown"
+                    href="#"
+                    aria-expanded="false"
+                  >
                     <div class="avatar-sm">
-                      <img src="{% static 'imgs/profile.png' %}" alt="image profile" class="avatar-img rounded-circle" />
+                      <img
+                        src="{% static 'imgs/profile.jpg' %}"
+                        alt="image profile"
+                        class="avatar-img rounded-circle"
+                      />
                     </div>
-                    <span class="profile-username"><span class="op-7">Olá,</span> <span class="fw-bold">Fulano</span></span>
+                    <span class="profile-username"
+                      ><span class="op-7">Olá,</span>
+                      <span class="fw-bold">{{request.user.name}}</span></span
+                    >
                   </a>
                   <ul class="dropdown-menu dropdown-user animated fadeIn">
                     <div class="dropdown-user-scroll scrollbar-outer">
                       <li>
                         <div class="user-box">
                           <div class="avatar-lg">
-                            <img src="{% static 'imgs/profile.png' %}" alt="image profile" class="avatar-img rounded" />
+                            <img
+                              src="{% static 'imgs/profile.jpg' %}"
+                              alt="image profile"
+                              class="avatar-img rounded"
+                            />
                           </div>
                           <div class="u-text">
-                            <h4>Fulano</h4>
-                            <p class="text-muted">fulano@example.com</p><a href="{% url 'profile' %}" class="btn btn-xs btn-primary btn-sm">Ver perfil</a>
+                            <h4>{{request.user.name}}</h4>
+                            <p class="text-muted">{{request.user.email}}</p>
+                            <a
+                              href="{% url 'profile' %}"
+                              class="btn btn-xs btn-primary btn-sm"
+                              >Ver perfil</a
+                            >
                           </div>
                         </div>
                       </li>
                       <li>
                         <div class="dropdown-divider"></div>
-                        <a class="dropdown-item" href="{% url 'home' %}">Sair</a>
+                        <form action="{% url 'logout' %}" method="post">
+                          {% csrf_token %}
+                          <button type="submit" class="dropdown-item">
+                            Sair
+                          </button>
+                        </form>
                       </li>
                     </div>
                   </ul>
@@ -191,31 +303,31 @@
         </div>
         <div class="container">
           <div class="page-inner">
-            <div class="d-flex align-items-left align-items-md-center flex-column flex-md-row pt-2 pb-4">
-              <div class="d-flex flex-wrap align-items-center justify-content-between">
+            <div
+              class="d-flex align-items-left align-items-md-center flex-column flex-md-row pt-2 pb-4"
+            >
+              <div
+                class="d-flex flex-wrap align-items-center justify-content-between"
+              >
                 <h3 class="fw-bold mb-0 me-3">
-                  {% block page_title %}
-
-                  {% endblock %}
+                  {% block page_title %} {% endblock %}
                 </h3>
                 <nav aria-label="breadcrumb" class="ms-3">
                   <ol class="breadcrumb mb-0">
-                    {% for crumb in breadcrumbs %}
-                      {% if forloop.last %}
-                        <li class="breadcrumb-item" aria-current="page">{{ crumb.name }}</li>
-                      {% else %}
-                        <li class="breadcrumb-item">
-                          <a href="{{ crumb.url }}">{{ crumb.name }}</a>
-                        </li>
-                      {% endif %}
-                    {% endfor %}
+                    {% for crumb in breadcrumbs %} {% if forloop.last %}
+                    <li class="breadcrumb-item" aria-current="page">
+                      {{ crumb.name }}
+                    </li>
+                    {% else %}
+                    <li class="breadcrumb-item">
+                      <a href="{{ crumb.url }}">{{ crumb.name }}</a>
+                    </li>
+                    {% endif %} {% endfor %}
                   </ol>
                 </nav>
               </div>
             </div>
-            {% block content %}
-
-            {% endblock %}
+            {% block content %} {% endblock %}
           </div>
         </div>
         <footer class="footer">
@@ -237,13 +349,10 @@
     <!-- Kaiadmin JS -->
     <script src="{% static 'js/kaiadmin.js' %}"></script>
 
+    <!-- Custom JS -->
+    <script src="{% static 'js/poupeai.js' %}"></script>
+
     <!-- Additional scripts -->
-    {% block scripts %}
-
-    {% endblock %}
-
-    {% block end_body %}
-
-    {% endblock %}
+    {% block scripts %} {% endblock %} {% block end_body %} {% endblock %}
   </body>
 </html>

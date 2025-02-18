@@ -5,7 +5,8 @@ from .core.help import help_view
 from .core.home import home_view
 from .core.notifications import notifications_view
 
-from .finance.accounts import accounts_view
+from .finance.accounts import AccountsListView, AccountCreateView, AccountDeleteView, AccountDetailView, AccountUpdateView
+
 from .finance.categories import CategoriesView
 from .finance.credit_cards import CreditCardsView
 from .finance.goals import GoalsView
@@ -21,7 +22,13 @@ __all__ = [
     'help_view',
     'home_view',
     'notifications_view',
-    'accounts_view',
+    
+    'AccountsListView',
+    'AccountCreateView',
+    'AccountDeleteView',
+    'AccountDetailView',
+    'AccountUpdateView',
+    
     'CategoriesView',
     'CreditCardsView',
     'GoalsView',
