@@ -8,7 +8,7 @@ from .core.notifications import notifications_view
 from .finance.accounts import accounts_view
 from .finance.categories import CategoriesView
 from .finance.credit_cards import CreditCardsView
-from .finance.goals import mygoals_view
+from .finance.goals import GoalsView
 from .finance.transactions import transactions_view
 
 from .profile.profiles import profile_deletion_view
@@ -23,7 +23,7 @@ __all__ = [
     'accounts_view',
     'CategoriesView',
     'CreditCardsView',
-    'mygoals_view',
+    'GoalsView',
     'transactions_view',
     'profile_deletion_view',
     'profile_view',
