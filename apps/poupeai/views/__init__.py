@@ -9,7 +9,7 @@ from .finance.accounts import accounts_view
 from .finance.categories import CategoriesView
 from .finance.credit_cards import CreditCardsView
 from .finance.goals import GoalsView
-from .finance.transactions import transactions_view
+from .finance.transactions import TransactionsView
 
 from .profile.profiles import profile_deletion_view
 from .profile.profiles import profile_view
@@ -24,7 +24,7 @@ __all__ = [
     'CategoriesView',
     'CreditCardsView',
     'GoalsView',
-    'transactions_view',
+    'TransactionsView',
     'profile_deletion_view',
     'profile_view',
 ]
