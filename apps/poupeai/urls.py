@@ -14,4 +14,5 @@ urlpatterns = [
     path('profile/deletion/', ProfileDeletionView.as_view(), name='profile-deletion'),
     path('user/admin/', admin_view, name='admin-dashboard'),
     path('notifications/', notifications_view, name='notifications'),
+    path('profile/update-photo/', UpdateProfilePictureView.as_view(), name='update-profile-picture'),
 ]

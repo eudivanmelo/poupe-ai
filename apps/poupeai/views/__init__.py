@@ -13,6 +13,7 @@ from .finance.transactions import TransactionsView
 
 from .profile.profiles import ProfileDeletionView
 from .profile.profiles import ProfileView
+from .profile.profiles import UpdateProfilePictureView
 
 __all__ = [
     'admin_view',
@@ -27,4 +28,5 @@ __all__ = [
     'TransactionsView',
     'ProfileDeletionView',
     'ProfileView',
+    'UpdateProfilePictureView'
 ]

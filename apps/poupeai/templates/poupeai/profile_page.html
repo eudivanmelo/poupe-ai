@@ -1,5 +1,4 @@
 {% extends 'poupeai/poupeai_base.html' %}
-
 {% load static %}
 
 {% block title %}Perfil - Poupe.AI{% endblock title %}
@@ -15,34 +14,40 @@
             </div>
             <div class="card-body">
                 <div class="text-center mb-4">
-                    <img src="{% static 'imgs/profile.png' %}" alt="Foto de Perfil"
-                        class="rounded-circle img-thumbnail mb-3" width="150" height="150">
+                    <img id="profile-img"
+                        src="{% if user.profile_picture %}{{ user.profile_picture.url }}{% else %}{% static 'imgs/profile.png' %}{% endif %}"
+                        alt="Foto de Perfil" class="profile-picture img-thumbnail mb-3">
                     <div>
-                        <button class="btn btn-secondary btn-sm me-2">Remover Foto</button>
-                        <button class="btn btn-primary btn-sm">Alterar Foto</button>
+                        <button id="remove-photo" class="btn btn-secondary btn-sm me-2">Remover Foto</button>
+                        <button id="change-photo" class="btn btn-primary btn-sm">Alterar Foto</button>
                     </div>
+                    <input type="file" id="upload-photo" accept="image/*" hidden>
                 </div>
 
-                <form>
+                <form id="profile-form" method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
                     <div class="mb-3">
                         <label for="name" class="form-label">Nome</label>
-                        <input type="text" id="name" class="form-control" placeholder="Digite seu nome">
+                        <input type="text" id="name" name="name" class="form-control"
+                            value="{{ user.name|default_if_none:'' }}">
                     </div>
                     <div class="mb-3">
                         <label for="email" class="form-label">Email</label>
-                        <input type="email" id="email" class="form-control" placeholder="Digite seu email">
+                        <input type="email" id="email" name="email" class="form-control" value="{{ user.email }}"
+                            disabled>
                     </div>
                     <div class="mb-3">
                         <label for="dob" class="form-label">Data de Nascimento</label>
-                        <input type="date" id="dob" class="form-control">
+                        <input type="date" id="dob" name="birth_date" class="form-control"
+                            value="{{ user.birth_date|date:'Y-m-d' }}">
                     </div>
                     <div class="mb-3">
                         <label for="gender" class="form-label">Gênero</label>
-                        <select id="gender" class="form-select form-control">
-                            <option value="" selected disabled>Selecione seu gênero</option>
-                            <option value="male">Masculino</option>
-                            <option value="female">Feminino</option>
-                            <option value="other">Outro</option>
+                        <select id="gender" name="sex" class="form-select form-control">
+                            <option value="" {% if not user.sex %}selected{% endif %} disabled>Selecione seu gênero</option>
+                            <option value="M" {% if user.sex == "M" %}selected{% endif %}>Masculino</option>
+                            <option value="F" {% if user.sex == "F" %}selected{% endif %}>Feminino</option>
+                            <option value="O" {% if user.sex == "O" %}selected{% endif %}>Outro</option>
                         </select>
                     </div>
                     <button type="submit" class="float-end btn btn-primary">Salvar Alterações</button>
@@ -50,9 +55,67 @@
             </div>
 
             <div class="card-footer d-flex">
-                <a href="{% url 'profile-deletion' %}" class="text-secondary text-decoration-none small">Solicitar Exclusão da Conta</a>
+                <a href="{% url 'profile-deletion' %}" class="text-secondary text-decoration-none small">Solicitar
+                    Exclusão da Conta</a>
             </div>
         </div>
     </div>
 </div>
+
+<style>
+    .profile-picture {
+        width: 150px;
+        height: 150px;
+        border-radius: 50%;
+        object-fit: cover;
+    }
+</style>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const profileImg = document.getElementById("profile-img");
+        const uploadInput = document.getElementById("upload-photo");
+        const changePhotoBtn = document.getElementById("change-photo");
+        const removePhotoBtn = document.getElementById("remove-photo");
+
+        changePhotoBtn.addEventListener("click", () => {
+            uploadInput.click();
+        });
+
+        uploadInput.addEventListener("change", function () {
+            const file = this.files[0];
+            if (file) {
+                let formData = new FormData();
+                formData.append("profile_picture", file);
+
+                fetch("{% url 'update-profile-picture' %}", {
+                    method: "POST",
+                    body: formData,
+                    headers: { "X-CSRFToken": "{{ csrf_token }}" }
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.status === "success") {
+                            profileImg.src = data.image_url;
+                        }
+                    })
+                    .catch(error => console.error("Erro ao atualizar foto:", error));
+            }
+        });
+
+        removePhotoBtn.addEventListener("click", function () {
+            fetch("{% url 'update-profile-picture' %}", {
+                method: "DELETE",
+                headers: { "X-CSRFToken": "{{ csrf_token }}" }
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status === "success") {
+                        profileImg.src = data.image_url;
+                    }
+                })
+                .catch(error => console.error("Erro ao remover foto:", error));
+        });
+    });
+</script>
 {% endblock %}
