@@ -13,7 +13,7 @@ class GoalsView(PoupeAIMixin, TemplateView):
     def get_breadcrumbs(self):
         return [
             {"name": "Dashboard", "url": reverse_lazy('dashboard')},
-            {"name": "Metas", "url": None},
+            {"name": "Minhas Metas", "url": None},
         ]
 
     def get_context_data(self, **kwargs):
