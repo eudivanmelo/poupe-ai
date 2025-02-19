@@ -1,9 +1,11 @@
-from django.views.generic import UpdateView, TemplateView
+from django.shortcuts import redirect, render
+from django.views.generic import DeleteView, UpdateView
 from django.urls import reverse_lazy
 from django.contrib.auth import get_user_model
 from django.contrib.messages.views import SuccessMessageMixin
 from django.core.files.storage import default_storage
 from apps.poupeai.mixins import PoupeAIMixin
+from django.contrib import messages
 
 User = get_user_model()
 
@@ -13,6 +15,12 @@ class ProfileView(PoupeAIMixin, SuccessMessageMixin, UpdateView):
     fields = ['email', 'name', 'birth_date', 'sex', 'profile_picture']
     success_url = reverse_lazy('profile')
     success_message = "Perfil atualizado com sucesso!"
+
+    def get_breadcrumbs(self):
+        return [
+            {"name": "Dashboard", "url": reverse_lazy('dashboard')},
+            {"name": "Perfil", "url": None},
+        ]
 
     def get_object(self, queryset=None):
         return self.request.user
@@ -35,12 +43,23 @@ class ProfileView(PoupeAIMixin, SuccessMessageMixin, UpdateView):
 
         return super().form_valid(form)
 
-class ProfileDeletionView(PoupeAIMixin, TemplateView):
-    template_name = "poupeai/account_deletion.html"
+class ProfileDeletionView(PoupeAIMixin, DeleteView):
+    model = User
+    template_name = "poupeai/profile_delete.html"
+    success_url = reverse_lazy('home')
 
-    def get_breadcrumbs(self):
-        return [
-            {"name": "Dashboard", "url": reverse_lazy('dashboard')},
-            {"name": "Perfil", "url": reverse_lazy('profile')},
-            {"name": "Solicitar Exclusão de Conta", "url": None},
-        ]
+    def get_object(self, queryset=None):
+        return self.request.user
+
+    def post(self, request, *args, **kwargs):
+        password = request.POST.get('password')
+        user = self.get_object()
+
+        if user.check_password(password):
+            user.delete()
+            messages.success(request, 'Sua conta foi excluída com sucesso.')
+            return redirect(self.success_url)
+        else:
+            return render(request, self.template_name, {
+                'password_error': 'Senha incorreta. Tente novamente.',
+            })
