@@ -78,37 +78,23 @@ const CategoryManager = {
 
     handleAddCategoryModal: function () {
         $('#add-category').click(function () {
-            $('#categoryName').val('');
-            $('#categoryColor').val('#000000');
-            $('#colorPicker').css('background-color', '#000000');
-
-            $('#addCategoryModalLabel').text('Adicionar Categoria');
-            $('#saveCategoryBtn')
-                .text('Salvar Categoria')
-                .data('action', 'add')
-                .removeData('id');
 
             $('#addCategoryModal').modal('show');
         });
     },
 
     handleEditCategoryModal: function () {
-        $('.edit-category-btn').click(function () {
+        $('[id^="edit-category-"]').click(function () {
             const id = $(this).data('id');
             const nome = $(this).data('nome');
             const cor = $(this).data('cor');
+            var modal = $('#editCategoryModal');
 
-            $('#categoryName').val(nome);
-            $('#categoryColor').val(cor);
-            $('#colorPicker').css('background-color', cor);
+            modal.find('#nameInput').val(nome);
+            modal.find('#colorInput').val(cor);
+            modal.find('#colorPicker').css('background-color', cor);
 
-            $('#addCategoryModalLabel').text('Editar Categoria');
-            $('#saveCategoryBtn')
-                .text('Salvar Alterações')
-                .data('action', 'edit')
-                .data('id', id);
-
-            $('#addCategoryModal').modal('show');
+            modal.modal('show');
         });
     },
 
