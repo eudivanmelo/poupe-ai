@@ -70,12 +70,12 @@ class CategoryUpdateView(UpdateJsonView):
     View for updating an category
     '''
     model = Category
-    fields = ['name', 'color', 'type']
+    fields = ['name', 'color']
     success_url = reverse_lazy('categories')
     context_object_name = 'category'
     success_message = 'Categoria atualizada com sucesso!'
     error_message = 'Ocorreu um erro ao atualizar a categoria, verifique as informações ou tente novamente mais tarde.'
-    
+
 # class CategoriesView(PoupeAIMixin, TemplateView):
 #     template_name = "poupeai/categories_page.html"
 

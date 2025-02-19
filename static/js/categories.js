@@ -109,10 +109,21 @@ const CategoryManager = {
         $('#colorInput').on('input', function () {
             const color = $(this).val();
             $('#colorPicker').css('background-color', color);
+            $('#colorPickerEdit').css('background-color', color);
+        });
+
+        $('#colorInputEdit').on('input', function () {
+            const color = $(this).val();
+            $('#colorPicker').css('background-color', color);
+            $('#colorPickerEdit').css('background-color', color);
         });
 
         $('#colorPicker').click(function () {
             $('#colorInput').click();
+        });
+
+        $('#colorPickerEdit').click(function () {
+            $('#colorInputEdit').click();
         });
     },
 
@@ -148,7 +159,7 @@ const CategoryManager = {
 
                     modal.find('#nameInput').val(data.category.name);
                     modal.find('#colorInput').val(data.category.color);
-                    modal.find('#colorPicker').css('background-color', data.category.color);
+                    modal.find('#colorPickerEdit').css('background-color', data.category.color);
         
                     modal.find("#editCategoryForm").attr("action", url);
                     modal.modal("show");
