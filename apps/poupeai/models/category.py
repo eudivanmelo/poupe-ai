@@ -1,4 +1,5 @@
 from django.db import models
+from apps.authentication.models import CustomUser
 
 TRANSACTION_TYPES = (
     ('income', 'Receita'),
@@ -6,6 +7,7 @@ TRANSACTION_TYPES = (
 )
 
 class Category(models.Model):
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name="categories")
     name = models.CharField(max_length=255)
     color = models.CharField(max_length=7)
     type = models.CharField(max_length=7, choices=TRANSACTION_TYPES)

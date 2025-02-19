@@ -5,7 +5,7 @@ urlpatterns = [
     path('', home_view, name='home'),
     path('dashboard/', dashboard_view, name='dashboard'),
     
-    path('categories/', CategoriesView.as_view(), name='categories'),
+    path('categories/', CategoriesListView.as_view(), name='categories'),
     path('categories/create/', CategoryCreateView.as_view(), name='category-create'),
     
     path('transactions/', TransactionsView.as_view(), name='transactions'),
