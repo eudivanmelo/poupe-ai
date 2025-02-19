@@ -2,8 +2,6 @@ from django.views.generic import UpdateView, TemplateView
 from django.urls import reverse_lazy
 from django.contrib.auth import get_user_model
 from django.contrib.messages.views import SuccessMessageMixin
-from django.http import JsonResponse
-from django.views import View
 from django.core.files.storage import default_storage
 from apps.poupeai.mixins import PoupeAIMixin
 
@@ -24,24 +22,18 @@ class ProfileView(PoupeAIMixin, SuccessMessageMixin, UpdateView):
         form.fields['email'].disabled = True
         return form
 
-class UpdateProfilePictureView(View):
-    """ View para atualizar ou remover a foto do perfil via AJAX """
-    
-    def post(self, request, *args, **kwargs):
-        user = request.user
-        if 'profile_picture' in request.FILES:
-            user.profile_picture = request.FILES['profile_picture']
-            user.save()
-            return JsonResponse({'status': 'success', 'image_url': user.profile_picture.url})
-        return JsonResponse({'status': 'error'}, status=400)
+    def form_valid(self, form):
+        user = self.object
 
-    def delete(self, request, *args, **kwargs):
-        user = request.user
-        if user.profile_picture:
-            default_storage.delete(user.profile_picture.path)
-        user.profile_picture = None
-        user.save()
-        return JsonResponse({'status': 'success', 'image_url': '/static/imgs/profile.png'})
+        if self.request.POST.get('remove_profile_picture') == '1':
+            if user.profile_picture:
+                default_storage.delete(user.profile_picture.path)
+                user.profile_picture = None
+
+        if 'profile_picture' in self.request.FILES:
+            user.profile_picture = self.request.FILES['profile_picture']
+
+        return super().form_valid(form)
 
 class ProfileDeletionView(PoupeAIMixin, TemplateView):
     template_name = "poupeai/account_deletion.html"

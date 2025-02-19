@@ -26,30 +26,33 @@
 
                 <form id="profile-form" method="post" enctype="multipart/form-data">
                     {% csrf_token %}
+                    <input type="hidden" id="remove_profile_picture" name="remove_profile_picture" value="0">
                     <div class="mb-3">
-                        <label for="name" class="form-label">Nome</label>
-                        <input type="text" id="name" name="name" class="form-control"
+                        <label for="id_name" class="form-label">Nome</label>
+                        <input type="text" id="id_name" name="name" class="form-control"
                             value="{{ user.name|default_if_none:'' }}">
                     </div>
                     <div class="mb-3">
-                        <label for="email" class="form-label">Email</label>
-                        <input type="email" id="email" name="email" class="form-control" value="{{ user.email }}"
+                        <label for="id_email" class="form-label">Email</label>
+                        <input type="email" id="id_email" name="email" class="form-control" value="{{ user.email }}"
                             disabled>
                     </div>
                     <div class="mb-3">
-                        <label for="dob" class="form-label">Data de Nascimento</label>
-                        <input type="date" id="dob" name="birth_date" class="form-control"
+                        <label for="id_birth_date" class="form-label">Data de Nascimento</label>
+                        <input type="date" id="id_birth_date" name="birth_date" class="form-control"
                             value="{{ user.birth_date|date:'Y-m-d' }}">
                     </div>
                     <div class="mb-3">
-                        <label for="gender" class="form-label">Gênero</label>
-                        <select id="gender" name="sex" class="form-select form-control">
-                            <option value="" {% if not user.sex %}selected{% endif %} disabled>Selecione seu gênero</option>
+                        <label for="id_sex" class="form-label">Gênero</label>
+                        <select id="id_sex" name="sex" class="form-select form-control">
+                            <option value="" {% if not user.sex %}selected{% endif %} disabled>Selecione seu gênero
+                            </option>
                             <option value="M" {% if user.sex == "M" %}selected{% endif %}>Masculino</option>
                             <option value="F" {% if user.sex == "F" %}selected{% endif %}>Feminino</option>
                             <option value="O" {% if user.sex == "O" %}selected{% endif %}>Outro</option>
                         </select>
                     </div>
+                    <input type="file" id="id_profile_picture" name="profile_picture" accept="image/*" hidden>
                     <button type="submit" class="float-end btn btn-primary">Salvar Alterações</button>
                 </form>
             </div>
@@ -77,6 +80,8 @@
         const uploadInput = document.getElementById("upload-photo");
         const changePhotoBtn = document.getElementById("change-photo");
         const removePhotoBtn = document.getElementById("remove-photo");
+        const profilePictureInput = document.getElementById("id_profile_picture");
+        const removeProfilePictureInput = document.getElementById("remove_profile_picture");
 
         changePhotoBtn.addEventListener("click", () => {
             uploadInput.click();
@@ -85,36 +90,22 @@
         uploadInput.addEventListener("change", function () {
             const file = this.files[0];
             if (file) {
-                let formData = new FormData();
-                formData.append("profile_picture", file);
-
-                fetch("{% url 'update-profile-picture' %}", {
-                    method: "POST",
-                    body: formData,
-                    headers: { "X-CSRFToken": "{{ csrf_token }}" }
-                })
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data.status === "success") {
-                            profileImg.src = data.image_url;
-                        }
-                    })
-                    .catch(error => console.error("Erro ao atualizar foto:", error));
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    profileImg.src = e.target.result;
+                    const dataTransfer = new DataTransfer();
+                    dataTransfer.items.add(file);
+                    profilePictureInput.files = dataTransfer.files;
+                    removeProfilePictureInput.value = "0";
+                };
+                reader.readAsDataURL(file);
             }
         });
 
         removePhotoBtn.addEventListener("click", function () {
-            fetch("{% url 'update-profile-picture' %}", {
-                method: "DELETE",
-                headers: { "X-CSRFToken": "{{ csrf_token }}" }
-            })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.status === "success") {
-                        profileImg.src = data.image_url;
-                    }
-                })
-                .catch(error => console.error("Erro ao remover foto:", error));
+            profileImg.src = "{% static 'imgs/profile.png' %}";
+            profilePictureInput.value = "";
+            removeProfilePictureInput.value = "1";
         });
     });
 </script>
