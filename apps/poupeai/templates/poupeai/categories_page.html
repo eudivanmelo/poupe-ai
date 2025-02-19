@@ -21,7 +21,8 @@ Categorias
             <div class="card-header d-flex justify-content-between align-items-center">
                 <div class="card-title">Categorias</div>
                 <div class="d-flex gap-3">
-                    <button class="btn btn-icon btn-round btn-primary" id="add-category">
+                    <button class="btn btn-icon btn-round btn-primary" data-bs-toggle="modal"
+                        data-bs-target="#addCategoryModal">
                         <i class="fa fa-plus"></i>
                     </button>
                 </div>
@@ -71,9 +72,9 @@ Categorias
                                         <ul class="dropdown-menu dropdown-menu-end"
                                             aria-labelledby="dropdownMenu{{ category.id }}">
                                             <li>
-                                                <button class="dropdown-item fs-6"
-                                                    id="edit-category-{{category.id}}" data-id="{{ category.id }}" 
-                                                    data-nome="{{ category.nome }}" data-cor="{{ category.cor }}">Editar</button>
+                                                <button class="dropdown-item fs-6" id="edit-category-{{category.id}}"
+                                                    data-id="{{ category.id }}" data-nome="{{ category.nome }}"
+                                                    data-cor="{{ category.cor }}">Editar</button>
                                             </li>
                                             <li>
                                                 <button class="dropdown-item fs-6"
@@ -117,9 +118,9 @@ Categorias
                                         <ul class="dropdown-menu dropdown-menu-end"
                                             aria-labelledby="dropdownMenu{{ category.id }}">
                                             <li>
-                                                <button class="dropdown-item fs-6"
-                                                    id="edit-category-{{category.id}}" data-id="{{ category.id }}" 
-                                                    data-nome="{{ category.nome }}" data-cor="{{ category.cor }}">Editar</button>
+                                                <button class="dropdown-item fs-6" id="edit-category-{{category.id}}"
+                                                    data-id="{{ category.id }}" data-nome="{{ category.nome }}"
+                                                    data-cor="{{ category.cor }}">Editar</button>
                                             </li>
                                             <li>
                                                 <button class="dropdown-item fs-6"
@@ -154,37 +155,6 @@ Categorias
         </div>
     </div>
 </div>
-
-<!-- Modal Adicionar Categoria -->
-<div class="modal fade" id="addCategoryModal" tabindex="-1" aria-labelledby="addCategoryModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="addCategoryModalLabel">Adicionar Categoria</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <form id="addCategoryForm">
-                    <div class="mb-3">
-                        <label for="categoryName" class="form-label">Nome</label>
-                        <input type="text" class="form-control" id="categoryName" required>
-                    </div>
-                    <div class="mb-3 d-flex justify-content-between align-items-center">
-                        <label for="categoryColor" class="form-label">Cor da Categoria</label>
-                        <input type="color" class="form-control" id="categoryColor" hidden>
-                        <div id="colorPicker" class="circle"
-                            style="width: 30px; height: 30px; border-radius: 50%; background-color: #000; cursor: pointer;">
-                        </div>
-                    </div>
-                </form>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                <button type="submit" class="btn btn-primary" id="saveCategoryBtn">Salvar Categoria</button>
-            </div>
-        </div>
-    </div>
-</div>
 {% endblock %}
 
 {% block scripts %}
@@ -201,31 +171,49 @@ Categorias
                 <h5 class="modal-title" id="addCategoryModalLabel">Adicionar Categoria</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <div class="modal-body">
-                <form id="addCategoryForm">
+
+            <form id="addCategoryForm" action="{% url 'category-create' %}" method="post">
+                {% csrf_token %}
+                <div class="modal-body">
                     <div class="mb-3">
                         <label for="nameInput" class="form-label">Nome</label>
-                        <input type="text" class="form-control" id="nameInput" required>
+                        <input name="name" type="text" class="form-control" id="nameInput" required>
                     </div>
+                    {% if form.name.errors %}
+                    <div class="invalid-feedback">
+                        {% for error in form.name.errors %}
+                        <p>{{ error }}</p>
+                        {% endfor %}
+                    </div>
+                    {% endif %}
                     <div class="mb-3 d-flex justify-content-between align-items-center">
                         <label for="colorInput" class="form-label">Cor da Categoria</label>
-                        <input type="color" class="form-control" id="colorInput" hidden>
+                        <input name="color" type="color" class="form-control" id="colorInput" hidden>
                         <div id="colorPicker" class="circle"
                             style="width: 30px; height: 30px; border-radius: 50%; background-color: #000; cursor: pointer;">
                         </div>
                     </div>
-                </form>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                <button type="submit" class="btn btn-primary">Salvar Categoria</button>
-            </div>
+                    {% if form.color.errors %}
+                    <div class="invalid-feedback">
+                        {% for error in form.color.errors %}
+                        <p>{{ error }}</p>
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-primary">Salvar Categoria</button>
+                </div>
+            </form>
+
         </div>
     </div>
 </div>
 
 <!-- Modal Editar Categoria -->
-<div class="modal fade" id="editCategoryModal" tabindex="-1" aria-labelledby="editCategoryModalLabel" aria-hidden="true">
+<div class="modal fade" id="editCategoryModal" tabindex="-1" aria-labelledby="editCategoryModalLabel"
+    aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">

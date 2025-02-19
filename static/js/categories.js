@@ -1,3 +1,29 @@
+const handleSubmitForm = (form) => {
+    form.preventDefault();
+
+    const formData = new FormData(form.target);
+
+    const type = document.querySelector("#categoryTabs .nav-link.active").id.includes("despesas") ? "expense" : "income";
+    formData.append("type", type);
+
+    fetch(form.target.action, {
+        method: "POST",
+        body: formData,
+        headers: {
+            "X-Requested-With": "XMLHttpRequest",
+        },
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        if (data.success) {
+            location.reload();
+        } else {
+            alert("Erro ao criar conta: " + JSON.stringify(data.errors));
+        }
+      })
+      .catch((error) => console.error("Erro:", error));
+}
+
 const CategoryManager = {
     init: function () {
         this.bindEvents();
@@ -8,7 +34,7 @@ const CategoryManager = {
             this.handleDeleteCategory();
             this.handleColorSelection();
             this.handleTabChange();
-            this.handleAddCategoryModal();
+            this.handleAddCategory();
             this.handleEditCategoryModal();
             this.handleDropdownAnimation();
         });
@@ -56,13 +82,13 @@ const CategoryManager = {
     },
 
     handleColorSelection: function () {
-        $('#categoryColor').on('input', function () {
+        $('#colorInput').on('input', function () {
             const color = $(this).val();
             $('#colorPicker').css('background-color', color);
         });
 
         $('#colorPicker').click(function () {
-            $('#categoryColor').click();
+            $('#colorInput').click();
         });
     },
 
@@ -108,6 +134,11 @@ const CategoryManager = {
                 dropdown.closest('.category-card').classList.remove('dropdown-open');
             });
         });
+    },
+
+    handleAddCategory: function () {
+        const form = document.getElementById("addCategoryForm");
+        form.addEventListener("submit", handleSubmitForm);
     }
 };
 

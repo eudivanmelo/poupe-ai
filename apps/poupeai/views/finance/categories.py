@@ -1,6 +1,18 @@
 from django.views.generic import TemplateView
 from django.urls import reverse_lazy
 from apps.poupeai.mixins import PoupeAIMixin
+from apps.poupeai.views.generic import CreateJsonView
+from apps.poupeai.models import Category
+
+class CategoryCreateView(CreateJsonView):
+    '''
+    View for creating a new category
+    '''
+    success_url = reverse_lazy('categories')
+    model = Category
+    fields = ['name', 'color', 'type']
+    success_message = 'Categoria criada com sucesso!'
+    error_message = 'Ocorreu um erro ao criar a categoria, verifique as informações ou tente novamente mais tarde.'
 
 class CategoriesView(PoupeAIMixin, TemplateView):
     template_name = "poupeai/categories_page.html"
