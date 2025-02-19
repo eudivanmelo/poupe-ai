@@ -37,11 +37,16 @@ class CategoriesListView(PoupeAIMixin, ListView):
         total_cat_despesas = categories_despesas.count()
         total_cat_receitas = categories_receitas.count()
 
+        total_despesas = sum([category.total_value for category in categories_despesas])
+        total_receitas = sum([category.total_value for category in categories_receitas])
+
         context.update({
             "categories_despesas": categories_despesas,
             "categories_receitas": categories_receitas,
             "total_cat_despesas": total_cat_despesas,
             "total_cat_receitas": total_cat_receitas,
+            "total_despesas": total_despesas,
+            "total_receitas": total_receitas,
         })
 
         return context

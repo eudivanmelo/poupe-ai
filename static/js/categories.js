@@ -158,7 +158,7 @@ const CategoryManager = {
                   if (data.success) {
 
                     modal.find('#nameInput').val(data.category.name);
-                    modal.find('#colorInput').val(data.category.color);
+                    modal.find('#colorInputEdit').val(data.category.color);
                     modal.find('#colorPickerEdit').css('background-color', data.category.color);
         
                     modal.find("#editCategoryForm").attr("action", url);

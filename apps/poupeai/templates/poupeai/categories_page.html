@@ -61,7 +61,7 @@ Categorias
                                             style="background-color: {{ category.color }}; width: 25px; height: 25px; border-radius: 50%; border: 2px solid #fff;"></span>
                                         <div>
                                             <span class="d-block text-truncate fw-bold" style="max-width: 180px;">{{ category.name }}</span>
-                                            <span class="d-block d-sm-inline text-muted">R$ {{ category.valor|floatformat:2 }}</span>
+                                            <span class="d-block d-sm-inline text-muted">R$ {{ category.total_value|floatformat:2 }}</span>
                                         </div>
                                     </div>
                                     <div class="dropdown">
@@ -108,7 +108,7 @@ Categorias
                                             style="background-color: {{ category.color }}; width: 25px; height: 25px; border-radius: 50%; border: 2px solid #fff;"></span>
                                         <div>
                                             <span class="d-block text-truncate fw-bold" style="max-width: 180px;">{{ category.name }}</span>
-                                            <span class="d-block d-sm-inline text-muted">R$ {{ category.valor|floatformat:2 }}</span>
+                                            <span class="d-block d-sm-inline text-muted">R$ {{ category.total_value|floatformat:2 }}</span>
                                         </div>
                                     </div>
                                     <div class="dropdown">

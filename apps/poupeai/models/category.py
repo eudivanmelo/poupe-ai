@@ -1,5 +1,6 @@
 from django.db import models
 from apps.authentication.models import CustomUser
+from django.db.models import Sum
 
 TRANSACTION_TYPES = (
     ('income', 'Receita'),
@@ -21,3 +22,9 @@ class Category(models.Model):
 
     def __str__(self):
         return self.name
+    
+    @property
+    def total_value(self):
+        """Retorna o valor total das transações associadas a esta categoria."""
+        total = self.transactions.aggregate(total=Sum('amount'))['total']
+        return total or 0
