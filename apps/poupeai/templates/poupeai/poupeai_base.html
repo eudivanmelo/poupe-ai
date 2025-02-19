@@ -95,19 +95,19 @@
                 </a>
               </li>
               <li
-                class="nav-item {% if name == 'credit-card' %}active{% endif %}"
+                class="nav-item {% if name == 'credit-cards' %}active{% endif %}"
                 class="nav-link"
               >
-                <a href="{% url 'credit-card' %}">
+                <a href="{% url 'credit-cards' %}">
                   <i class="fas fa-credit-card"></i>
                   <p>Cartões de Crédito</p>
                 </a>
               </li>
               <li
-                class="nav-item {% if name == 'my-goals' %}active{% endif %}"
+                class="nav-item {% if name == 'goals' %}active{% endif %}"
                 class="nav-link"
               >
-                <a href="{% url 'my-goals' %}">
+                <a href="{% url 'goals' %}">
                   <i class="fas fa-bullseye"></i>
                   <p>Minhas Metas</p>
                 </a>
@@ -253,7 +253,7 @@
                   >
                     <div class="avatar-sm">
                       <img
-                        src="{% static 'imgs/profile.jpg' %}"
+                        src="{% if user.profile_picture %}{{ user.profile_picture.url }}{% else %}{% static 'imgs/profile.png' %}{% endif %}"
                         alt="image profile"
                         class="avatar-img rounded-circle"
                       />
@@ -269,7 +269,7 @@
                         <div class="user-box">
                           <div class="avatar-lg">
                             <img
-                              src="{% static 'imgs/profile.jpg' %}"
+                              src="{% if user.profile_picture %}{{ user.profile_picture.url }}{% else %}{% static 'imgs/profile.png' %}{% endif %}"
                               alt="image profile"
                               class="avatar-img rounded"
                             />

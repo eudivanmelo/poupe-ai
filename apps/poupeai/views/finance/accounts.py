@@ -16,6 +16,15 @@ class AccountsListView(PoupeAIMixin, ListView):
     queryset = Account.objects.all().order_by('created_at')
     paginate_by = 10
     
+    def get_name(self):
+        return "accounts"
+    
+    def get_breadcrumbs(self):
+        return [
+            {"name": "Dashboard", "url": reverse_lazy('dashboard')},
+            {"name": "Contas", "url": None},
+        ]
+
     def get_queryset(self):
         search_query = self.request.GET.get('search', '')
         queryset = Account.objects.all().order_by('created_at')
