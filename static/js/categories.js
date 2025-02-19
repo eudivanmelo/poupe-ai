@@ -42,12 +42,12 @@ const CategoryManager = {
 
     handleDeleteCategory: function () {
         $('[id^="delete-category-"]').click(function () {
-            const itemId = $(this).data('id');
-            const itemName = $(this).data('nome');
+            var url = $(this).data("url");
+            var itemName = $(this).data("item-name");
 
             swal({
                 title: 'Excluir essa categoria?',
-                text: `As transações relacionadas à "${itemName}" serão atualizadas para "Outros".`,
+                text: `Ao apagar a categoria "${itemName}" todas as transações vinculadas a ela também serão apagadas. Esta ação não pode ser desfeita!`,
                 buttons: {
                     cancel: {
                         text: 'Cancelar',
@@ -61,19 +61,43 @@ const CategoryManager = {
                 }
             }).then((Delete) => {
                 if (Delete) {
-                    swal({
-                        title: 'Categoria Deletada!',
-                        text: `Os dados relacionados à categoria "${itemName}" foram movidos para "Outros".`,
-                        icon: 'success',
-                        buttons: {
-                            confirm: {
-                                className: 'btn btn-success'
-                            }
+                    if (!url) return;
+                    
+                    fetch(url, {
+                        method: "DELETE",
+                        headers: {
+                          "X-Requested-With": "XMLHttpRequest",
+                          "X-CSRFToken": getCookie("csrftoken"),
+                        },
+                    }).then((response) => response.json())
+                    .then((data) => {
+                        if (data.success) {
+                            swal({
+                                title: 'Deletada!',
+                                text: data.message,
+                                icon: 'success',
+                                buttons: {
+                                    confirm: {
+                                        className: 'btn btn-success'
+                                    }
+                                }
+                            }).then(() => {
+                                location.reload();
+                            });
+                        } else {
+                            swal({
+                                title: "Erro!",
+                                text: data.message,
+                                icon: "error",
+                                buttons: {
+                                  confirm: {
+                                    className: "btn btn-danger",
+                                  },
+                                },
+                              });
                         }
-                    }).then(() => {
-                        $(`#category-${itemId}`).remove();
-                        console.log(`Categoria "${itemName}" movida para "Outros"`);
-                    });
+                    })
+                    .catch((error) => console.error("Erro:", error));
                 } else {
                     swal.close();
                 }

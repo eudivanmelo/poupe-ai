@@ -6,7 +6,8 @@ urlpatterns = [
     path('dashboard/', dashboard_view, name='dashboard'),
     
     path('categories/', CategoriesListView.as_view(), name='categories'),
-    path('categories/create/', CategoryCreateView.as_view(), name='category-create'),
+    path('category/create/', CategoryCreateView.as_view(), name='category-create'),
+    path('category/delete/<int:pk>/', CategoryDeleteView.as_view(), name='category-delete'),
     
     path('transactions/', TransactionsView.as_view(), name='transactions'),
     

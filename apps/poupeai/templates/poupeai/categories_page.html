@@ -79,8 +79,8 @@ Categorias
                                             </li>
                                             <li>
                                                 <button class="dropdown-item fs-6"
-                                                    id="delete-category-{{ category.id }}" data-id="{{ category.id }}"
-                                                    data-nome="{{ category.name }}">Excluir</button>
+                                                    id="delete-category-{{ category.id }}" data-item-name="{{category.name}}"
+                                                    data-url="{% url 'category-delete' category.id %}">Excluir</button>
                                             </li>
                                         </ul>
                                     </div>
@@ -127,8 +127,9 @@ Categorias
                                             </li>
                                             <li>
                                                 <button class="dropdown-item fs-6"
-                                                    id="delete-category-{{ category.id }}" data-id="{{ category.id }}"
-                                                    data-nome="{{ category.name }}">Excluir</button>
+                                                    id="delete-category-{{ category.id }}"
+                                                    data-item-name="{{category.name}}"
+                                                    data-url="{% url 'category-delete' category.id %}">Excluir</button>
                                             </li>
                                         </ul>
                                     </div>
