@@ -12,7 +12,7 @@ from .finance.credit_cards import CreditCardsView
 from .finance.goals import GoalsView
 from .finance.transactions import TransactionsView
 
-from .profile.profiles import ProfileDeletionView
+from .profile.profiles import ProfileDeleteView
 from .profile.profiles import ProfileView
 
 __all__ = [
@@ -32,6 +32,7 @@ __all__ = [
     'CreditCardsView',
     'GoalsView',
     'TransactionsView',
-    'ProfileDeletionView',
+    
+    'ProfileDeleteView',
     'ProfileView',
 ]

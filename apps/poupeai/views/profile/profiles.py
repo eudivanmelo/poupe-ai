@@ -43,10 +43,17 @@ class ProfileView(PoupeAIMixin, SuccessMessageMixin, UpdateView):
 
         return super().form_valid(form)
 
-class ProfileDeletionView(PoupeAIMixin, DeleteView):
+class ProfileDeleteView(PoupeAIMixin, DeleteView):
     model = User
     template_name = "poupeai/profile_delete.html"
     success_url = reverse_lazy('home')
+
+    def get_breadcrumbs(self):
+        return [
+            {"name": "Dashboard", "url": reverse_lazy('dashboard')},
+            {"name": "Perfil", "url": reverse_lazy('profile')},
+            {"name": "Excluir Perfil", "url": None},
+        ]
 
     def get_object(self, queryset=None):
         return self.request.user

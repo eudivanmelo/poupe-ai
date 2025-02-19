@@ -33,7 +33,9 @@
                     </div>
 
                     <div class="d-flex justify-content-between">
-                        <button type="submit" class="btn btn-danger">Excluir Conta</button>
+                        <button type="submit" class="btn btn-primary"
+                            onclick="return confirm('Tem certeza que deseja excluir sua conta? Esta ação não pode ser desfeita.');">Excluir
+                            Conta</button>
                         <a href="{% url 'profile' %}" class="btn btn-secondary">Cancelar</a>
                     </div>
                 </form>
