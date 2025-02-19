@@ -74,8 +74,7 @@ Categorias
                                             aria-labelledby="dropdownMenu{{ category.id }}">
                                             <li>
                                                 <button class="dropdown-item fs-6" id="edit-category-{{category.id}}"
-                                                    data-id="{{ category.id }}" data-nome="{{ category.name }}"
-                                                    data-cor="{{ category.color }}">Editar</button>
+                                                data-url="{% url 'category-update' category.id %}">Editar</button>
                                             </li>
                                             <li>
                                                 <button class="dropdown-item fs-6"
@@ -122,8 +121,7 @@ Categorias
                                             aria-labelledby="dropdownMenu{{ category.id }}">
                                             <li>
                                                 <button class="dropdown-item fs-6" id="edit-category-{{category.id}}"
-                                                    data-id="{{ category.id }}" data-nome="{{ category.name }}"
-                                                    data-cor="{{ category.color }}">Editar</button>
+                                                data-url="{% url 'category-update' category.id %}">Editar</button>
                                             </li>
                                             <li>
                                                 <button class="dropdown-item fs-6"
@@ -225,8 +223,10 @@ Categorias
                 <h5 class="modal-title" id="editCategoryModalLabel">Editar Categoria</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <div class="modal-body">
-                <form id="editCategoryForm">
+            
+                <form id="editCategoryForm" method="post">
+                    {% csrf_token %}
+                    <div class="modal-body">
                     <div class="mb-3">
                         <label for="nameInput" class="form-label">Nome</label>
                         <input name="name" type="text" class="form-control" id="nameInput" required>
@@ -238,12 +238,14 @@ Categorias
                             style="width: 30px; height: 30px; border-radius: 50%; background-color: #000; cursor: pointer;">
                         </div>
                     </div>
+
+                </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                        <button type="submit" class="btn btn-primary">Salvar Categoria</button>
+                    </div>
                 </form>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                <button type="submit" class="btn btn-primary">Salvar Categoria</button>
-            </div>
+            
         </div>
     </div>
 </div>

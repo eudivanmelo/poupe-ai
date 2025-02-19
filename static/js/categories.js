@@ -135,16 +135,39 @@ const CategoryManager = {
 
     handleEditCategoryModal: function () {
         $('[id^="edit-category-"]').click(function () {
-            const id = $(this).data('id');
-            const nome = $(this).data('nome');
-            const cor = $(this).data('cor');
-            var modal = $('#editCategoryModal');
+            var url = $(this).data("url");
+            var modal = $("#editCategoryModal");
 
-            modal.find('#nameInput').val(nome);
-            modal.find('#colorInput').val(cor);
-            modal.find('#colorPicker').css('background-color', cor);
+            fetch(url, {
+                method: "GET",
+                headers: { "X-Requested-With": "XMLHttpRequest" },
+              })
+                .then((response) => response.json())
+                .then((data) => {
+                  if (data.success) {
 
-            modal.modal('show');
+                    modal.find('#nameInput').val(data.category.name);
+                    modal.find('#colorInput').val(data.category.color);
+                    modal.find('#colorPicker').css('background-color', data.category.color);
+        
+                    modal.find("#editCategoryForm").attr("action", url);
+                    modal.modal("show");
+                  } else {
+                    alert("Erro ao carregar os dados da categoria");
+                  }
+                })
+                .catch((error) => console.error("Erro:", error));
+
+            // const id = $(this).data('id');
+            // const nome = $(this).data('nome');
+            // const cor = $(this).data('cor');
+            // var modal = $('#editCategoryModal');
+
+            // modal.find('#nameInput').val(nome);
+            // modal.find('#colorInput').val(cor);
+            // modal.find('#colorPicker').css('background-color', cor);
+
+            // modal.modal('show');
         });
     },
 

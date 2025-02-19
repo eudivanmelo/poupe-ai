@@ -1,7 +1,7 @@
 from django.views.generic import TemplateView, ListView
 from django.urls import reverse_lazy
 from apps.poupeai.mixins import PoupeAIMixin
-from apps.poupeai.views.generic.json import CreateJsonView, DeleteJsonView
+from apps.poupeai.views.generic.json import CreateJsonView, DeleteJsonView, UpdateJsonView
 from apps.poupeai.models import Category
 
 class CategoriesListView(PoupeAIMixin, ListView):
@@ -65,6 +65,17 @@ class CategoryDeleteView(DeleteJsonView):
     success_message = 'Categoria deletada com sucesso!'
     error_message = 'Ocorreu um erro ao deletar a categoria, verifique as informações ou tente novamente mais tarde.'
 
+class CategoryUpdateView(UpdateJsonView):
+    '''
+    View for updating an category
+    '''
+    model = Category
+    fields = ['name', 'color', 'type']
+    success_url = reverse_lazy('categories')
+    context_object_name = 'category'
+    success_message = 'Categoria atualizada com sucesso!'
+    error_message = 'Ocorreu um erro ao atualizar a categoria, verifique as informações ou tente novamente mais tarde.'
+    
 # class CategoriesView(PoupeAIMixin, TemplateView):
 #     template_name = "poupeai/categories_page.html"
 
