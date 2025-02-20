@@ -19,7 +19,13 @@ urlpatterns = [
     path('account/update/<int:pk>/', AccountUpdateView.as_view(), name='account-update'),
   
     path('credit-cards/', CreditCardsView.as_view(), name='credit-cards'),
-    path('goals/', GoalsView.as_view(), name='goals'),
+    
+    path('goals/', GoalsListView.as_view(), name='goals'),
+    path('goal/create/', GoalCreateView.as_view(), name='goal-create'),
+    path('goal/delete/<int:pk>/', GoalDeleteView.as_view(), name='goal-delete'),
+    path('goal/update/<int:pk>/', GoalUpdateView.as_view(), name='goal-update'),
+    path('goal/deposit/<int:pk>/', GoalDepositCreateView.as_view(), name='goal-deposit'),
+    
     path('help/', help_view, name='help'),
 
     path('profile/', ProfileView.as_view(), name='profile'),
