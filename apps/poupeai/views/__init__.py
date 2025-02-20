@@ -9,11 +9,14 @@ from .finance.accounts import AccountsListView, AccountCreateView, AccountDelete
 
 from .finance.categories import CategoriesView
 from .finance.credit_cards import CreditCardsView
-from .finance.goals import GoalsView
+
+from .finance.goals import GoalsListView, GoalCreateView, GoalDeleteView, GoalUpdateView
+
 from .finance.transactions import TransactionsView
 
 from .profile.profiles import ProfileDeleteView
 from .profile.profiles import ProfileView
+
 
 __all__ = [
     'admin_view',
@@ -30,7 +33,12 @@ __all__ = [
     
     'CategoriesView',
     'CreditCardsView',
-    'GoalsView',
+    
+    'GoalsListView',
+    'GoalCreateView',
+    'GoalDeleteView',
+    'GoalUpdateView',
+    
     'TransactionsView',
     
     'ProfileDeleteView',

@@ -1,214 +1,542 @@
-{% extends 'poupeai/poupeai_base.html' %}
-
-{% load static %}
-
-{% block title %}Minhas Metas - Poupe.AI{% endblock title %}
+{% extends 'poupeai/poupeai_base.html' %} {% load static %} 
+{% block title %}Minhas Metas - Poupe.AI{% endblock title %} 
 
 {% block head %}
-<link rel="stylesheet" href="{% static 'css/goals.css' %}">
-{% endblock %}
+<link rel="stylesheet" href="{% static 'css/goals.css' %}" />
+{% endblock %} 
 
-{% block page_title %}Minhas Metas{% endblock %}
+{% block page_title %}Minhas Metas{% endblock %} 
 
 {% block content %}
 <div class="row">
-    <div class="col-12">
-        <div class="card shadow-sm">
-            <div class="card-header d-flex justify-content-between align-items-center">
-                <div class="card-title">Minhas Metas</div>
-                <div class="d-flex gap-3">
-                    <button class="btn btn-icon btn-round btn-primary" id="add-goal" data-bs-toggle="modal"
-                        data-bs-target="#myGoalModal">
-                        <i class="fa fa-plus"></i>
-                    </button>
-                </div>
-            </div>
-
-            <div class="card-body px-0 px-md-3">
-                <div class="grid-container">
-                    {% for goal in goals %}
-                    <div class="mb-3" id="my-goal-{{ goal.id }}">
-                        <div class="goal-card rounded border p-3 d-flex flex-column  h-100">
-                            <div class="header d-flex justify-content-between align-items-start">
-                                <div>
-                                    <p class="title mb-1 fw-bold fs-5 text-truncate">{{ goal.name }}</p>
-                                    <p class="subtitle mb-0 fs-6 text-muted">{{ goal.motivation }}</p>
-                                </div>
-                            </div>
-                            <div class="body d-flex flex-grow-1 mt-3">
-                                <div class="info col-7">
-                                    <div class="mb-2">
-                                        <p class="label text-muted m-0">Objetivo</p>
-                                        <p class="value fw-bold fs-6 text-truncate m-0">R$ {{ goal.goal_amount|floatformat:2 }}</p>
-                                    </div>
-                                    <div class="mb-2">
-                                        <p class="label m-0 text-muted">Espero alcançar em</p>
-                                        <p class="value fw-bold fs-6 m-0">{{ goal.goal_date }}</p>
-                                        <p class="details text-muted m-0 fs-6">faltam {{ goal.months_left }} meses</p>
-                                    </div>
-                                    <div>
-                                        <p class="label text-muted m-0">Ideal por mês</p>
-                                        <p class="value fw-bold fs-6 m-0">R$ {{ goal.monthly_amount_needed|floatformat:2 }}
-                                        </p>
-                                    </div>
-                                </div>
-                                <div class="circular-progress-container col-5 px-2 justify-content-center align-items-center"
-                                    data-goal-id="{{ goal.id }}" data-goal-name="{{ goal.name }}"
-                                    data-goal-total="{{ goal.goal_amount }}" data-goal-saved="{{ goal.total_saved }}"
-                                    data-goal-date="{{ goal.goal_date }}" data-goal-motivation="{{ goal.motivation }}"
-                                    data-goal-color="{{ goal.goal_color }}">
-                                    <div class="circular-progress">
-                                        <svg class="progress-ring" width="100" height="100">
-                                            <circle class="progress-ring__circle" stroke="#e9ecef" stroke-width="10"
-                                                fill="transparent" r="40" cx="50" cy="50" />
-                                            <circle class="progress-ring__circle progress-ring__circle--value"
-                                                stroke="{{ goal.goal_color }}" stroke-width="10" fill="transparent"
-                                                r="40" cx="50" cy="50" />
-                                        </svg>
-                                        <span class="progress-value" style="color: {{ goal.goal_color }};">0%</span>
-                                    </div>
-                                    <div class="progress-info mt-3 text-start">
-                                        <p class="m-0 fs-6 fw-bold" id="investedAmount-{{ goal.id }}">R$ {{ goal.total_saved|floatformat:2 }}</p>
-                                        <p class="fs-6 text-muted negative-mb">faltam</p>
-                                        <p class="m-0 fs-6 text-muted" id="remainingAmount-{{ goal.id }}">R$ {{ goal.difference|floatformat:2 }}</p>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="mt-3 d-flex justify-content-between">
-                                <button class="btn btn-outline-danger rounded-pill w-30" id="delete-goal-{{ goal.id }}"
-                                    data-goal-name="{{ card.name }}" data-goal-id="{{ goal.id }}">Excluir</button>
-
-                                <button class="btn btn-outline-primary rounded-pill w-30 edit-goal-button"
-                                    data-goal-name="{{ goal.name }}" data-goal-balance="{{ goal.initial_balance }}"
-                                    data-goal-amount="{{ goal.goal_amount }}"
-                                    data-goal-date="{{ goal.goal_date|date:'Y-m-d' }}"
-                                    data-goal-motivation="{{ goal.motivation }}"
-                                    data-goal-color="{{ goal.goal_color }}">Editar</button>
-
-                                <button class="btn btn-outline-success rounded-pill w-30 depositButton"
-                                    data-goal-name="{{ goal.name }}"
-                                    data-goal-color="{{ goal.goal_color }}">Depositar</button>
-                            </div>
-                        </div>
-                    </div>
-                    {% empty %}
-                    <div class="col-12">
-                        <div class="d-flex justify-content-center align-items-center p-3">Nenhuma Meta Encontrada</div>
-                    </div>
-                    {% endfor %}
-                </div>
-
-                <div class="card-footer text-center">
-                    <p class="mb-0">Total de Metas: <strong>{{ goals|length }}</strong></p>
-                </div>
-            </div>
+  <div class="col-12">
+    <div class="card shadow-sm">
+      <div
+        class="card-header d-flex justify-content-between align-items-center"
+      >
+        <div class="card-title">Minhas Metas</div>
+        <div class="d-flex gap-3">
+          <button
+            class="btn btn-icon btn-round btn-primary"
+            id="add-goal"
+            data-bs-toggle="modal"
+            data-bs-target="#createModal"
+          >
+            <i class="fa fa-plus"></i>
+          </button>
         </div>
+      </div>
+
+      <div class="card-body px-0 px-md-3">
+        <div class="grid-container">
+          {% for goal in goals %}
+          <div class="mb-3" id="my-goal-{{ goal.id }}">
+            <div class="goal-card rounded border p-3 d-flex flex-column h-100">
+              <div
+                class="header d-flex justify-content-between align-items-start"
+              >
+                <div>
+                  <p class="title mb-1 fw-bold fs-5 text-truncate">
+                    {{ goal.name }}
+                  </p>
+                  <p class="subtitle mb-0 fs-6 text-muted">
+                    {{ goal.motivation }}
+                  </p>
+                </div>
+              </div>
+              <div class="body d-flex flex-grow-1 mt-3">
+                <div class="info col-7">
+                  <div class="mb-2">
+                    <p class="label text-muted m-0">Objetivo</p>
+                    <p class="value fw-bold fs-6 text-truncate m-0">
+                      R$ {{ goal.goal|floatformat:2 }}
+                    </p>
+                  </div>
+                  <div class="mb-2">
+                    <p class="label m-0 text-muted">Espero alcançar em</p>
+                    <p class="value fw-bold fs-6 m-0">{{ goal.target_at }}</p>
+                    <p class="details text-muted m-0 fs-6">
+                      {{ goal.time_left }}
+                    </p>
+                  </div>
+                  <div>
+                    <p class="label text-muted m-0">Ideal por mês</p>
+                    <p class="value fw-bold fs-6 m-0">
+                      R$ {{ goal.monthly_amount_needed|floatformat:2 }}
+                    </p>
+                  </div>
+                </div>
+                <div
+                  class="circular-progress-container col-5 px-2 justify-content-center align-items-center"
+                  data-goal-id="{{ goal.id }}"
+                  data-goal-name="{{ goal.name }}"
+                  data-goal-total="{{ goal.goal }}"
+                  data-goal-saved="{{ goal.current_balance }}"
+                  data-goal-date="{{ goal.target_at }}"
+                  data-goal-motivation="{{ goal.motivation }}"
+                  data-goal-color="{{ goal.color }}"
+                >
+                  <div class="circular-progress">
+                    <svg class="progress-ring" width="100" height="100">
+                      <circle
+                        class="progress-ring__circle"
+                        stroke="#e9ecef"
+                        stroke-width="10"
+                        fill="transparent"
+                        r="40"
+                        cx="50"
+                        cy="50"
+                      />
+                      <circle
+                        class="progress-ring__circle progress-ring__circle--value"
+                        stroke="{{ goal.color }}"
+                        stroke-width="10"
+                        fill="transparent"
+                        r="40"
+                        cx="50"
+                        cy="50"
+                      />
+                    </svg>
+                    <span
+                      class="progress-value"
+                      style="color: {{ goal.color }};"
+                      >0%</span
+                    >
+                  </div>
+                  <div class="progress-info mt-3 text-start">
+                    <p class="m-0 fs-6 fw-bold">
+                      R$ {{ goal.current_balance|floatformat:2 }}
+                    </p>
+
+                    {% if goal.status != 'Concluído' %}
+                    <p class="fs-6 text-muted negative-mb">faltam</p>
+                    <p class="m-0 fs-6 text-muted">
+                      R$ {{ goal.amount_needed|floatformat:2 }}
+                    </p>
+                    {% else %}
+                    <p class="fs-6 text-muted negative-mb">Meta Concluída</p>
+                    {% endif %}
+                  </div>
+                </div>
+              </div>
+
+              <div class="mt-3 d-flex justify-content-between">
+                <button
+                  class="btn btn-outline-danger rounded-pill w-30"
+                  id="delete-goal-{{ goal.id }}"
+                  data-goal-name="{{ goal.name }}"
+                  data-url="{% url 'goal-delete' goal.id %}"
+                >
+                  Excluir
+                </button>
+
+                <button
+                  class="btn btn-outline-primary rounded-pill w-30 edit-goal-button"
+                  data-url="{% url 'goal-update' goal.id %}"
+                >
+                  Editar
+                </button>
+
+                <button
+                  class="btn btn-outline-success rounded-pill w-30 depositButton"
+                  data-goal-name="{{ goal.name }}"
+                  data-goal-color="{{ goal.color }}"
+                >
+                  Depositar
+                </button>
+              </div>
+            </div>
+          </div>
+          {% empty %}
+          <div class="col-12">
+            <div class="d-flex justify-content-center align-items-center p-3">
+              Nenhuma Meta Encontrada
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+
+        <div class="card-footer text-center">
+          <p class="mb-0">
+            Total de Metas: <strong>{{ goals|length }}</strong>
+          </p>
+        </div>
+      </div>
     </div>
+  </div>
 </div>
 
 <!-- Modal de Depositar -->
-<div class="modal fade" id="depositModal" tabindex="-1" aria-labelledby="depositModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="depositModalLabel">Depositar em Meta</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <div id="goalInfo" class="d-flex align-items-center mb-4">
-                    <div id="goalColorCircle"
-                        style="width: 40px; height: 40px; border-radius: 50%; margin-right: 20px; border: 2px solid #fff;">
-                    </div>
-                    <span id="goalName" style="font-size: 1.5rem; font-weight: bold;"></span>
-                </div>
-
-                <form id="depositForm">
-                    <div class="mb-3">
-                        <label for="depositAmount" class="form-label">Valor do Depósito</label>
-                        <input type="number" class="form-control" id="depositAmount" placeholder="0,00" step="0.01"
-                            required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="depositDate" class="form-label">Data do Depósito</label>
-                        <input type="date" class="form-control" id="depositDate" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="depositNotes" class="form-label">Observações</label>
-                        <textarea class="form-control" id="depositNotes" rows="3"></textarea>
-                    </div>
-                </form>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                <button type="button" class="btn btn-primary" id="saveDepositButton">Salvar Depósito</button>
-            </div>
+<div
+  class="modal fade"
+  id="depositModal"
+  tabindex="-1"
+  aria-labelledby="depositModalLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="depositModalLabel">Depositar em Meta</h5>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        ></button>
+      </div>
+      <div class="modal-body">
+        <div id="goalInfo" class="d-flex align-items-center mb-4">
+          <div
+            id="goalColorCircle"
+            style="
+              width: 40px;
+              height: 40px;
+              border-radius: 50%;
+              margin-right: 20px;
+              border: 2px solid #fff;
+            "
+          ></div>
+          <span
+            id="goalName"
+            style="font-size: 1.5rem; font-weight: bold"
+          ></span>
         </div>
+
+        <form id="depositForm">
+          <div class="mb-3">
+            <label for="depositAmount" class="form-label"
+              >Valor do Depósito</label
+            >
+            <input
+              type="number"
+              class="form-control"
+              id="depositAmount"
+              placeholder="0,00"
+              step="0.01"
+              required
+            />
+          </div>
+          <div class="mb-3">
+            <label for="depositDate" class="form-label">Data do Depósito</label>
+            <input type="date" class="form-control" id="depositDate" required />
+          </div>
+          <div class="mb-3">
+            <label for="depositNotes" class="form-label">Observações</label>
+            <textarea
+              class="form-control"
+              id="depositNotes"
+              rows="3"
+            ></textarea>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+          Cancelar
+        </button>
+        <button type="button" class="btn btn-primary" id="saveDepositButton">
+          Salvar Depósito
+        </button>
+      </div>
     </div>
+  </div>
 </div>
 
 <!-- Modal -->
-<div class="modal fade" id="myGoalModal" tabindex="-1" aria-labelledby="myGoalModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-lg">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="myGoalModalLabel">Adicionar Nova Meta</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <form id="goal-form">
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="mb-3">
-                                <label for="goal-name" class="form-label">Nome da Meta</label>
-                                <input type="text" class="form-control" id="goal-name" name="goal_name"
-                                    placeholder="Ex: Comprar uma Casa" required>
-                            </div>
-                            <div class="mb-3">
-                                <label for="initial-balance" class="form-label">Saldo Inicial</label>
-                                <input type="number" class="form-control" id="initial-balance" name="initial_balance"
-                                    placeholder="0,00" step="0.01" required>
-                            </div>
-                            <div class="mb-3">
-                                <label for="goal-amount" class="form-label">Meta</label>
-                                <input type="number" class="form-control" id="goal-amount" name="goal_amount"
-                                    placeholder="0,00" step="0.01" required>
-                            </div>
-                        </div>
+<div
+  class="modal fade"
+  id="createModal"
+  tabindex="-1"
+  aria-labelledby="createModalLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog modal-dialog-centered modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="createModalLabel">Adicionar Nova Meta</h5>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        ></button>
+      </div>
+      <form id="createForm" action="{% url 'goal-create' %}" method="post">
+        {% csrf_token %}
 
-                        <div class="col-md-6">
-                            <div class="mb-3">
-                                <label for="goal-date" class="form-label">Quando Espera Alcançar</label>
-                                <input type="date" class="form-control" id="goal-date" name="goal_date" required>
-                            </div>
-                            <div class="mb-3">
-                                <label for="goal-motivation" class="form-label">Motivação</label>
-                                <textarea class="form-control" id="goal-motivation" name="goal_motivation" rows="3"
-                                    required></textarea>
-                            </div>
-                            <div class="mb-3 d-flex justify-content-between align-items-center">
-                                <label for="goal-color" class="form-label" style="flex-shrink: 0;">Cor da
-                                    Meta</label>
-                                <input type="color" class="form-control" id="goal-color"
-                                    style="width: 30px; height: 30px; border-radius: 50%; padding: 0;" hidden>
-                                <div id="colorPicker" class="circle"
-                                    style="width: 30px; height: 30px; border-radius: 50%; background-color: #000; cursor: pointer;">
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </form>
+        <div class="modal-body">
+          <div class="row">
+            <div class="col-md-6">
+              <div class="mb-3">
+                <label for="goal-name" class="form-label">Nome da Meta</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="goal-name"
+                  name="name"
+                  placeholder="Ex: Comprar uma Casa"
+                  required
+                />
+              </div>
+              <div class="mb-3">
+                <label for="initial-balance" class="form-label"
+                  >Saldo Inicial</label
+                >
+                <input
+                  type="number"
+                  class="form-control"
+                  id="initial-balance"
+                  name="initial_balance"
+                  placeholder="0,00"
+                  step="0.01"
+                  required
+                />
+              </div>
+              <div class="mb-3">
+                <label for="goal-amount" class="form-label">Meta</label>
+                <input
+                  type="number"
+                  class="form-control"
+                  id="goal-amount"
+                  name="goal"
+                  placeholder="0,00"
+                  step="0.01"
+                  required
+                />
+              </div>
             </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
-                <button type="submit" form="goal-form" class="btn btn-primary" id="saveGoalButton">Salvar Meta</button>
+
+            <div class="col-md-6">
+              <div class="mb-3">
+                <label for="goal-date" class="form-label"
+                  >Quando Espera Alcançar</label
+                >
+                <input
+                  type="date"
+                  class="form-control"
+                  id="goal-date"
+                  name="target_at"
+                  required
+                />
+              </div>
+              <div class="mb-3">
+                <label for="goal-motivation" class="form-label"
+                  >Motivação</label
+                >
+                <textarea
+                  class="form-control"
+                  id="goal-motivation"
+                  name="motivation"
+                  rows="3"
+                  required
+                ></textarea>
+              </div>
+              <div
+                class="mb-3 d-flex justify-content-between align-items-center"
+              >
+                <label
+                  for="goal-color"
+                  class="form-label"
+                  style="flex-shrink: 0"
+                  >Cor da Meta</label
+                >
+                <input
+                  type="color"
+                  class="form-control"
+                  id="goal-color"
+                  name="color"
+                  style="
+                    width: 30px;
+                    height: 30px;
+                    border-radius: 50%;
+                    padding: 0;
+                  "
+                  hidden
+                />
+                <div
+                  id="colorPicker"
+                  class="circle"
+                  style="
+                    width: 30px;
+                    height: 30px;
+                    border-radius: 50%;
+                    background-color: #000;
+                    cursor: pointer;
+                  "
+                ></div>
+              </div>
             </div>
+          </div>
         </div>
+        <div class="modal-footer">
+          <button
+            type="button"
+            class="btn btn-secondary"
+            data-bs-dismiss="modal"
+          >
+            Fechar
+          </button>
+          <button
+            type="submit"
+            class="btn btn-primary"
+            id="saveGoalButton"
+          >
+            Salvar Meta
+          </button>
+        </div>
+      </form>
     </div>
+  </div>
 </div>
-{% endblock %}
 
-{% block scripts %}
+<!-- Modal de Edição -->
+<div
+  class="modal fade"
+  id="editModal"
+  tabindex="-1"
+  aria-labelledby="editModalLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog modal-dialog-centered modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="editModalLabel">Editar Meta</h5>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        ></button>
+      </div>
+      <form id="editForm" method="post">
+        {% csrf_token %}
+
+        <div class="modal-body">
+          <div class="row">
+            <div class="col-md-6">
+              <div class="mb-3">
+                <label for="goal-name" class="form-label">Nome da Meta</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="goal-name"
+                  name="name"
+                  placeholder="Ex: Comprar uma Casa"
+                  required
+                />
+              </div>
+              <div class="mb-3">
+                <label for="initial-balance" class="form-label"
+                  >Saldo Inicial</label
+                >
+                <input
+                  type="number"
+                  class="form-control"
+                  id="initial-balance"
+                  name="initial_balance"
+                  placeholder="0,00"
+                  step="0.01"
+                  required
+                />
+              </div>
+              <div class="mb-3">
+                <label for="goal-amount" class="form-label">Meta</label>
+                <input
+                  type="number"
+                  class="form-control"
+                  id="goal-amount"
+                  name="goal"
+                  placeholder="0,00"
+                  step="0.01"
+                  required
+                />
+              </div>
+            </div>
+
+            <div class="col-md-6">
+              <div class="mb-3">
+                <label for="goal-date" class="form-label"
+                  >Quando Espera Alcançar</label
+                >
+                <input
+                  type="date"
+                  class="form-control"
+                  id="goal-date"
+                  name="target_at"
+                  required
+                />
+              </div>
+              <div class="mb-3">
+                <label for="goal-motivation" class="form-label"
+                  >Motivação</label
+                >
+                <textarea
+                  class="form-control"
+                  id="goal-motivation"
+                  name="motivation"
+                  rows="3"
+                  required
+                ></textarea>
+              </div>
+              <div
+                class="mb-3 d-flex justify-content-between align-items-center"
+              >
+                <label
+                  for="goal-color"
+                  class="form-label"
+                  style="flex-shrink: 0"
+                  >Cor da Meta</label
+                >
+                <input
+                  type="color"
+                  class="form-control"
+                  id="goalColorEditInput"
+                  name="color"
+                  style="
+                    width: 30px;
+                    height: 30px;
+                    border-radius: 50%;
+                    padding: 0;
+                  "
+                  hidden
+                />
+                <div
+                  id="colorPickerEdit"
+                  class="circle"
+                  style="
+                    width: 30px;
+                    height: 30px;
+                    border-radius: 50%;
+                    background-color: #000;
+                    cursor: pointer;
+                  "
+                ></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button
+            type="button"
+            class="btn btn-secondary"
+            data-bs-dismiss="modal"
+          >
+            Fechar
+          </button>
+          <button
+            type="submit"
+            class="btn btn-primary"
+            id="saveGoalButton"
+          >
+            Salvar Meta
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %} {% block scripts %}
 <script src="{% static 'js/goals.js' %}"></script>
 <script src="{% static 'js/plugin/sweetalert/sweetalert.min.js' %}"></script>
 {% endblock %}
