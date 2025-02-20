@@ -10,7 +10,7 @@ from .finance.accounts import AccountsListView, AccountCreateView, AccountDelete
 from .finance.categories import CategoriesListView, CategoryCreateView, CategoryDeleteView, CategoryUpdateView
 from .finance.credit_cards import CreditCardsView
 
-from .finance.goals import GoalsListView, GoalCreateView, GoalDeleteView, GoalUpdateView
+from .finance.goals import GoalsListView, GoalCreateView, GoalDeleteView, GoalUpdateView, GoalDepositCreateView
 
 from .finance.transactions import TransactionsView
 
@@ -42,6 +42,7 @@ __all__ = [
     'GoalCreateView',
     'GoalDeleteView',
     'GoalUpdateView',
+    'GoalDepositCreateView',
     
     'TransactionsView',
     

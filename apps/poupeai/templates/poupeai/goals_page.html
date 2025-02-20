@@ -138,9 +138,14 @@
                 </button>
 
                 <button
-                  class="btn btn-outline-success rounded-pill w-30 depositButton"
+                  class="btn btn-outline-success rounded-pill w-30 depositButton 
+                  {% if goal.status == 'Concluído' %}
+                    disabled
+                  {% endif %}
+                    "
                   data-goal-name="{{ goal.name }}"
                   data-goal-color="{{ goal.color }}"
+                  data-url="{% url 'goal-deposit' goal.id %}"
                 >
                   Depositar
                 </button>
@@ -203,7 +208,8 @@
           ></span>
         </div>
 
-        <form id="depositForm">
+        <form id="depositForm" method="post">
+          {% csrf_token %}
           <div class="mb-3">
             <label for="depositAmount" class="form-label"
               >Valor do Depósito</label
@@ -212,6 +218,7 @@
               type="number"
               class="form-control"
               id="depositAmount"
+              name="deposit_amount"
               placeholder="0,00"
               step="0.01"
               required
@@ -219,13 +226,14 @@
           </div>
           <div class="mb-3">
             <label for="depositDate" class="form-label">Data do Depósito</label>
-            <input type="date" class="form-control" id="depositDate" required />
+            <input type="date" class="form-control" name="deposit_at" id="depositDate" required />
           </div>
           <div class="mb-3">
             <label for="depositNotes" class="form-label">Observações</label>
             <textarea
               class="form-control"
               id="depositNotes"
+              name="note"
               rows="3"
             ></textarea>
           </div>
@@ -235,7 +243,7 @@
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
           Cancelar
         </button>
-        <button type="button" class="btn btn-primary" id="saveDepositButton">
+        <button type="submit" form="depositForm" class="btn btn-primary">
           Salvar Depósito
         </button>
       </div>

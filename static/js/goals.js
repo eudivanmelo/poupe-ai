@@ -45,43 +45,21 @@ const GoalManager = {
 
   handleDepositModal: function () {
     const depositButtons = document.querySelectorAll(".depositButton");
-    const depositModal = new bootstrap.Modal(
-      document.getElementById("depositModal")
-    );
-    const goalNameElement = document.getElementById("goalName");
-    const goalColorCircle = document.getElementById("goalColorCircle");
-    const depositAmountInput = document.getElementById("depositAmount");
-    const depositDateInput = document.getElementById("depositDate");
-    const depositNotesInput = document.getElementById("depositNotes");
-    const saveDepositButton = document.getElementById("saveDepositButton");
+    const modal = $("#depositModal");
 
     depositButtons.forEach((button) => {
       button.addEventListener("click", function () {
-        const goalName = button.getAttribute("data-goal-name");
-        const goalColor = button.getAttribute("data-goal-color");
+        const goalName = $(this).data("goal-name");
+        const goalColor = $(this).data("goal-color");
+        const url = $(this).data("url");
 
-        goalNameElement.textContent = goalName;
-        goalColorCircle.style.backgroundColor = goalColor;
+        modal.find("#goalName").text(goalName);
+        modal.find("#goalColorCircle").css("background-color", goalColor);
 
-        depositAmountInput.value = "";
-        depositDateInput.value = "";
-        depositNotesInput.value = "";
+        modal.find("#depositForm").attr("action", url);
 
-        depositModal.show();
+        modal.modal('show');  
       });
-    });
-
-    saveDepositButton.addEventListener("click", function () {
-      const depositAmount = depositAmountInput.value;
-      const depositDate = depositDateInput.value;
-      const depositNotes = depositNotesInput.value;
-
-      console.log("Depósito realizado:");
-      console.log("Valor:", depositAmount);
-      console.log("Data:", depositDate);
-      console.log("Notas:", depositNotes);
-
-      depositModal.hide();
     });
   },
 

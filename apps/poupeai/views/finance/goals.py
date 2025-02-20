@@ -3,7 +3,7 @@ from django.views.generic import ListView
 from django.urls import reverse_lazy
 from datetime import datetime
 from apps.poupeai.mixins import PoupeAIMixin
-from apps.poupeai.models import Goal
+from apps.poupeai.models import Goal, GoalDeposit
 from apps.poupeai.views.generic.json import CreateJsonView, DeleteJsonView, UpdateJsonView
 
 class GoalsListView(PoupeAIMixin, ListView):
@@ -52,3 +52,31 @@ class GoalUpdateView(UpdateJsonView):
     context_object_name = 'goal'
     success_message = 'Meta atualizada com sucesso!'
     error_message = 'Ocorreu um erro ao atualizar a meta, verifique as informações ou tente novamente mais tarde.'
+    
+class GoalDepositCreateView(CreateJsonView):
+    '''
+    View to create a deposit in a goal.
+    '''
+    success_url = reverse_lazy('goals')
+    model = GoalDeposit
+    fields = ['deposit_amount', 'deposit_at', 'note']
+    success_message = "Depósito realizado com sucesso!"
+    error_message = "Erro ao realizar depósito. Verifique os campos e tente novamente."
+    
+    def form_valid(self, form):
+        form.instance.goal = Goal.objects.get(pk=self.kwargs.get('pk'))
+         
+        if form.instance.deposit_at > datetime.now().date():
+            return self.form_invalid(form)
+        
+        if form.instance.deposit_amount <= 0:
+            return self.form_invalid(form)
+        
+        if form.instance.deposit_amount > form.instance.goal.amount_needed:
+            return self.form_invalid(form)
+        
+        if form.instance.goal.completed_at:
+            return self.form_invalid(form)
+       
+        return super().form_valid(form)
+    
