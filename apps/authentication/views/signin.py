@@ -2,7 +2,7 @@ from django.urls import reverse_lazy
 from django.contrib.auth.views import LoginView
 from apps.authentication.forms import SignInForm
 from django.contrib import messages
-from django.contrib.auth import logout
+from django.shortcuts import redirect
 from django.utils.http import url_has_allowed_host_and_scheme
 
 class SignInView(LoginView):
@@ -12,7 +12,7 @@ class SignInView(LoginView):
     
     def dispatch(self, request, *args, **kwargs):
         if request.user.is_authenticated:
-            logout(request)
+            return redirect(self.get_success_url())
         return super().dispatch(request, *args, **kwargs)
     
     def get_success_url(self):

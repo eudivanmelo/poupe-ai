@@ -23,7 +23,12 @@ urlpatterns = [
     path('credit-card/delete/<int:pk>/', CreditCardDeleteView.as_view(), name='credit-card-delete'),
     path('credit-card/update/<int:pk>/', CreditCardUpdateView.as_view(), name='credit-card-update'),
 
-    path('goals/', GoalsView.as_view(), name='goals'),
+    path('goals/', GoalsListView.as_view(), name='goals'),
+    path('goal/create/', GoalCreateView.as_view(), name='goal-create'),
+    path('goal/delete/<int:pk>/', GoalDeleteView.as_view(), name='goal-delete'),
+    path('goal/update/<int:pk>/', GoalUpdateView.as_view(), name='goal-update'),
+    path('goal/deposit/<int:pk>/', GoalDepositCreateView.as_view(), name='goal-deposit'),
+    
     path('help/', help_view, name='help'),
 
     path('profile/', ProfileView.as_view(), name='profile'),
