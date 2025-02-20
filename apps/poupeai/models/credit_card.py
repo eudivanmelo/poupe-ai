@@ -52,4 +52,4 @@ class Invoice(models.Model):
 
     def __str__(self):
         status = "Paga" if self.paid else "Pendente"
-        return f"Fatura {self.month}/{self.year} - R$ {self.total_amount:.2f} ({status})"
+        return f"Fatura {self.month}/{self.year} - R$ {self.total_due:.2f} ({status})"

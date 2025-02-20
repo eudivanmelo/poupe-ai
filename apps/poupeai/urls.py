@@ -4,7 +4,12 @@ from .views import *
 urlpatterns = [
     path('', home_view, name='home'),
     path('dashboard/', dashboard_view, name='dashboard'),
-    path('categories/', CategoriesView.as_view(), name='categories'),
+    
+    path('categories/', CategoriesListView.as_view(), name='categories'),
+    path('category/create/', CategoryCreateView.as_view(), name='category-create'),
+    path('category/delete/<int:pk>/', CategoryDeleteView.as_view(), name='category-delete'),
+    path('category/update/<int:pk>/', CategoryUpdateView.as_view(), name='category-update'),
+    
     path('transactions/', TransactionsView.as_view(), name='transactions'),
     
     path('accounts/', AccountsListView.as_view(), name='accounts'),
