@@ -17,7 +17,18 @@ Transações
       <div class="card-header d-flex justify-content-between">
         <div class="card-title">Transações</div>
         <div class="d-flex gap-3">
-          <input type="text" class="form-control form-control-sm" placeholder="Pesquisar" />
+          <form class="input-group mb-3" method="get">
+            <input
+              type="text"
+              class="form-control form-control-sm"
+              name="search"
+              placeholder="Pesquisar"
+              value="{{ request.GET.search }}"
+            />
+            <button class="btn btn-sm btn-outline-secondary" type="submit">
+              <i class="fas fa-search"></i>
+            </button>
+          </form>
 
           <button class="btn btn-icon btn-round btn-primary" data-bs-toggle="modal" data-bs-target="#createModal"><i
               class="fa fa-plus"></i></button>
@@ -41,17 +52,37 @@ Transações
               </tr>
             </thead>
             <tbody>
+              {% for transaction in transactions %}
               <tr class="no-wrap-lg">
                 <td class="d-none d-sm-table-cell">
-                  <i class="fas fa-clock text-secondary"></i>
+                  {% if transaction.status == 'paid' %}
+                    <i class="fas fa-check-circle text-success"></i>
+                  {% else %}
+                    <i class="fas fa-clock text-secondary"></i>
+                    <!-- <i class="fas fa-exclamation-triangle text-warning"></i> -->
+                    <!-- <i class="fas fa-calendar-times text-danger"></i> -->
+                  {% endif %}
                 </td>
+
                 <td class="d-none d-sm-table-cell">
-                  <span class="badge badge-danger">Despesa</span>
+                  {% if transaction.type == 'expense' %}
+                    <span class="badge badge-danger">Despesa</span>
+                  {% else %}
+                    {% if transaction.type == 'card' %}
+                      <span class="badge badge-secondary">Cartão de Credito</span>
+                    {% else %}
+                      <span class="badge badge-success">Receita</span>
+                    {% endif %}
+                  {% endif %}
                 </td>
-                <td>Compra de materiais d...</td>
-                <td class="d-none d-lg-table-cell">Operacional</td>
-                <td class="d-none d-lg-table-cell">2025-01-07 10:15</td>
-                <td>R$ 150,00</td>
+
+                <td>{{transaction.description|truncatechars:50 }}</td>
+                <td class="d-none d-lg-table-cell">
+                  {{transaction.category}}
+                </td>
+
+                <td class="d-none d-lg-table-cell">{{ transaction.created_at|date:"d/m/Y" }} - {{ transaction.created_at|time:"H:i" }}</td>
+                <td>R$ {{transaction.amount|floatformat:2}}</td>
                 <td>
                   <div class="dropdown">
                     <button class="btn btn-link text-dark p-0" id="dropdownMenuButton-1" data-bs-toggle="dropdown"
@@ -73,165 +104,46 @@ Transações
                   </div>
                 </td>
               </tr>
-
-              <tr class="no-wrap-lg">
-                <td class="d-none d-sm-table-cell">
-                  <i class="fas fa-exclamation-triangle text-warning"></i>
-                </td>
-                <td class="d-none d-sm-table-cell">
-                  <span class="badge badge-success">Receita</span>
-                </td>
-                <td>Pagamento de cliente</td>
-                <td class="d-none d-lg-table-cell">Vendas</td>
-                <td class="d-none d-lg-table-cell">2025-01-07 15:45</td>
-                <td>R$ 2.000,00</td>
-                <td>
-                  <div class="dropdown">
-                    <button class="btn btn-link text-dark p-0" id="dropdownMenuButton-2" data-bs-toggle="dropdown"
-                      aria-expanded="false">
-                      <i class="fas fa-ellipsis-v"></i>
-                    </button>
-                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuButton-2">
-                      <li>
-                        <button class="dropdown-item fs-6" id="detail-transaction-2" data-id="2">Visualizar</button>
-                      </li>
-                      <li>
-                        <button class="dropdown-item fs-6 edit-transaction-btn" id="edit-transaction-2"
-                          data-id="2">Editar</button>
-                      </li>
-                      <li>
-                        <button class="dropdown-item fs-6" id="delete-transaction-2" data-id="2">Excluir</button>
-                      </li>
-                    </ul>
-                  </div>
-                </td>
+              {% empty %}
+              <tr>
+                <td colspan="7" class="text-center">Nenhuma transação encontrada</td>
               </tr>
-
-              <tr class="no-wrap-lg">
-                <td class="d-none d-sm-table-cell">
-                  <i class="fas fa-check-circle text-success"></i>
-                </td>
-                <td class="d-none d-sm-table-cell">
-                  <span class="badge badge-danger">Despesa</span>
-                </td>
-                <td>Assinatura de software</td>
-                <td class="d-none d-lg-table-cell">Administrativo</td>
-                <td class="d-none d-lg-table-cell">2025-01-06 11:30</td>
-                <td>R$ 450,00</td>
-                <td>
-                  <div class="dropdown">
-                    <button class="btn btn-link text-dark p-0" id="dropdownMenuButton-3" data-bs-toggle="dropdown"
-                      aria-expanded="false">
-                      <i class="fas fa-ellipsis-v"></i>
-                    </button>
-                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuButton-3">
-                      <li>
-                        <button class="dropdown-item fs-6" id="detail-transaction-3" data-id="3">Visualizar</button>
-                      </li>
-                      <li>
-                        <button class="dropdown-item fs-6 edit-transaction-btn" id="edit-transaction-3"
-                          data-id="3">Editar</button>
-                      </li>
-                      <li>
-                        <button class="dropdown-item fs-6" id="delete-transaction-3" data-id="3">Excluir</button>
-                      </li>
-                    </ul>
-                  </div>
-                </td>
-              </tr>
-
-              <tr class="no-wrap-lg">
-                <td class="d-none d-sm-table-cell">
-                  <i class="fas fa-calendar-times text-danger"></i>
-                </td>
-                <td class="d-none d-sm-table-cell">
-                  <span class="badge badge-success">Receita</span>
-                </td>
-                <td>Reembolso de despesas</td>
-                <td class="d-none d-lg-table-cell">Financeiro</td>
-                <td class="d-none d-lg-table-cell">2025-01-06 08:00</td>
-                <td>R$ 800,00</td>
-                <td>
-                  <div class="dropdown">
-                    <button class="btn btn-link text-dark p-0" id="dropdownMenuButton-4" data-bs-toggle="dropdown"
-                      aria-expanded="false">
-                      <i class="fas fa-ellipsis-v"></i>
-                    </button>
-                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuButton-4">
-                      <li>
-                        <button class="dropdown-item fs-6" id="detail-transaction-4" data-id="4">Visualizar</button>
-                      </li>
-                      <li>
-                        <button class="dropdown-item fs-6 edit-transaction-btn" id="edit-transaction-4"
-                          data-id="4">Editar</button>
-                      </li>
-                      <li>
-                        <button class="dropdown-item fs-6" id="delete-transaction-4" data-id="4">Excluir</button>
-                      </li>
-                    </ul>
-                  </div>
-                </td>
-              </tr>
-
-              <tr class="no-wrap-lg">
-                <td class="d-none d-sm-table-cell">
-                  <i class="fas fa-clock text-secondary"></i>
-                </td>
-                <td class="d-none d-sm-table-cell">
-                  <span class="badge badge-danger">Despesa</span>
-                </td>
-                <td>Compra de alimentos para...</td>
-                <td class="d-none d-lg-table-cell">Operacional</td>
-                <td class="d-none d-lg-table-cell">2025-01-05 14:00</td>
-                <td>R$ 320,00</td>
-                <td>
-                  <div class="dropdown">
-                    <button class="btn btn-link text-dark p-0" id="dropdownMenuButton-5" data-bs-toggle="dropdown"
-                      aria-expanded="false">
-                      <i class="fas fa-ellipsis-v"></i>
-                    </button>
-                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuButton-5">
-                      <li>
-                        <button class="dropdown-item fs-6" id="detail-transaction-5" data-id="5">Visualizar</button>
-                      </li>
-                      <li>
-                        <button class="dropdown-item fs-6 edit-transaction-btn" id="edit-transaction-5"
-                          data-id="5">Editar</button>
-                      </li>
-                      <li>
-                        <button class="dropdown-item fs-6" id="delete-transaction-5" data-id="5">Excluir</button>
-                      </li>
-                    </ul>
-                  </div>
-                </td>
-              </tr>
+              {% endfor %}
             </tbody>
           </table>
         </div>
 
         <div class="d-flex justify-content-end px-3">
           <ul class="pagination pg-primary">
+            {% if page_obj.has_previous %}
             <li class="page-item">
-              <a class="page-link" href="#" aria-label="Anterior">
+              <a
+                class="page-link"
+                href="?page={{ page_obj.previous_page_number }}"
+                aria-label="Anterior"
+              >
                 <span aria-hidden="true">«</span>
                 <span class="sr-only">Anterior</span>
               </a>
             </li>
-            <li class="page-item active">
-              <a class="page-link" href="#">1</a>
+            {% endif %} {% for num in page_obj.paginator.page_range %}
+            <li
+              class="page-item {% if page_obj.number == num %}active{% endif %}"
+            >
+              <a class="page-link" href="?page={{ num }}">{{ num }}</a>
             </li>
+            {% endfor %} {% if page_obj.has_next %}
             <li class="page-item">
-              <a class="page-link" href="#">2</a>
-            </li>
-            <li class="page-item">
-              <a class="page-link" href="#">3</a>
-            </li>
-            <li class="page-item">
-              <a class="page-link" href="#" aria-label="Proxima">
+              <a
+                class="page-link"
+                href="?page={{ page_obj.next_page_number }}"
+                aria-label="Próxima"
+              >
                 <span aria-hidden="true">»</span>
-                <span class="sr-only">Proxima</span>
+                <span class="sr-only">Próxima</span>
               </a>
             </li>
+            {% endif %}
           </ul>
         </div>
       </div>

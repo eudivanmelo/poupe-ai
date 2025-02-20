@@ -20,12 +20,12 @@ class Account(models.Model):
     @property
     def total_income(self):
         """Retorna o valor total das receitas (entradas) associadas a esta conta."""
-        total = self.account_transactions.filter(type='income').aggregate(total=Sum('transaction__amount'))['total']
+        total = self.account_transactions.filter(transaction__category__type='income').aggregate(total=Sum('transaction__amount'))['total']
         return total or 0
 
     @property
     def total_expense(self):
         """Retorna o valor total das despesas (saídas) associadas a esta conta."""
-        total = self.account_transactions.filter(type='expense') \
+        total = self.account_transactions.filter(transaction__category__type='expense') \
                                         .aggregate(total=Sum('transaction__amount'))['total']
         return total or 0

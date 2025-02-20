@@ -56,5 +56,5 @@ class InvoiceAdmin(admin.ModelAdmin):
 
 @admin.register(AccountTransaction)
 class AccountTransactionAdmin(admin.ModelAdmin):
-    list_display = ('transaction', 'account', 'expire_at', 'payment_at', 'type')
+    list_display = ('transaction', 'account', 'expire_at', 'payment_at')
     search_fields = ('transaction__description', 'credit_card__name', 'invoice__month')

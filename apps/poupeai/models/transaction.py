@@ -19,6 +19,18 @@ class Transaction(models.Model):
     category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name="transactions")
 
     created_at = models.DateTimeField(auto_now_add=True)
+    
+    @property
+    def type(self):
+        if hasattr(self, 'card_transaction'):
+            return 'card'
+        elif hasattr(self, 'account_transaction'):
+            return self.category.type
+        return 'Desconhecido'
+
+    @property
+    def status(self):
+        return 'paid'
 
     class Meta:
         verbose_name = "Transação"
@@ -45,7 +57,6 @@ class AccountTransaction(models.Model):
 
     expire_at = models.DateField()
     payment_at = models.DateField()
-    type = models.CharField(max_length=7, choices=TRANSACTION_TYPES)
 
     class Meta:
         verbose_name = "Transação de Conta"
