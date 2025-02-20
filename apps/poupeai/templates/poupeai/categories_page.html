@@ -34,14 +34,14 @@ Categorias
                     <li class="nav-item col-6" role="presentation">
                         <a class="nav-link active m-0 fs-5 text-center despesas" id="despesas-tab" data-bs-toggle="pill"
                             href="#despesas" role="tab" aria-controls="despesas" aria-selected="true"
-                            data-total="{{ total_despesas|floatformat:2 }}" data-total-cat="{{ total_cat_despesas }}">
+                            data-total="{{ total_expenses|floatformat:2 }}" data-total-cat="{{ total_expense_categories }}">
                             <i class="fas fa-money-bill-wave me-2"></i>Despesas
                         </a>
                     </li>
                     <li class="nav-item col-6" role="presentation">
                         <a class="nav-link m-0 fs-5 text-center receitas" id="receitas-tab" data-bs-toggle="pill"
                             href="#receitas" role="tab" aria-controls="receitas" aria-selected="false"
-                            data-total="{{ total_receitas|floatformat:2 }}" data-total-cat="{{ total_cat_receitas }}">
+                            data-total="{{ total_income|floatformat:2 }}" data-total-cat="{{ total_income_categories }}">
                             <i class="fas fa-piggy-bank me-2"></i>Receitas
                         </a>
                     </li>
@@ -51,9 +51,9 @@ Categorias
                 <div class="tab-content" id="categoryTabsContent">
                     <!-- Despesas -->
                     <div class="tab-pane fade show active" id="despesas" role="tabpanel" aria-labelledby="despesas-tab">
-                        {% if categories_despesas %}
+                        {% if expense_categories %}
                         <div class="grid-container">
-                            {% for category in categories_despesas %}
+                            {% for category in expense_categories %}
                             <div class="category-card p-3 border rounded shadow-sm" id="category-{{ category.id }}">
                                 <div class="d-flex justify-content-between align-items-center">
                                     <div class="d-flex align-items-center">
@@ -61,7 +61,7 @@ Categorias
                                             style="background-color: {{ category.color }}; width: 25px; height: 25px; border-radius: 50%; border: 2px solid #fff;"></span>
                                         <div>
                                             <span class="d-block text-truncate fw-bold" style="max-width: 180px;">{{ category.name }}</span>
-                                            <span class="d-block d-sm-inline text-muted">R$ {{ category.total_value|floatformat:2 }}</span>
+                                            <span class="d-block d-sm-inline text-muted">R$ {{ category.total_transactions_value|floatformat:2 }}</span>
                                         </div>
                                     </div>
                                     <div class="dropdown">
@@ -98,9 +98,9 @@ Categorias
 
                     <!-- Receitas -->
                     <div class="tab-pane fade" id="receitas" role="tabpanel" aria-labelledby="receitas-tab">
-                        {% if categories_receitas %}
+                        {% if income_categories %}
                         <div class="grid-container">
-                            {% for category in categories_receitas %}
+                            {% for category in income_categories %}
                             <div class="category-card p-3 border rounded shadow-sm" id="category-{{ category.id }}">
                                 <div class="d-flex justify-content-between align-items-center">
                                     <div class="d-flex align-items-center">
@@ -108,7 +108,7 @@ Categorias
                                             style="background-color: {{ category.color }}; width: 25px; height: 25px; border-radius: 50%; border: 2px solid #fff;"></span>
                                         <div>
                                             <span class="d-block text-truncate fw-bold" style="max-width: 180px;">{{ category.name }}</span>
-                                            <span class="d-block d-sm-inline text-muted">R$ {{ category.total_value|floatformat:2 }}</span>
+                                            <span class="d-block d-sm-inline text-muted">R$ {{ category.total_transactions_value|floatformat:2 }}</span>
                                         </div>
                                     </div>
                                     <div class="dropdown">
@@ -149,10 +149,10 @@ Categorias
             <!-- Rodapé do Card -->
             <div class="card-footer bg-light d-flex justify-content-between">
                 <div>
-                    <strong>Categorias:</strong> <span id="total-categorias">{{ total_cat_despesas }}</span>
+                    <strong>Categorias:</strong> <span id="total-categorias">{{ total_expense_categories }}</span>
                 </div>
                 <div class="text-end">
-                    <strong>Total:</strong> <span id="total-value">R$ {{ total_despesas|floatformat:2 }}</span>
+                    <strong>Total:</strong> <span id="total-value">R$ {{ total_expenses|floatformat:2 }}</span>
                 </div>
             </div>
         </div>

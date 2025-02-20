@@ -1,8 +1,9 @@
-from django.views.generic import TemplateView, ListView
 from django.urls import reverse_lazy
+from django.views.generic import ListView
+
 from apps.poupeai.mixins import PoupeAIMixin
-from apps.poupeai.views.generic.json import CreateJsonView, DeleteJsonView, UpdateJsonView
 from apps.poupeai.models import Category
+from apps.poupeai.views.generic.json import CreateJsonView, DeleteJsonView, UpdateJsonView
 
 class CategoriesListView(PoupeAIMixin, ListView):
     '''
@@ -12,7 +13,6 @@ class CategoriesListView(PoupeAIMixin, ListView):
     template_name = 'poupeai/categories_page.html'
     model = Category
     context_object_name = 'categories'
-    # queryset = Category.objects.all()
 
     def get_name(self):
         return "categories"
@@ -20,33 +20,39 @@ class CategoriesListView(PoupeAIMixin, ListView):
     def get_breadcrumbs(self):
         return [
             {"name": "Dashboard", "url": reverse_lazy('dashboard')},
-            {"name": "Categorias", "url": None},
+            {"name": "Categories", "url": None},
         ]
     
-    def get_queryset(self, *args, **kwargs):
-        request = args[0] if args else kwargs.get('request') or self.request
-        query = super().get_queryset(*args, **kwargs)
-        return query.filter(user=request.user)
+    def get_queryset(self):
+        '''Filters categories by the logged-in user'''
+        return super().get_queryset().filter(user=self.request.user)
+    
+    def _get_categories_by_type(self, category_type):
+        '''Returns categories filtered by type (expense/income)'''
+        return self.get_queryset().filter(type=category_type)
+    
+    def _calculate_total_value(self, categories):
+        '''Calculates the total value of the provided categories'''
+        return sum(category.total_transactions_value for category in categories)
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
-        categories_despesas = self.get_queryset().filter(type='expense')
-        categories_receitas = self.get_queryset().filter(type='income')
+        expense_categories = self._get_categories_by_type('expense')
+        income_categories = self._get_categories_by_type('income')
 
-        total_cat_despesas = categories_despesas.count()
-        total_cat_receitas = categories_receitas.count()
-
-        total_despesas = sum([category.total_value for category in categories_despesas])
-        total_receitas = sum([category.total_value for category in categories_receitas])
+        total_expense_categories = expense_categories.count()
+        total_income_categories = income_categories.count()
+        total_expenses = self._calculate_total_value(expense_categories)
+        total_income = self._calculate_total_value(income_categories)
 
         context.update({
-            "categories_despesas": categories_despesas,
-            "categories_receitas": categories_receitas,
-            "total_cat_despesas": total_cat_despesas,
-            "total_cat_receitas": total_cat_receitas,
-            "total_despesas": total_despesas,
-            "total_receitas": total_receitas,
+            "expense_categories": expense_categories,
+            "income_categories": income_categories,
+            "total_expense_categories": total_expense_categories,
+            "total_income_categories": total_income_categories,
+            "total_expenses": total_expenses,
+            "total_income": total_income,
         })
 
         return context
@@ -80,49 +86,3 @@ class CategoryUpdateView(UpdateJsonView):
     context_object_name = 'category'
     success_message = 'Categoria atualizada com sucesso!'
     error_message = 'Ocorreu um erro ao atualizar a categoria, verifique as informações ou tente novamente mais tarde.'
-
-# class CategoriesView(PoupeAIMixin, TemplateView):
-#     template_name = "poupeai/categories_page.html"
-
-#     def get_name(self):
-#         return "categories"
-    
-#     def get_breadcrumbs(self):
-#         return [
-#             {"name": "Dashboard", "url": reverse_lazy('dashboard')},
-#             {"name": "Categorias", "url": None},
-#         ]
-    
-#     def get_context_data(self, **kwargs):
-#         context = super().get_context_data(**kwargs)
-        
-#         categories_despesas = [
-#             {"id": 1, "nome": "Aluguel", "valor": 1000.50, "cor": "#ff0000"},
-#             {"id": 2, "nome": "Supermercado de Arroz", "valor": 500.00, "cor": "#00ff00"},
-#             {"id": 3, "nome": "Transporte", "valor": 150.00, "cor": "#ff6600"},
-#             {"id": 4, "nome": "Internet", "valor": 120.00, "cor": "#00ffff"},
-#             {"id": 5, "nome": "Saúde", "valor": 300.00, "cor": "#ff99cc"},
-#         ]
-
-#         categories_receitas = [
-#             {"id": 6, "nome": "Salário", "valor": 5000.00, "cor": "#0000ff"},
-#             {"id": 7, "nome": "Freelance", "valor": 1500.00, "cor": "#00ffcc"},
-#             {"id": 8, "nome": "Investimentos", "valor": 1000.00, "cor": "#9966ff"},
-#         ]
-
-#         total_cat_despesas = len(categories_despesas)
-#         total_cat_receitas = len(categories_receitas)
-
-#         total_despesas = sum(float(c["valor"]) for c in categories_despesas)
-#         total_receitas = sum(float(c["valor"]) for c in categories_receitas)
-
-#         context.update({
-#             "categories_despesas": categories_despesas,
-#             "categories_receitas": categories_receitas,
-#             "total_despesas": total_despesas,
-#             "total_receitas": total_receitas,
-#             "total_cat_despesas": total_cat_despesas,
-#             "total_cat_receitas": total_cat_receitas,
-#         })
-        
-#         return context

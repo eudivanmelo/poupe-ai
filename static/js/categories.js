@@ -2,202 +2,188 @@ const handleSubmitForm = (form) => {
     form.preventDefault();
 
     const formData = new FormData(form.target);
+    const activeTab = document.querySelector("#categoryTabs .nav-link.active").id;
+    const type = activeTab.includes("despesas") ? "expense" : "income";
 
-    const type = document.querySelector("#categoryTabs .nav-link.active").id.includes("despesas") ? "expense" : "income";
     formData.append("type", type);
+    localStorage.setItem("activeTab", activeTab);
 
     fetch(form.target.action, {
         method: "POST",
         body: formData,
-        headers: {
-            "X-Requested-With": "XMLHttpRequest",
-        },
+        headers: { "X-Requested-With": "XMLHttpRequest" },
     })
-      .then((response) => response.json())
-      .then((data) => {
-        if (data.success) {
-            location.reload();
-        } else {
-            alert("Erro ao criar conta: " + JSON.stringify(data.errors));
-        }
-      })
-      .catch((error) => console.error("Erro:", error));
-}
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                location.reload();
+            } else {
+                alert("Erro ao criar categoria: " + JSON.stringify(data.errors));
+            }
+        })
+        .catch(error => console.error("Erro:", error));
+};
 
 const CategoryManager = {
-    init: function () {
+    init() {
         this.bindEvents();
+        this.restoreActiveTab();
     },
 
-    bindEvents: function () {
+    bindEvents() {
         $(document).ready(() => {
             this.handleDeleteCategory();
             this.handleColorSelection();
             this.handleTabChange();
-            this.handleAddCategory();
+            this.handleAddCategoryModal();
             this.handleEditCategoryModal();
             this.handleDropdownAnimation();
+            this.handleAddCategory();
         });
     },
 
-    handleDeleteCategory: function () {
-        $('[id^="delete-category-"]').click(function () {
-            var url = $(this).data("url");
-            var itemName = $(this).data("item-name");
+    handleDeleteCategory() {
+        $(document).on("click", '[id^="delete-category-"]', function () {
+            const url = $(this).data("url");
+            const itemName = $(this).data("item-name");
+            const activeTab = document.querySelector("#categoryTabs .nav-link.active").id;
+
+            localStorage.setItem("activeTab", activeTab);
 
             swal({
-                title: 'Excluir essa categoria?',
-                text: `Ao apagar a categoria "${itemName}" todas as transações vinculadas a ela também serão apagadas. Esta ação não pode ser desfeita!`,
+                title: "Excluir essa categoria?",
+                text: `Ao apagar a categoria "${itemName}", todas as transações vinculadas a ela também serão apagadas. Esta ação não pode ser desfeita!`,
                 buttons: {
-                    cancel: {
-                        text: 'Cancelar',
-                        visible: true,
-                        className: 'btn btn-secondary'
-                    },
-                    confirm: {
-                        text: 'Excluir',
-                        className: 'btn btn-primary'
-                    }
-                }
-            }).then((Delete) => {
-                if (Delete) {
-                    if (!url) return;
-                    
+                    cancel: { text: "Cancelar", visible: true, className: "btn btn-secondary" },
+                    confirm: { text: "Excluir", className: "btn btn-primary" },
+                },
+            }).then(shouldDelete => {
+                if (shouldDelete && url) {
                     fetch(url, {
                         method: "DELETE",
                         headers: {
-                          "X-Requested-With": "XMLHttpRequest",
-                          "X-CSRFToken": getCookie("csrftoken"),
+                            "X-Requested-With": "XMLHttpRequest",
+                            "X-CSRFToken": getCookie("csrftoken"),
                         },
-                    }).then((response) => response.json())
-                    .then((data) => {
-                        if (data.success) {
-                            swal({
-                                title: 'Deletada!',
-                                text: data.message,
-                                icon: 'success',
-                                buttons: {
-                                    confirm: {
-                                        className: 'btn btn-success'
-                                    }
-                                }
-                            }).then(() => {
-                                location.reload();
-                            });
-                        } else {
-                            swal({
-                                title: "Erro!",
-                                text: data.message,
-                                icon: "error",
-                                buttons: {
-                                  confirm: {
-                                    className: "btn btn-danger",
-                                  },
-                                },
-                              });
-                        }
                     })
-                    .catch((error) => console.error("Erro:", error));
-                } else {
-                    swal.close();
+                        .then(response => response.json())
+                        .then(data => {
+                            swal({
+                                title: data.success ? "Deletada!" : "Erro!",
+                                text: data.message,
+                                icon: data.success ? "success" : "error",
+                                buttons: { confirm: { className: data.success ? "btn btn-success" : "btn btn-danger" } },
+                            }).then(() => {
+                                if (data.success) location.reload();
+                            });
+                        })
+                        .catch(error => console.error("Erro:", error));
                 }
             });
         });
     },
 
-    handleColorSelection: function () {
-        $('#colorInput').on('input', function () {
+    handleColorSelection() {
+        $("#colorInput, #colorInputEdit").on("input", function () {
             const color = $(this).val();
-            $('#colorPicker').css('background-color', color);
-            $('#colorPickerEdit').css('background-color', color);
+            $("#colorPicker, #colorPickerEdit").css("background-color", color);
         });
 
-        $('#colorInputEdit').on('input', function () {
-            const color = $(this).val();
-            $('#colorPicker').css('background-color', color);
-            $('#colorPickerEdit').css('background-color', color);
-        });
-
-        $('#colorPicker').click(function () {
-            $('#colorInput').click();
-        });
-
-        $('#colorPickerEdit').click(function () {
-            $('#colorInputEdit').click();
+        $("#colorPicker, #colorPickerEdit").click(function () {
+            $(`#${this.id === "colorPicker" ? "colorInput" : "colorInputEdit"}`).click();
         });
     },
 
-    handleTabChange: function () {
-        $('#categoryTabs .nav-link').on('shown.bs.tab', function (event) {
-            const newTotal = $(event.target).data('total');
-            const newCatTotal = $(event.target).data('total-cat');
-            $('#total-value').text(`R$ ${newTotal}`);
-            $('#total-categorias').text(`${newCatTotal}`);
-            console.log('Categoria selecionada:', $(event.target).text());
+    handleTabChange() {
+        $("#categoryTabs .nav-link").on("shown.bs.tab", function (event) {
+            $("#total-value").text(`R$ ${$(event.target).data("total")}`);
+            $("#total-categorias").text($(event.target).data("total-cat"));
+            console.log("Categoria selecionada:", $(event.target).text());
         });
     },
 
-    handleAddCategoryModal: function () {
-        $('#add-category').click(function () {
-
-            $('#addCategoryModal').modal('show');
-        });
+    restoreActiveTab() {
+        const activeTab = localStorage.getItem("activeTab");
+        if (activeTab) {
+            const tabElement = document.querySelector(`#${activeTab}`);
+            if (tabElement) {
+                new bootstrap.Tab(tabElement).show();
+                $("#total-value").text(`R$ ${$(tabElement).data("total")}`);
+                $("#total-categorias").text($(tabElement).data("total-cat"));
+            }
+            localStorage.removeItem("activeTab");
+        } else {
+            const defaultTab = document.querySelector("#categoryTabs .nav-link.active");
+            if (defaultTab) {
+                $("#total-value").text(`R$ ${$(defaultTab).data("total")}`);
+                $("#total-categorias").text($(defaultTab).data("total-cat"));
+            }
+        }
     },
 
-    handleEditCategoryModal: function () {
-        $('[id^="edit-category-"]').click(function () {
-            var url = $(this).data("url");
-            var modal = $("#editCategoryModal");
+    handleAddCategoryModal() {
+        $("#add-category").click(() => $("#addCategoryModal").modal("show"));
+    },
 
-            fetch(url, {
-                method: "GET",
-                headers: { "X-Requested-With": "XMLHttpRequest" },
-              })
-                .then((response) => response.json())
-                .then((data) => {
-                  if (data.success) {
+    handleEditCategoryModal() {
+        $(document).on("click", '[id^="edit-category-"]', function () {
+            const url = $(this).data("url");
+            const modal = $("#editCategoryModal");
+            const activeTab = document.querySelector("#categoryTabs .nav-link.active").id;
 
-                    modal.find('#nameInput').val(data.category.name);
-                    modal.find('#colorInputEdit').val(data.category.color);
-                    modal.find('#colorPickerEdit').css('background-color', data.category.color);
-        
-                    modal.find("#editCategoryForm").attr("action", url);
-                    modal.modal("show");
-                  } else {
-                    alert("Erro ao carregar os dados da categoria");
-                  }
+            localStorage.setItem("activeTab", activeTab);
+
+            fetch(url, { method: "GET", headers: { "X-Requested-With": "XMLHttpRequest" } })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        modal.find("#nameInput").val(data.category.name);
+                        modal.find("#colorInputEdit").val(data.category.color);
+                        modal.find("#colorPickerEdit").css("background-color", data.category.color);
+                        modal.find("#editCategoryForm").attr("action", url);
+                        modal.modal("show");
+                    } else {
+                        alert("Erro ao carregar os dados da categoria");
+                    }
                 })
-                .catch((error) => console.error("Erro:", error));
+                .catch(error => console.error("Erro:", error));
+        });
 
-            // const id = $(this).data('id');
-            // const nome = $(this).data('nome');
-            // const cor = $(this).data('cor');
-            // var modal = $('#editCategoryModal');
+        const editForm = document.getElementById("editCategoryForm");
+        if (editForm) {
+            editForm.addEventListener("submit", event => {
+                event.preventDefault();
+                const activeTab = document.querySelector("#categoryTabs .nav-link.active").id;
+                localStorage.setItem("activeTab", activeTab);
 
-            // modal.find('#nameInput').val(nome);
-            // modal.find('#colorInput').val(cor);
-            // modal.find('#colorPicker').css('background-color', cor);
+                fetch(event.target.action, {
+                    method: "POST",
+                    body: new FormData(event.target),
+                    headers: { "X-Requested-With": "XMLHttpRequest" },
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            location.reload();
+                        } else {
+                            alert("Erro ao editar categoria: " + JSON.stringify(data.errors));
+                        }
+                    })
+                    .catch(error => console.error("Erro:", error));
+            });
+        }
+    },
 
-            // modal.modal('show');
+    handleDropdownAnimation() {
+        document.querySelectorAll(".dropdown").forEach(dropdown => {
+            dropdown.addEventListener("show.bs.dropdown", () => dropdown.closest(".category-card").classList.add("dropdown-open"));
+            dropdown.addEventListener("hide.bs.dropdown", () => dropdown.closest(".category-card").classList.remove("dropdown-open"));
         });
     },
 
-    handleDropdownAnimation: function () {
-        document.querySelectorAll('.dropdown').forEach(dropdown => {
-            dropdown.addEventListener('show.bs.dropdown', () => {
-                dropdown.closest('.category-card').classList.add('dropdown-open');
-            });
-
-            dropdown.addEventListener('hide.bs.dropdown', () => {
-                dropdown.closest('.category-card').classList.remove('dropdown-open');
-            });
-        });
+    handleAddCategory() {
+        document.getElementById("addCategoryForm")?.addEventListener("submit", handleSubmitForm);
     },
-
-    handleAddCategory: function () {
-        const form = document.getElementById("addCategoryForm");
-        form.addEventListener("submit", handleSubmitForm);
-    }
 };
 
 CategoryManager.init();

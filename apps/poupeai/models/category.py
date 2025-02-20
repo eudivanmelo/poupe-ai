@@ -24,7 +24,7 @@ class Category(models.Model):
         return self.name
     
     @property
-    def total_value(self):
-        """Retorna o valor total das transações associadas a esta categoria."""
+    def total_transactions_value(self):
+        """Returns the total value of transactions associated with this category."""
         total = self.transactions.aggregate(total=Sum('amount'))['total']
         return total or 0
