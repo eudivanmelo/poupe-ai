@@ -1,3 +1,26 @@
+const handleSubmitForm = (form) => {
+    form.preventDefault();
+
+    const formData = new FormData(form.target);
+
+    fetch(form.target.action, {
+        method: "POST",
+        body: formData,
+        headers: {
+            "X-Requested-With": "XMLHttpRequest",
+        },
+    })
+        .then((response) => response.json())
+        .then((data) => {
+            if (data.success) {
+                location.reload();
+            } else {
+                alert("Erro ao criar cartão de crédito: " + JSON.stringify(data.errors));
+            }
+        })
+        .catch((error) => console.error("Erro:", error));
+};
+
 const CreditCardManager = {
     init: function () {
         this.bindEvents();
@@ -6,94 +29,172 @@ const CreditCardManager = {
     bindEvents: function () {
         document.addEventListener('DOMContentLoaded', () => {
             this.handleDeleteCreditCard();
-            this.handleAddCreditCardModal();
             this.handleEditCreditCardModal();
             this.handleRegisterPayment();
             this.handleAddExpense();
             this.handleProgressBars();
             this.handleCardAccessibility();
             this.handleSaveCreditCard();
+            this.handleAddCreditCard();
         });
     },
 
     handleDeleteCreditCard: function () {
-        document.querySelectorAll('[id^="delete-credit-card-"]').forEach(button => {
-            button.addEventListener('click', function () {
-                const itemId = this.getAttribute('data-id');
-                const itemName = this.getAttribute('data-name');
+        $(document).on("click", '[id^="delete-credit-card-"]', function () {
+            const url = $(this).data("url");
+            const itemName = $(this).data("item-name");
 
-                swal({
-                    title: 'Excluir esse cartão?',
-                    text: `Todas as transações relacionadas ao cartão "${itemName}" serão removidas.`,
-                    buttons: {
-                        cancel: {
-                            text: 'Cancelar',
-                            visible: true,
-                            className: 'btn btn-secondary'
+            swal({
+                title: "Excluir esse cartão de crédito?",
+                text: `Ao apagar o cartão de crédito "${itemName}", todas as transações e informações vinculadas a ele também serão apagadas. Esta ação não pode ser desfeita!`,
+                buttons: {
+                    cancel: { text: "Cancelar", visible: true, className: "btn btn-secondary" },
+                    confirm: { text: "Excluir", className: "btn btn-primary" },
+                },
+            }).then(shouldDelete => {
+                if (shouldDelete && url) {
+                    fetch(url, {
+                        method: "DELETE",
+                        headers: {
+                            "X-Requested-With": "XMLHttpRequest",
+                            "X-CSRFToken": getCookie("csrftoken"),
                         },
-                        confirm: {
-                            text: 'Excluir',
-                            className: 'btn btn-primary'
-                        }
-                    }
-                }).then((Delete) => {
-                    if (Delete) {
-                        swal({
-                            title: 'Cartão Deletado!',
-                            icon: 'success',
-                            buttons: {
-                                confirm: {
-                                    className: 'btn btn-success'
-                                }
-                            }
-                        }).then(() => {
-                            document.getElementById(`credit-card-${itemId}`).remove();
-                            console.log(`Cartão "${itemName}" excluído para "Outros"`);
-                        });
-                    } else {
-                        swal.close();
-                    }
-                });
+                    })
+                        .then(response => response.json())
+                        .then(data => {
+                            swal({
+                                title: data.success ? "Deletado!" : "Erro!",
+                                text: data.message,
+                                icon: data.success ? "success" : "error",
+                                buttons: { confirm: { className: data.success ? "btn btn-success" : "btn btn-danger" } },
+                            }).then(() => {
+                                if (data.success) location.reload();
+                            });
+                        })
+                        .catch(error => console.error("Erro:", error));
+                }
             });
         });
+
+        // document.querySelectorAll('[id^="delete-credit-card-"]').forEach(button => {
+        //     button.addEventListener('click', function () {
+        //         const itemId = this.getAttribute('data-id');
+        //         const itemName = this.getAttribute('data-name');
+
+        //         swal({
+        //             title: 'Excluir esse cartão?',
+        //             text: `Todas as transações relacionadas ao cartão "${itemName}" serão removidas.`,
+        //             buttons: {
+        //                 cancel: {
+        //                     text: 'Cancelar',
+        //                     visible: true,
+        //                     className: 'btn btn-secondary'
+        //                 },
+        //                 confirm: {
+        //                     text: 'Excluir',
+        //                     className: 'btn btn-primary'
+        //                 }
+        //             }
+        //         }).then((Delete) => {
+        //             if (Delete) {
+        //                 swal({
+        //                     title: 'Cartão Deletado!',
+        //                     icon: 'success',
+        //                     buttons: {
+        //                         confirm: {
+        //                             className: 'btn btn-success'
+        //                         }
+        //                     }
+        //                 }).then(() => {
+        //                     document.getElementById(`credit-card-${itemId}`).remove();
+        //                     console.log(`Cartão "${itemName}" excluído para "Outros"`);
+        //                 });
+        //             } else {
+        //                 swal.close();
+        //             }
+        //         });
+        //     });
+        // });
     },
 
     handleAddCreditCardModal: function () {
         document.getElementById('add-credit-card').addEventListener('click', function () {
-            document.getElementById('creditCardForm').reset();
-            
-            document.getElementById('creditCardModalLabel').textContent = 'Adicionar Cartão de Crédito';
-            document.getElementById('saveCreditCard').textContent = 'Salvar Cartão de Crédito';
+            document.getElementById('addCreditCardForm').reset();
 
-            bootstrap.Modal.getInstance(document.getElementById('creditCardModal')).show();
+            var addCreditCardModal = document.getElementById("addCreditCardModal");
+            var modal = new bootstrap.Modal(addCreditCardModal);
+            modal.show();
         });
     },
 
     handleEditCreditCardModal: function () {
-        document.querySelectorAll('.edit-card-btn').forEach(button => {
-            button.addEventListener('click', function () {
-                const name = button.getAttribute('data-name');
-                const limit = button.getAttribute('data-limit');
-                const additionalData = button.getAttribute('data-additional-data');
-                const brand = button.getAttribute('data-brand');
-                const closingDay = button.getAttribute('data-closing-day');
-                const dueDay = button.getAttribute('data-due-day');
+        $(document).on("click", '[id^="edit-credit-card-"]', function () {
+            const url = $(this).data("url");
+            const modal = $("#editCreditCardModal");
 
-                document.getElementById('creditCardName').value = name;
-                document.getElementById('creditCardLimit').value = limit;
-                document.getElementById('creditCardAdditionalData').value = additionalData;
-                document.getElementById('creditCardBrand').value = brand;
-                document.getElementById('creditCardClosingDay').value = closingDay;
-                document.getElementById('creditCardDueDay').value = dueDay;
-
-                document.getElementById('creditCardModalLabel').textContent = 'Editar Cartão de Crédito';
-                document.getElementById('saveCreditCard').textContent = 'Salvar Alterações';
-
-                const modalElement = document.getElementById('creditCardModal');
-                const modal = bootstrap.Modal.getInstance(modalElement) || new bootstrap.Modal(modalElement);
-                modal.show();
-            });
+            fetch(url, { method: "GET", headers: { "X-Requested-With": "XMLHttpRequest" } })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        console.log(data.credit_card.name);
+                        modal.find("#inputNameEdit").val(data.credit_card.name);
+                        modal.find("#inputLimitEdit").val(data.credit_card.limit);
+                        modal.find("#inputAditionalInfoEdit").val(data.credit_card.additional_info);
+                        modal.find("#inputBrandEdit").val(data.credit_card.brand);
+                        modal.find("#inputClosingDayEdit").val(data.credit_card.closing_day);
+                        modal.find("#inputDueDayEdit").val(data.credit_card.due_day);
+                        modal.find("#editCreditCardForm").attr("action", url);
+                        modal.modal("show");
+                    } else {
+                        alert("Erro ao carregar os dados da categoria");
+                    }
+                })
+                .catch(error => console.error("Erro:", error));
         });
+
+        const editForm = document.getElementById("editCreditCardForm");
+        if (editForm) {
+            editForm.addEventListener("submit", event => {
+                event.preventDefault();
+
+                fetch(event.target.action, {
+                    method: "POST",
+                    body: new FormData(event.target),
+                    headers: { "X-Requested-With": "XMLHttpRequest" },
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            location.reload();
+                        } else {
+                            alert("Erro ao editar cartão de crédito: " + JSON.stringify(data.errors));
+                        }
+                    })
+                    .catch(error => console.error("Erro:", error));
+            });
+        }
+
+        // document.querySelectorAll('[id^="edit-credit-card-"]').forEach(button => {
+        //     button.addEventListener('click', function () {
+        //         const name = button.getAttribute('data-name');
+        //         const limit = button.getAttribute('data-limit');
+        //         const additionalData = button.getAttribute('data-additional-data');
+        //         const brand = button.getAttribute('data-brand');
+        //         const closingDay = button.getAttribute('data-closing-day');
+        //         const dueDay = button.getAttribute('data-due-day');
+
+        //         document.getElementById('inputNameEdit').value = name;
+        //         document.getElementById('inputLimitEdit').value = limit;
+        //         document.getElementById('inputAditionalInfoEdit').value = additionalData;
+        //         document.getElementById('inputBrandEdit').value = brand;
+        //         document.getElementById('inputClosingDayEdit').value = closingDay;
+        //         document.getElementById('inputDueDayEdit').value = dueDay;
+
+        //         const modalElement = document.getElementById('editCreditCardModal');
+        //         const modal = bootstrap.Modal.getInstance(modalElement) || new bootstrap.Modal(modalElement);
+        //         modal.show();
+        //     });
+        // });
     },
 
     handleRegisterPayment: function () {
@@ -186,7 +287,11 @@ const CreditCardManager = {
                 alert("Por favor, preencha todos os campos obrigatórios.");
             }
         });
-    }
+    },
+
+    handleAddCreditCard() {
+        document.getElementById("addCreditCardForm")?.addEventListener("submit", handleSubmitForm);
+    },
 };
 
 CreditCardManager.init();

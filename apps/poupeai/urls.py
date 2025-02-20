@@ -18,7 +18,11 @@ urlpatterns = [
     path('account/detail/<int:pk>/', AccountDetailView.as_view(), name='account-detail'),
     path('account/update/<int:pk>/', AccountUpdateView.as_view(), name='account-update'),
   
-    path('credit-cards/', CreditCardsView.as_view(), name='credit-cards'),
+    path('credit-cards/', CreditCardsListView.as_view(), name='credit-cards'),
+    path('credit-card/create/', CreditCardCreateView.as_view(), name='credit-card-create'),
+    path('credit-card/delete/<int:pk>/', CreditCardDeleteView.as_view(), name='credit-card-delete'),
+    path('credit-card/update/<int:pk>/', CreditCardUpdateView.as_view(), name='credit-card-update'),
+
     path('goals/', GoalsView.as_view(), name='goals'),
     path('help/', help_view, name='help'),
 
