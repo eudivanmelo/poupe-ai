@@ -21,7 +21,8 @@ Categorias
             <div class="card-header d-flex justify-content-between align-items-center">
                 <div class="card-title">Categorias</div>
                 <div class="d-flex gap-3">
-                    <button class="btn btn-icon btn-round btn-primary" id="add-category">
+                    <button class="btn btn-icon btn-round btn-primary" data-bs-toggle="modal"
+                        data-bs-target="#addCategoryModal">
                         <i class="fa fa-plus"></i>
                     </button>
                 </div>
@@ -33,14 +34,14 @@ Categorias
                     <li class="nav-item col-6" role="presentation">
                         <a class="nav-link active m-0 fs-5 text-center despesas" id="despesas-tab" data-bs-toggle="pill"
                             href="#despesas" role="tab" aria-controls="despesas" aria-selected="true"
-                            data-total="{{ total_despesas|floatformat:2 }}" data-total-cat="{{ total_cat_despesas }}">
+                            data-total="{{ total_expenses|floatformat:2 }}" data-total-cat="{{ total_expense_categories }}">
                             <i class="fas fa-money-bill-wave me-2"></i>Despesas
                         </a>
                     </li>
                     <li class="nav-item col-6" role="presentation">
                         <a class="nav-link m-0 fs-5 text-center receitas" id="receitas-tab" data-bs-toggle="pill"
                             href="#receitas" role="tab" aria-controls="receitas" aria-selected="false"
-                            data-total="{{ total_receitas|floatformat:2 }}" data-total-cat="{{ total_cat_receitas }}">
+                            data-total="{{ total_income|floatformat:2 }}" data-total-cat="{{ total_income_categories }}">
                             <i class="fas fa-piggy-bank me-2"></i>Receitas
                         </a>
                     </li>
@@ -50,16 +51,17 @@ Categorias
                 <div class="tab-content" id="categoryTabsContent">
                     <!-- Despesas -->
                     <div class="tab-pane fade show active" id="despesas" role="tabpanel" aria-labelledby="despesas-tab">
+                        {% if expense_categories %}
                         <div class="grid-container">
-                            {% for category in categories_despesas %}
+                            {% for category in expense_categories %}
                             <div class="category-card p-3 border rounded shadow-sm" id="category-{{ category.id }}">
                                 <div class="d-flex justify-content-between align-items-center">
                                     <div class="d-flex align-items-center">
                                         <span class="circle me-3"
-                                            style="background-color: {{ category.cor }}; width: 25px; height: 25px; border-radius: 50%; border: 2px solid #fff;"></span>
+                                            style="background-color: {{ category.color }}; width: 25px; height: 25px; border-radius: 50%; border: 2px solid #fff;"></span>
                                         <div>
-                                            <span class="d-block text-truncate fw-bold" style="max-width: 180px;">{{ category.nome }}</span>
-                                            <span class="d-block d-sm-inline text-muted">R$ {{ category.valor|floatformat:2 }}</span>
+                                            <span class="d-block text-truncate fw-bold" style="max-width: 180px;">{{ category.name }}</span>
+                                            <span class="d-block d-sm-inline text-muted">R$ {{ category.total_transactions_value|floatformat:2 }}</span>
                                         </div>
                                     </div>
                                     <div class="dropdown">
@@ -71,41 +73,42 @@ Categorias
                                         <ul class="dropdown-menu dropdown-menu-end"
                                             aria-labelledby="dropdownMenu{{ category.id }}">
                                             <li>
-                                                <button class="dropdown-item fs-6 edit-category-btn"
-                                                    data-id="{{ category.id }}" data-nome="{{ category.nome }}"
-                                                    data-cor="{{ category.cor }}">Editar</button>
+                                                <button class="dropdown-item fs-6" id="edit-category-{{category.id}}"
+                                                data-url="{% url 'category-update' category.id %}">Editar</button>
                                             </li>
                                             <li>
                                                 <button class="dropdown-item fs-6"
-                                                    id="delete-category-{{ category.id }}" data-id="{{ category.id }}"
-                                                    data-nome="{{ category.nome }}">Excluir</button>
+                                                    id="delete-category-{{ category.id }}" data-item-name="{{category.name}}"
+                                                    data-url="{% url 'category-delete' category.id %}">Excluir</button>
                                             </li>
                                         </ul>
                                     </div>
                                 </div>
                             </div>
-                            {% empty %}
-                            <div class="col-12">
-                                <div class="d-flex justify-content-center align-items-center p-3 text-muted">
-                                    Nenhuma categoria encontrada
-                                </div>
-                            </div>
                             {% endfor %}
                         </div>
+                        {% else %}
+                        <div>
+                            <div class="d-flex justify-content-center align-items-center p-3">
+                                Nenhuma categoria encontrada
+                            </div>
+                        </div>
+                        {% endif %}
                     </div>
 
                     <!-- Receitas -->
                     <div class="tab-pane fade" id="receitas" role="tabpanel" aria-labelledby="receitas-tab">
+                        {% if income_categories %}
                         <div class="grid-container">
-                            {% for category in categories_receitas %}
+                            {% for category in income_categories %}
                             <div class="category-card p-3 border rounded shadow-sm" id="category-{{ category.id }}">
                                 <div class="d-flex justify-content-between align-items-center">
                                     <div class="d-flex align-items-center">
                                         <span class="circle me-3"
-                                            style="background-color: {{ category.cor }}; width: 25px; height: 25px; border-radius: 50%; border: 2px solid #fff;"></span>
+                                            style="background-color: {{ category.color }}; width: 25px; height: 25px; border-radius: 50%; border: 2px solid #fff;"></span>
                                         <div>
-                                            <span class="d-block text-truncate fw-bold" style="max-width: 180px;">{{ category.nome }}</span>
-                                            <span class="d-block d-sm-inline text-muted">R$ {{ category.valor|floatformat:2 }}</span>
+                                            <span class="d-block text-truncate fw-bold" style="max-width: 180px;">{{ category.name }}</span>
+                                            <span class="d-block d-sm-inline text-muted">R$ {{ category.total_transactions_value|floatformat:2 }}</span>
                                         </div>
                                     </div>
                                     <div class="dropdown">
@@ -117,27 +120,28 @@ Categorias
                                         <ul class="dropdown-menu dropdown-menu-end"
                                             aria-labelledby="dropdownMenu{{ category.id }}">
                                             <li>
-                                                <button class="dropdown-item fs-6 edit-category-btn"
-                                                    data-id="{{ category.id }}" data-nome="{{ category.nome }}"
-                                                    data-cor="{{ category.cor }}">Editar</button>
+                                                <button class="dropdown-item fs-6" id="edit-category-{{category.id}}"
+                                                data-url="{% url 'category-update' category.id %}">Editar</button>
                                             </li>
                                             <li>
                                                 <button class="dropdown-item fs-6"
-                                                    id="delete-category-{{ category.id }}" data-id="{{ category.id }}"
-                                                    data-nome="{{ category.nome }}">Excluir</button>
+                                                    id="delete-category-{{ category.id }}"
+                                                    data-item-name="{{category.name}}"
+                                                    data-url="{% url 'category-delete' category.id %}">Excluir</button>
                                             </li>
                                         </ul>
                                     </div>
                                 </div>
-                            </div>
-                            {% empty %}
-                            <div class="col-12">
-                                <div class="d-flex justify-content-center align-items-center p-3 text-muted">
-                                    Nenhuma categoria encontrada
-                                </div>
-                            </div>
+                            </div>                            
                             {% endfor %}
                         </div>
+                        {% else %}
+                        <div>
+                            <div class="d-flex justify-content-center align-items-center p-3">
+                                Nenhuma categoria encontrada
+                            </div>
+                        </div>
+                        {% endif %}
                     </div>
                 </div>
             </div>
@@ -145,42 +149,11 @@ Categorias
             <!-- Rodapé do Card -->
             <div class="card-footer bg-light d-flex justify-content-between">
                 <div>
-                    <strong>Categorias:</strong> <span id="total-categorias">{{ total_cat_despesas }}</span>
+                    <strong>Categorias:</strong> <span id="total-categorias">{{ total_expense_categories }}</span>
                 </div>
                 <div class="text-end">
-                    <strong>Total:</strong> <span id="total-value">R$ {{ total_despesas|floatformat:2 }}</span>
+                    <strong>Total:</strong> <span id="total-value">R$ {{ total_expenses|floatformat:2 }}</span>
                 </div>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- Modal Adicionar Categoria -->
-<div class="modal fade" id="addCategoryModal" tabindex="-1" aria-labelledby="addCategoryModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="addCategoryModalLabel">Adicionar Categoria</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <form id="addCategoryForm">
-                    <div class="mb-3">
-                        <label for="categoryName" class="form-label">Nome</label>
-                        <input type="text" class="form-control" id="categoryName" required>
-                    </div>
-                    <div class="mb-3 d-flex justify-content-between align-items-center">
-                        <label for="categoryColor" class="form-label">Cor da Categoria</label>
-                        <input type="color" class="form-control" id="categoryColor" hidden>
-                        <div id="colorPicker" class="circle"
-                            style="width: 30px; height: 30px; border-radius: 50%; background-color: #000; cursor: pointer;">
-                        </div>
-                    </div>
-                </form>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                <button type="submit" class="btn btn-primary" id="saveCategoryBtn">Salvar Categoria</button>
             </div>
         </div>
     </div>
@@ -190,4 +163,90 @@ Categorias
 {% block scripts %}
 <script src="{% static 'js/categories.js' %}"></script>
 <script src="{% static 'js/plugin/sweetalert/sweetalert.min.js' %}"></script>
+{% endblock %}
+
+{% block end_body %}
+<!-- Modal Adicionar Categoria -->
+<div class="modal fade" id="addCategoryModal" tabindex="-1" aria-labelledby="addCategoryModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addCategoryModalLabel">Adicionar Categoria</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+
+            <form id="addCategoryForm" action="{% url 'category-create' %}" method="post">
+                {% csrf_token %}
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="nameInput" class="form-label">Nome</label>
+                        <input name="name" type="text" class="form-control" id="nameInput" required>
+                    </div>
+                    {% if form.name.errors %}
+                    <div class="invalid-feedback">
+                        {% for error in form.name.errors %}
+                        <p>{{ error }}</p>
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+                    <div class="mb-3 d-flex justify-content-between align-items-center">
+                        <label for="colorInput" class="form-label">Cor da Categoria</label>
+                        <input name="color" type="color" class="form-control" id="colorInput" hidden>
+                        <div id="colorPicker" class="circle"
+                            style="width: 30px; height: 30px; border-radius: 50%; background-color: #000; cursor: pointer;">
+                        </div>
+                    </div>
+                    {% if form.color.errors %}
+                    <div class="invalid-feedback">
+                        {% for error in form.color.errors %}
+                        <p>{{ error }}</p>
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-primary">Salvar Categoria</button>
+                </div>
+            </form>
+
+        </div>
+    </div>
+</div>
+
+<!-- Modal Editar Categoria -->
+<div class="modal fade" id="editCategoryModal" tabindex="-1" aria-labelledby="editCategoryModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editCategoryModalLabel">Editar Categoria</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            
+                <form id="editCategoryForm" method="post">
+                    {% csrf_token %}
+                    <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="nameInput" class="form-label">Nome</label>
+                        <input name="name" type="text" class="form-control" id="nameInput" required>
+                    </div>
+                    <div class="mb-3 d-flex justify-content-between align-items-center">
+                        <label for="colorInputEdit" class="form-label">Cor da Categoria</label>
+                        <input name="color" type="color" class="form-control" id="colorInputEdit" hidden>
+                        <div id="colorPickerEdit" class="circle"
+                            style="width: 30px; height: 30px; border-radius: 50%; background-color: #000; cursor: pointer;">
+                        </div>
+                    </div>
+
+                </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                        <button type="submit" class="btn btn-primary">Salvar Categoria</button>
+                    </div>
+                </form>
+            
+        </div>
+    </div>
+</div>
 {% endblock %}
