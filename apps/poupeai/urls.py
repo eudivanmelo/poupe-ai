@@ -26,7 +26,7 @@ urlpatterns = [
     path('goal/update/<int:pk>/', GoalUpdateView.as_view(), name='goal-update'),
     path('goal/deposit/<int:pk>/', GoalDepositCreateView.as_view(), name='goal-deposit'),
     
-    path('help/', help_view, name='help'),
+    path('help/', HelpView.as_view(), name='help'),
 
     path('profile/', ProfileView.as_view(), name='profile'),
     path('profile/delete/', ProfileDeleteView.as_view(), name='profile-delete'),
