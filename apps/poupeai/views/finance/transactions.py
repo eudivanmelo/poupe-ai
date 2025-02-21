@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from django.views.generic import ListView, CreateView
+from django.views.generic import ListView
 from django.urls import reverse_lazy
 from apps.poupeai.mixins import PoupeAIMixin
 from apps.poupeai.models import Transaction
@@ -22,6 +22,14 @@ class TransactionsListView(PoupeAIMixin, ListView):
             {"name": "Dashboard", "url": reverse_lazy('dashboard')},
             {"name": "Transações", "url": None},
         ]
+        
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['credit_cards'] = self.request.user.credit_cards.all()
+        context['accounts'] = self.request.user.accounts.all()
+        context['categories'] = self.request.user.categories.all()
+        
+        return context
         
     def get_queryset(self):
         queryset = Transaction.objects.filter(user=self.request.user).prefetch_related("card_transactions", "account_transaction").order_by("-created_at")
@@ -48,6 +56,7 @@ class TransactionDetailView(DetailJsonView):
         
         if obj.type == 'card':
             data['card_transaction'] = [model_to_dict(ct) for ct in obj.card_transactions.all()]
+            data['credit_card'] = obj.card_transactions.first().credit_card.name
             data['installments_total_amount'] = obj.installments_total_amount
             data['total_installments'] = obj.total_installments
         else:
@@ -65,23 +74,12 @@ class TransactionDeleteView(DeleteJsonView):
     success_message = "Transação excluída com sucesso!"
     error_message = "Erro ao excluir transação!"
     
-class TestCreateView(CreateView):
-    model = Transaction
-    form_class = TransactionForm
-    template_name = "poupeai/test.html"
-    success_url = reverse_lazy('transactions')
-    
-    def form_valid(self, form):
-        form.instance.user = self.request.user
-        return super().form_valid(form)
-    
 class TransactionCreateView(CreateJsonView):
     '''
     View to create a transaction
     '''
     model = Transaction
     form_class = TransactionForm
-    fields = ['description', 'amount', 'type', 'category', 'status', 'attachment']
     success_url = reverse_lazy('transactions')
     success_message = "Transação criada com sucesso!"
     error_message = "Erro ao criar transação!"

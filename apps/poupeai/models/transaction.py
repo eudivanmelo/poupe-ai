@@ -19,7 +19,7 @@ class Transaction(models.Model):
     attachment = models.FileField(upload_to="attachments/", null=True, blank=True)
     category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name="transactions")
     
-    payment_at = models.DateTimeField(blank=True, null=True)
+    payment_at = models.DateField(blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     
     @property

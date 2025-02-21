@@ -1,7 +1,8 @@
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponseBadRequest
 from django.forms.models import model_to_dict
 from django.views.generic import CreateView, DeleteView, DetailView, UpdateView
 from django.contrib.auth.mixins import LoginRequiredMixin
+
 
 class CreateJsonView(LoginRequiredMixin, CreateView):
     '''
@@ -12,15 +13,16 @@ class CreateJsonView(LoginRequiredMixin, CreateView):
 
     def form_valid(self, form):
         form.instance.user = self.request.user
+        
         self.object = form.save()
         if self.request.headers.get('X-Requested-With') == 'XMLHttpRequest':
             return JsonResponse({'success': True, 'id': self.object.id, 'message': self.success_message})
-        return super().form_valid(form)
+        return HttpResponseBadRequest('Requisição inválida')
 
     def form_invalid(self, form):
         if self.request.headers.get('X-Requested-With') == 'XMLHttpRequest':
             return JsonResponse({'success': False, 'message': self.error_message, 'errors': form.errors}, status=400)
-        return super().form_invalid(form)
+        return HttpResponseBadRequest('Requisição inválida')
     
 class DetailJsonView(LoginRequiredMixin, DetailView):
     '''
@@ -55,7 +57,7 @@ class DetailJsonView(LoginRequiredMixin, DetailView):
                     
             return JsonResponse({'success': True, self.context_object_name: data})
         
-        return super().render_to_response(context, **response_kwargs)
+        return HttpResponseBadRequest('Requisição inválida')
     
 class DeleteJsonView(LoginRequiredMixin, DeleteView):
     '''
@@ -71,12 +73,12 @@ class DeleteJsonView(LoginRequiredMixin, DeleteView):
             self.object.delete()
             if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
                 return JsonResponse({'success': True, 'message': self.success_message})
-            return super().delete(request, *args, **kwargs)
+            return HttpResponseBadRequest('Requisição inválida')
 
         except Exception as e:
             if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
                 return JsonResponse({'success': False, 'message': f"{self.error_message}: {str(e)}"}, status=400)
-            return super().delete(request, *args, **kwargs)
+            return HttpResponseBadRequest('Requisição inválida')
 
 class UpdateJsonView(LoginRequiredMixin, UpdateView):
     '''
@@ -91,15 +93,15 @@ class UpdateJsonView(LoginRequiredMixin, UpdateView):
             data = model_to_dict(obj, fields=self.fields) if self.fields else model_to_dict(obj)
             return JsonResponse({'success': True, self.context_object_name: data})
         
-        return super().get(request, *args, **kwargs)
+        return HttpResponseBadRequest('Requisição inválida')
 
     def form_valid(self, form):
         self.object = form.save()
         if self.request.headers.get('X-Requested-With') == 'XMLHttpRequest':
             return JsonResponse({'success': True, 'message': self.success_message})
-        return super().form_valid(form)
+        return HttpResponseBadRequest('Requisição inválida')
 
     def form_invalid(self, form):
         if self.request.headers.get('X-Requested-With') == 'XMLHttpRequest':
             return JsonResponse({'success': False, 'message': self.error_message, 'errors': form.errors}, status=400)
-        return super().form_invalid(form)
+        return HttpResponseBadRequest('Requisição inválida')

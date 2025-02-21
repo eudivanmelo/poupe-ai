@@ -12,7 +12,7 @@ from .finance.credit_cards import CreditCardsListView, CreditCardCreateView, Cre
 
 from .finance.goals import GoalsListView, GoalCreateView, GoalDeleteView, GoalUpdateView, GoalDepositCreateView
 
-from .finance.transactions import TransactionsListView, TransactionDeleteView, TransactionDetailView
+from .finance.transactions import TransactionsListView, TransactionDeleteView, TransactionDetailView, TransactionCreateView
 
 from .profile.profiles import ProfileDeleteView
 from .profile.profiles import ProfileView
@@ -52,6 +52,7 @@ __all__ = [
     'TransactionsListView',
     'TransactionDeleteView',
     'TransactionDetailView',
+    'TransactionCreateView',
     
     'ProfileDeleteView',
     'ProfileView',

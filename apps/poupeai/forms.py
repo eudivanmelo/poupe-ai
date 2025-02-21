@@ -60,20 +60,20 @@ class TransactionForm(forms.ModelForm):
             payment_at = cleaned_data.get('payment_at')
             
             if not credit_card:
-                self.add_error('credit_card', 'Este campo é obrigatório')
+                self.add_error('credit_card', 'Informe o cartão de crédito')
                 
             if not payment_at:
-                self.add_error('payment_at', 'Este campo é obrigatório')
+                self.add_error('payment_at', 'Informe a data de pagamento')
         
         if transaction_type == 'account':
             account = cleaned_data.get('account')
             expire_at = cleaned_data.get('expire_at')
             
             if not account:
-                self.add_error('account', 'Este campo é obrigatório')
+                self.add_error('account', 'Informe a conta bancária')
             
             if not expire_at:
-                self.add_error('expire_at', 'Este campo é obrigatório')
+                self.add_error('expire_at', 'Informe a data de vencimento')
         
         return cleaned_data
     

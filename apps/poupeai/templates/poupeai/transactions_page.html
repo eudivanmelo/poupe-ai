@@ -1,14 +1,12 @@
-{% extends 'poupeai/poupeai_base.html' %}
-
-{% load static %}
-
+{% extends 'poupeai/poupeai_base.html' %} 
+{% load static %} 
 {% block title %}
-Transações - Poupe.AI
-{% endblock %}
+Transações - Poupe.AI 
+{% endblock %} 
 
-{% block page_title %}
-Transações
-{% endblock %}
+{% block page_title %} 
+Transações 
+{%endblock %} 
 
 {% block content %}
 <div class="row">
@@ -30,8 +28,13 @@ Transações
             </button>
           </form>
 
-          <button class="btn btn-icon btn-round btn-primary" data-bs-toggle="modal" data-bs-target="#createModal"><i
-              class="fa fa-plus"></i></button>
+          <button
+            class="btn btn-icon btn-round btn-primary"
+            data-bs-toggle="modal"
+            data-bs-target="#createModal"
+          >
+            <i class="fa fa-plus"></i>
+          </button>
         </div>
       </div>
 
@@ -56,62 +59,84 @@ Transações
               <tr class="no-wrap-lg">
                 <td class="d-none d-sm-table-cell">
                   {% if transaction.status == 'paid' %}
-                    <i class="fas fa-check-circle text-success"></i>
+                  <i class="fas fa-check-circle text-success"></i>
+                  {% else %} {% if transaction.status == 'expired' %}
+                  <i class="fas fa-calendar-times text-danger"></i>
+                  {% else %} {% if transaction.status == 'warning' %}
+                  <i class="fas fa-exclamation-triangle text-warning"></i>
                   {% else %}
-                    {% if transaction.status == 'expired' %}
-                      <i class="fas fa-calendar-times text-danger"></i>
-                    {% else %}
-                      
-                      {% if transaction.status == 'warning' %}
-                        <i class="fas fa-exclamation-triangle text-warning"></i>
-                      {% else %}
-                        <i class="fas fa-clock text-secondary"></i>
-                      {% endif %}
-                    {% endif %}
-                  {% endif %}
+                  <i class="fas fa-clock text-secondary"></i>
+                  {% endif %} {% endif %} {% endif %}
                 </td>
 
                 <td class="d-none d-sm-table-cell">
                   {% if transaction.type == 'expense' %}
-                    <span class="badge badge-danger">Despesa</span>
+                  <span class="badge badge-danger">Despesa</span>
+                  {% else %} {% if transaction.type == 'card' %}
+                  <span class="badge badge-secondary">Cartão de Credito</span>
                   {% else %}
-                    {% if transaction.type == 'card' %}
-                      <span class="badge badge-secondary">Cartão de Credito</span>
-                    {% else %}
-                      <span class="badge badge-success">Receita</span>
-                    {% endif %}
-                  {% endif %}
+                  <span class="badge badge-success">Receita</span>
+                  {% endif %} {% endif %}
                 </td>
 
                 <td>{{transaction.description|truncatechars:50 }}</td>
+                <td class="d-none d-lg-table-cell">{{transaction.category}}</td>
+
                 <td class="d-none d-lg-table-cell">
-                  {{transaction.category}}
+                  {{ transaction.created_at|date:"d/m/Y" }} - {{transaction.created_at|time:"H:i" }}
                 </td>
 
-                <td class="d-none d-lg-table-cell">{{ transaction.payment_at|date:"d/m/Y" }} - {{ transaction.payment_at|time:"H:i" }}</td>
-                
                 {% if transaction.type == 'card' %}
-                <td>R$ {{transaction.installments_total_amount|floatformat:2}}</td>
+                <td>
+                  R$ {{transaction.installments_total_amount|floatformat:2}}
+                </td>
                 {% else %}
                 <td>R$ {{transaction.amount|floatformat:2}}</td>
                 {% endif %}
-                
+
                 <td>
                   <div class="dropdown">
-                    <button class="btn btn-link text-dark p-0" id="dropdownMenuButton-1" data-bs-toggle="dropdown"
-                      aria-expanded="false">
+                    <button
+                      class="btn btn-link text-dark p-0"
+                      id="dropdownMenuButton-1"
+                      data-bs-toggle="dropdown"
+                      aria-expanded="false"
+                    >
                       <i class="fas fa-ellipsis-v"></i>
                     </button>
-                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuButton-{{transaction.id}}">
+                    <ul
+                      class="dropdown-menu dropdown-menu-end"
+                      aria-labelledby="dropdownMenuButton-{{transaction.id}}"
+                    >
                       <li>
-                        <button class="dropdown-item fs-6" id="detail-transaction-{{transaction.id}}" data-item-name="{{transaction.description}}" data-url="{% url 'transaction-detail' transaction.id %}">Visualizar</button>
+                        <button
+                          class="dropdown-item fs-6"
+                          id="detail-transaction-{{transaction.id}}"
+                          data-item-name="{{transaction.description}}"
+                          data-url="{% url 'transaction-detail' transaction.id %}"
+                        >
+                          Visualizar
+                        </button>
                       </li>
                       <li>
-                        <button class="dropdown-item fs-6 edit-transaction-btn" id="edit-transaction-{{transaction.id}}" data-item-name="{{transaction.description}}"
-                          data-id="1">Editar</button>
+                        <button
+                          class="dropdown-item fs-6 edit-transaction-btn"
+                          id="edit-transaction-{{transaction.id}}"
+                          data-item-name="{{transaction.description}}"
+                          data-id="1"
+                        >
+                          Editar
+                        </button>
                       </li>
                       <li>
-                        <button class="dropdown-item fs-6" id="delete-transaction-{{transaction.id}}" data-item-name="{{transaction.description}}" data-url="{% url 'transaction-delete' transaction.id %}">Excluir</button>
+                        <button
+                          class="dropdown-item fs-6"
+                          id="delete-transaction-{{transaction.id}}"
+                          data-item-name="{{transaction.description}}"
+                          data-url="{% url 'transaction-delete' transaction.id %}"
+                        >
+                          Excluir
+                        </button>
                       </li>
                     </ul>
                   </div>
@@ -119,7 +144,9 @@ Transações
               </tr>
               {% empty %}
               <tr>
-                <td colspan="7" class="text-center">Nenhuma transação encontrada</td>
+                <td colspan="7" class="text-center">
+                  Nenhuma transação encontrada
+                </td>
               </tr>
               {% endfor %}
             </tbody>
@@ -163,25 +190,44 @@ Transações
     </div>
   </div>
 </div>
-{% endblock %}
-
-{% block scripts %}
+{% endblock %} {% block scripts %}
 <script src="{% static 'js/plugin/sweetalert/sweetalert.min.js' %}"></script>
 
 <script src="{% static 'js/transactions.js' %}"></script>
-{% endblock %}
-
-{% block end_body %}
+{% endblock %} {% block end_body %}
 <div
-  style="left: -1000px; overflow: scroll; position: absolute; top: -1000px; border: none; box-sizing: content-box; height: 200px; margin: 0px; padding: 0px; width: 200px;">
-  <div style="border: none; box-sizing: content-box; height: 200px; margin: 0px; padding: 0px; width: 200px;"></div>
+  style="
+    left: -1000px;
+    overflow: scroll;
+    position: absolute;
+    top: -1000px;
+    border: none;
+    box-sizing: content-box;
+    height: 200px;
+    margin: 0px;
+    padding: 0px;
+    width: 200px;
+  "
+>
+  <div
+    style="
+      border: none;
+      box-sizing: content-box;
+      height: 200px;
+      margin: 0px;
+      padding: 0px;
+      width: 200px;
+    "
+  ></div>
 </div>
 <div class="swal-overlay" tabindex="-1">
   <div class="swal-modal" role="dialog" aria-modal="true">
     <div class="swal-text" style="">Message Text</div>
     <div class="swal-footer">
       <div class="swal-button-container">
-        <button class="swal-button swal-button--confirm btn btn-success">OK</button>
+        <button class="swal-button swal-button--confirm btn btn-success">
+          OK
+        </button>
 
         <div class="swal-button__loader">
           <div></div>
@@ -193,12 +239,23 @@ Transações
   </div>
 </div>
 
-<div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
+<div
+  class="modal fade"
+  id="editModal"
+  tabindex="-1"
+  aria-labelledby="editModalLabel"
+  aria-hidden="true"
+>
   <div class="modal-dialog modal-lg modal-dialog-centered">
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title" id="editModalLabel">Editar Transação</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        ></button>
       </div>
       <div class="modal-body">
         <form class="row needs-validation">
@@ -207,8 +264,14 @@ Transações
           <div class="col-md-6 col-sm-12">
             <div class="form-group">
               <label for="descriptionInput" class="form-label">Descrição</label>
-              <input name="description" type="text" class="form-control" id="descriptionInput"
-                placeholder="Ex: Compra de supermercado" required />
+              <input
+                name="description"
+                type="text"
+                class="form-control"
+                id="descriptionInput"
+                placeholder="Ex: Compra de supermercado"
+                required
+              />
               {% if form.description.errors %}
               <div class="invalid-feedback">
                 {% for error in form.description.errors %}
@@ -219,9 +282,18 @@ Transações
             </div>
             <div class="form-group">
               <label for="valueInput" class="form-label">Valor (R$)</label>
-              <input name="value" type="number" class="form-control" id="valueInput" placeholder="0,00" step="0.01"
-                required />
-              <div id="emailHelp" class="form-text">Valores negativos serão considerados despesas!</div>
+              <input
+                name="value"
+                type="number"
+                class="form-control"
+                id="valueInput"
+                placeholder="0,00"
+                step="0.01"
+                required
+              />
+              <div id="emailHelp" class="form-text">
+                Valores negativos serão considerados despesas!
+              </div>
               {% if form.value.errors %}
               <div class="invalid-feedback">
                 {% for error in form.value.errors %}
@@ -232,7 +304,12 @@ Transações
             </div>
             <div class="form-group">
               <label for="categoryInput" class="form-label">Categoria</label>
-              <select name="category" id="categoryInput" class="form-select" aria-label="Categoria">
+              <select
+                name="category"
+                id="categoryInput"
+                class="form-select"
+                aria-label="Categoria"
+              >
                 <option value="1" selected>Transporte</option>
                 <option value="2">Alimentação</option>
                 <option value="3">Lazer</option>
@@ -240,7 +317,12 @@ Transações
             </div>
             <div class="form-group">
               <label for="accountInput" class="form-label">Conta</label>
-              <select name="account" id="accountInput" class="form-select" aria-label="Conta bancária">
+              <select
+                name="account"
+                id="accountInput"
+                class="form-select"
+                aria-label="Conta bancária"
+              >
                 <option value="1">Conta Poupança</option>
                 <option value="2" selected>Conta Corrente</option>
                 <option value="3">Cartão de Crédito</option>
@@ -250,8 +332,16 @@ Transações
 
           <div class="col-md-6 col-sm-12">
             <div class="form-group">
-              <label for="expirationDateInput" class="form-label">Data de Vencimento</label>
-              <input name="expirationDate" type="date" class="form-control" id="expirationDateInput" required />
+              <label for="expirationDateInput" class="form-label"
+                >Data de Vencimento</label
+              >
+              <input
+                name="expirationDate"
+                type="date"
+                class="form-control"
+                id="expirationDateInput"
+                required
+              />
               {% if form.expirationDate.errors %}
               <div class="invalid-feedback">
                 {% for error in form.expirationDate.errors %}
@@ -261,14 +351,28 @@ Transações
               {% endif %}
             </div>
             <div class="form-group my-0 py-0">
-              <div class="form-check form-switch p-0 m-0 d-flex justify-content-between">
+              <div
+                class="form-check form-switch p-0 m-0 d-flex justify-content-between"
+              >
                 <label class="form-check-label" for="fixedInput">Fixa?</label>
-                <input name="fixed" class="form-check-input" type="checkbox" id="fixedInput" />
+                <input
+                  name="fixed"
+                  class="form-check-input"
+                  type="checkbox"
+                  id="fixedInput"
+                />
               </div>
             </div>
             <div class="form-group">
-              <label for="paymentDateInput" class="form-label">Data de Pagamento</label>
-              <input name="paymentDate" type="date" class="form-control" id="paymentDateInput" />
+              <label for="paymentDateInput" class="form-label"
+                >Data de Pagamento</label
+              >
+              <input
+                name="paymentDate"
+                type="date"
+                class="form-control"
+                id="paymentDateInput"
+              />
               {% if form.paymentDate.errors %}
               <div class="invalid-feedback">
                 {% for error in form.paymentDate.errors %}
@@ -279,7 +383,12 @@ Transações
             </div>
             <div class="form-group">
               <label for="accountInput" class="form-label">Comprovante</label>
-              <input name="receipt" type="file" class="form-control" id="receiptInput" />
+              <input
+                name="receipt"
+                type="file"
+                class="form-control"
+                id="receiptInput"
+              />
               {% if form.receipt.errors %}
               <div class="invalid-feedback">
                 {% for error in form.receipt.errors %}
@@ -292,19 +401,32 @@ Transações
         </form>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+          Cancelar
+        </button>
         <button type="button" class="btn btn-primary">Salvar Alterações</button>
       </div>
     </div>
   </div>
 </div>
 
-<div class="modal fade" id="detailModal" tabindex="-1" aria-labelledby="detailModalLabel" aria-hidden="true">
+<div
+  class="modal fade"
+  id="detailModal"
+  tabindex="-1"
+  aria-labelledby="detailModalLabel"
+  aria-hidden="true"
+>
   <div class="modal-dialog modal-lg modal-dialog-centered">
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title" id="detailModalLabel">Detalhes da Transação</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        ></button>
       </div>
       <div class="modal-body">
         <div class="row d-flex align-items-stretch">
@@ -345,124 +467,220 @@ Transações
               </li>
             </ul>
           </div>
-          <div class="col-md-6 col-sm-12" style="max-height: 250px;">
+          <div class="col-md-6 col-sm-12" style="max-height: 250px">
             <strong>Comprovante de Pagamento:</strong>
             <div class="overflow-auto h-100" id="attachment">
-              <img id="attachment" src="{% static 'imgs/comprovante.webp' %}" alt="Comprovante" />
+              <img
+                id="attachment"
+                src="{% static 'imgs/comprovante.webp' %}"
+                alt="Comprovante"
+              />
             </div>
           </div>
         </div>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
-        <button id="modal-edit-button" type="button" onPress={EditTransction(1)} class="btn btn-primary">Editar
-          Transação</button>
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+          Fechar
+        </button>
+        <button
+          id="modal-edit-button"
+          type="button"
+          onPress="{EditTransction(1)}"
+          class="btn btn-primary"
+        >
+          Editar Transação
+        </button>
       </div>
     </div>
   </div>
 </div>
 
-<div class="modal fade" id="createModal" tabindex="-1" aria-labelledby="createModalLabel" aria-hidden="true">
+<div
+  class="modal fade"
+  id="createModal"
+  tabindex="-1"
+  aria-labelledby="createModalLabel"
+  aria-hidden="true"
+>
   <div class="modal-dialog modal-lg modal-dialog-centered">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="createModalLabel">Adicionar um nova transação</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        <h5 class="modal-title" id="createModalLabel">
+          Adicionar um nova transação
+        </h5>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        ></button>
       </div>
       <div class="modal-body">
-        <form class="row needs-validation">
+        <form
+          class="row needs-validation"
+          id="createTransactionForm"
+          action="{% url 'transaction-create' %}"
+          method="post"
+        >
           {% csrf_token %}
 
           <div class="col-md-6 col-sm-12">
             <div class="form-group">
               <label for="descriptionInput" class="form-label">Descrição</label>
-              <input name="description" type="text" class="form-control" id="descriptionInput"
-                placeholder="Ex: Compra de supermercado" required />
-              {% if form.description.errors %}
-              <div class="invalid-feedback">
-                {% for error in form.description.errors %}
-                <p>{{ error }}</p>
-                {% endfor %}
-              </div>
-              {% endif %}
+              <input
+                name="description"
+                type="text"
+                class="form-control"
+                id="descriptionInput"
+                placeholder="Ex: Compra de supermercado"
+                required
+              />
             </div>
+
             <div class="form-group">
               <label for="valueInput" class="form-label">Valor (R$)</label>
-              <input name="value" type="number" class="form-control" id="valueInput" placeholder="0,00" step="0.01"
-                required />
-              <div id="emailHelp" class="form-text">Valores negativos serão considerados despesas!</div>
-              {% if form.value.errors %}
-              <div class="invalid-feedback">
-                {% for error in form.value.errors %}
-                <p>{{ error }}</p>
-                {% endfor %}
+              <input
+                name="amount"
+                type="number"
+                class="form-control"
+                id="valueInput"
+                placeholder="0,00"
+                step="0.01"
+                required
+              />
+              <div id="emailHelp" class="form-text">
+                Em caso de parcelamento, informar o valor da parcela
               </div>
-              {% endif %}
             </div>
+
             <div class="form-group">
-              <label for="categoryInput" class="form-label">Categoria</label>
-              <select name="category" class="form-select" aria-label="Categoria">
-                <option value="1" selected>Transporte</option>
-                <option value="2">Alimentação</option>
-                <option value="3">Lazer</option>
-              </select>
+              <label for="accountInput" class="form-label">Comprovante</label>
+              <input
+                name="attachment"
+                type="file"
+                class="form-control"
+                id="receiptInput"
+              />
             </div>
+
             <div class="form-group">
-              <label for="accountInput" class="form-label">Conta</label>
-              <select name="account" class="form-select" aria-label="Conta bancária">
-                <option value="1">Conta Poupança</option>
-                <option value="2" selected>Conta Corrente</option>
-                <option value="3">Cartão de Crédito</option>
-              </select>
+              <label for="paymentDateInput" class="form-label"
+                >Data de Pagamento</label
+              >
+              <input
+                name="payment_at"
+                type="date"
+                class="form-control"
+                id="paymentDateInput"
+              />
             </div>
           </div>
 
           <div class="col-md-6 col-sm-12">
             <div class="form-group">
-              <label for="expirationDateInput" class="form-label">Data de Vencimento</label>
-              <input name="expirationDate" type="date" class="form-control" id="expirationDateInput" required />
-              {% if form.expirationDate.errors %}
-              <div class="invalid-feedback">
-                {% for error in form.expirationDate.errors %}
-                <p>{{ error }}</p>
+              <label for="categoryInput" class="form-label"
+                >Categoria</label
+              >
+              <select
+                name="category"
+                id="categoryInput"
+                class="form-select"
+              >
+                <option value="">Selecione uma categoria</option>
+                {% for category in categories %}
+                  <option value="{{ category.id }}">{{ category.name }}</option>
+                {% empty %}
+                  <option value="" selected>Nenhuma categoria cadastrada</option>
                 {% endfor %}
-              </div>
-              {% endif %}
+              </select>
             </div>
-            <div class="form-group my-0 py-0">
-              <div class="form-check form-switch p-0 m-0 d-flex justify-content-between">
-                <label class="form-check-label" for="fixedInput">Fixa?</label>
-                <input name="fixed" class="form-check-input" type="checkbox" id="fixedInput" />
-              </div>
-            </div>
+
             <div class="form-group">
-              <label for="paymentDateInput" class="form-label">Data de Pagamento</label>
-              <input name="paymentDate" type="date" class="form-control" id="paymentDateInput" />
-              {% if form.paymentDate.errors %}
-              <div class="invalid-feedback">
-                {% for error in form.paymentDate.errors %}
-                <p>{{ error }}</p>
-                {% endfor %}
-              </div>
-              {% endif %}
+              <label for="transactionType" class="form-label"
+                >Tipo de Transação</label
+              >
+              <select
+                name="transaction_type"
+                id="transactionType"
+                class="form-select"
+              >
+                <option value="account" selected>Conta Bancária</option>
+                <option value="card">Cartão de Crédito</option>
+              </select>
             </div>
-            <div class="form-group">
-              <label for="accountInput" class="form-label">Comprovante</label>
-              <input name="receipt" type="file" class="form-control" id="receiptInput" />
-              {% if form.receipt.errors %}
-              <div class="invalid-feedback">
-                {% for error in form.receipt.errors %}
-                <p>{{ error }}</p>
-                {% endfor %}
+
+            <!-- Seção para Cartão de Crédito (oculto por padrão) -->
+            <div id="cardFields" class="d-none">
+              <div class="form-group">
+                <label for="creditCardSelect" class="form-label"
+                  >Cartão de Crédito</label
+                >
+                <select
+                  name="credit_card"
+                  id="creditCardSelect"
+                  class="form-select"
+                >
+                  <option value="">Selecione um cartão</option>
+                  {% for card in credit_cards %}
+                    <option value="{{ card.id }}">{{ card.name }}</option>
+                  {% endfor %}
+                </select>
               </div>
-              {% endif %}
+
+              <div class="form-group">
+                <label for="installmentsInput" class="form-label"
+                  >Número de Parcelas</label
+                >
+                <input
+                  name="installments"
+                  type="number"
+                  class="form-control"
+                  id="installmentsInput"
+                  value="1"
+                  min="1"
+                />
+              </div>
+            </div>
+
+            <!-- Seção para Conta Bancária -->
+            <div id="accountFields">
+              <div class="form-group">
+                <label for="accountInput" class="form-label">Conta</label>
+                <select name="account" class="form-select">
+                  <option value="">Selecione uma conta</option>
+                  {% for account in accounts %}
+                    <option value="{{ account.id }}">{{ account.name }}</option>
+                  {% endfor %}
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label for="expirationDateInput" class="form-label"
+                  >Data de Vencimento</label
+                >
+                <input
+                  name="expire_at"
+                  type="date"
+                  class="form-control"
+                  id="expirationDateInput"
+                />
+              </div>
             </div>
           </div>
         </form>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-        <button type="button" class="btn btn-primary">Adicionar Transação</button>
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+          Cancelar
+        </button>
+        <button
+          type="submit"
+          form="createTransactionForm"
+          class="btn btn-primary"
+        >
+          Adicionar Transação
+        </button>
       </div>
     </div>
   </div>
@@ -482,7 +700,7 @@ Transações
 
   .dropdown-item.active,
   .dropdown-item:active {
-    background-color: #6C757D;
+    background-color: #6c757d;
     color: white;
   }
 
