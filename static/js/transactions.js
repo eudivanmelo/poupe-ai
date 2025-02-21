@@ -1,10 +1,3 @@
-const EditTransaction = (itemId) => {
-  // $('#recipient-name').val('Recipient ' + itemId);
-  // $('#message-text').val('Message content for transaction ' + itemId);
-
-  $("#editModal").modal("show");
-};
-
 var Alerts = (function () {
   var init_buttons = function () {
     $('[id^="detail-transaction-"]').click(function (e) {
@@ -93,6 +86,10 @@ var Alerts = (function () {
                         <li class="list-group-item gap-2">
                           <strong>Data de Pagamento:</strong>
                           <span>${paymentDateFormatted}</span>
+                        </li>
+                        <li class="list-group-item gap-2">
+                          <strong>Cartão de Crédito:</strong>
+                          <span>${data.transaction.credit_card}</span>
                         </li>`;
             } else {
               const acc_transaction = data.transaction.account_transaction;
@@ -170,8 +167,6 @@ var Alerts = (function () {
 
     $('[id^="edit-transaction-"]').click(function (e) {
       var itemId = $(this).data("item-id");
-
-      EditTransaction(itemId);
     });
 
     $('[id^="delete-transaction-"]').click(function (e) {
@@ -203,7 +198,12 @@ var Alerts = (function () {
               "X-CSRFToken": getCookie("csrftoken"),
             },
           })
-            .then((response) => response.json())
+            .then((response) => {
+              if (!response.ok) {
+                throw new Error(`Erro HTTP! Status: ${response.status}`);
+              }
+              return response.json();
+            })
             .then((data) => {
               if (data.success) {
                 swal({
@@ -237,6 +237,69 @@ var Alerts = (function () {
         }
       });
     });
+
+    $("#createTransactionForm").submit(function (e) {
+      e.preventDefault(); // Impedir o envio padrão do formulário
+
+      const formData = new FormData(e.target);
+
+      fetch(e.target.action, {
+        method: "POST",
+        body: formData,
+        headers: {
+          "X-Requested-With": "XMLHttpRequest",
+        },
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          if (data.success) {
+            $('#createModal').modal('hide');
+
+            swal({
+              title: "Sucesso!",
+              text: data.message,
+              icon: "success",
+              buttons: {
+                confirm: {
+                  className: "btn btn-success",
+                },
+              },
+            }).then(() => {
+              location.reload();
+            });
+          } else {
+            if (data.errors) {
+              let errors = "";
+              for (const key in data.errors) {
+                errors += `${data.errors[key].join(", ")}\n`;
+              }
+
+              swal({
+                title: "Erro!",
+                text: errors,
+                icon: "error",
+                buttons: {
+                  confirm: {
+                    className: "btn btn-danger",
+                  },
+                },
+              });
+            } else {
+              swal({
+                title: "Erro!",
+                text: data.message,
+                icon: "error",
+                buttons: {
+                  confirm: {
+                    className: "btn btn-danger",
+                  },
+                },
+              });
+            }
+          }
+        })
+        .catch((error) => console.error("Erro:", error));
+    });
   };
 
   return {
@@ -248,4 +311,18 @@ var Alerts = (function () {
 
 jQuery(document).ready(function () {
   Alerts.init();
+
+  $("#transactionType").change(function () {
+    var type = $(this).val();
+    var cardFields = $("#cardFields");
+    var accountFields = $("#accountFields");
+
+    if (type === "card") {
+      cardFields.removeClass("d-none");
+      accountFields.addClass("d-none");
+    } else {
+      cardFields.addClass("d-none");
+      accountFields.removeClass("d-none");
+    }
+  });
 });
