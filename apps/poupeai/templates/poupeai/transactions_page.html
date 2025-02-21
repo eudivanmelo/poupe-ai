@@ -1,0 +1,727 @@
+{% extends 'poupeai/poupeai_base.html' %} 
+{% load static %} 
+{% block title %}
+Transações - Poupe.AI 
+{% endblock %} 
+
+{% block page_title %} 
+Transações 
+{%endblock %} 
+
+{% block content %}
+<div class="row">
+  <div class="col-12">
+    <div class="card">
+      <div class="card-header d-flex justify-content-between">
+        <div class="card-title">Transações</div>
+        <div class="d-flex gap-3">
+          <form class="input-group mb-3" method="get">
+            <input
+              type="text"
+              class="form-control form-control-sm"
+              name="search"
+              placeholder="Pesquisar"
+              value="{{ request.GET.search }}"
+            />
+            <button class="btn btn-sm btn-outline-secondary" type="submit">
+              <i class="fas fa-search"></i>
+            </button>
+          </form>
+
+          <button
+            class="btn btn-icon btn-round btn-primary"
+            data-bs-toggle="modal"
+            data-bs-target="#createModal"
+          >
+            <i class="fa fa-plus"></i>
+          </button>
+        </div>
+      </div>
+
+      <div class="card-body p-0">
+        <div class="table-responsive">
+          <table class="table table-head-bg mt-0">
+            <thead>
+              <tr>
+                <th class="d-none d-sm-table-cell" scope="col">
+                  <i class="fas fa-info-circle" title="Situação"></i>
+                </th>
+                <th class="d-none d-sm-table-cell" scope="col">Tipo</th>
+                <th scope="col">Descrição</th>
+                <th class="d-none d-lg-table-cell" scope="col">Categoria</th>
+                <th class="d-none d-lg-table-cell" scope="col">Data e Hora</th>
+                <th scope="col">Valor</th>
+                <th scope="col"></th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for transaction in transactions %}
+              <tr class="no-wrap-lg">
+                <td class="d-none d-sm-table-cell">
+                  {% if transaction.status == 'paid' %}
+                  <i class="fas fa-check-circle text-success"></i>
+                  {% else %} {% if transaction.status == 'expired' %}
+                  <i class="fas fa-calendar-times text-danger"></i>
+                  {% else %} {% if transaction.status == 'warning' %}
+                  <i class="fas fa-exclamation-triangle text-warning"></i>
+                  {% else %}
+                  <i class="fas fa-clock text-secondary"></i>
+                  {% endif %} {% endif %} {% endif %}
+                </td>
+
+                <td class="d-none d-sm-table-cell">
+                  {% if transaction.type == 'expense' %}
+                  <span class="badge badge-danger">Despesa</span>
+                  {% else %} {% if transaction.type == 'card' %}
+                  <span class="badge badge-secondary">Cartão de Credito</span>
+                  {% else %}
+                  <span class="badge badge-success">Receita</span>
+                  {% endif %} {% endif %}
+                </td>
+
+                <td>{{transaction.description|truncatechars:50 }}</td>
+                <td class="d-none d-lg-table-cell">{{transaction.category}}</td>
+
+                <td class="d-none d-lg-table-cell">
+                  {{ transaction.created_at|date:"d/m/Y" }} - {{transaction.created_at|time:"H:i" }}
+                </td>
+
+                {% if transaction.type == 'card' %}
+                <td>
+                  R$ {{transaction.installments_total_amount|floatformat:2}}
+                </td>
+                {% else %}
+                <td>R$ {{transaction.amount|floatformat:2}}</td>
+                {% endif %}
+
+                <td>
+                  <div class="dropdown">
+                    <button
+                      class="btn btn-link text-dark p-0"
+                      id="dropdownMenuButton-1"
+                      data-bs-toggle="dropdown"
+                      aria-expanded="false"
+                    >
+                      <i class="fas fa-ellipsis-v"></i>
+                    </button>
+                    <ul
+                      class="dropdown-menu dropdown-menu-end"
+                      aria-labelledby="dropdownMenuButton-{{transaction.id}}"
+                    >
+                      <li>
+                        <button
+                          class="dropdown-item fs-6"
+                          id="detail-transaction-{{transaction.id}}"
+                          data-item-name="{{transaction.description}}"
+                          data-url="{% url 'transaction-detail' transaction.id %}"
+                        >
+                          Visualizar
+                        </button>
+                      </li>
+                      <li>
+                        <button
+                          class="dropdown-item fs-6 edit-transaction-btn"
+                          id="edit-transaction-{{transaction.id}}"
+                          data-url="{% url 'transaction-update' transaction.id %}"
+                        >
+                          Editar
+                        </button>
+                      </li>
+                      <li>
+                        <button
+                          class="dropdown-item fs-6"
+                          id="delete-transaction-{{transaction.id}}"
+                          data-item-name="{{transaction.description}}"
+                          data-url="{% url 'transaction-delete' transaction.id %}"
+                        >
+                          Excluir
+                        </button>
+                      </li>
+                    </ul>
+                  </div>
+                </td>
+              </tr>
+              {% empty %}
+              <tr>
+                <td colspan="7" class="text-center">
+                  Nenhuma transação encontrada
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+
+        <div class="d-flex justify-content-end px-3">
+          <ul class="pagination pg-primary">
+            {% if page_obj.has_previous %}
+            <li class="page-item">
+              <a
+                class="page-link"
+                href="?page={{ page_obj.previous_page_number }}"
+                aria-label="Anterior"
+              >
+                <span aria-hidden="true">«</span>
+                <span class="sr-only">Anterior</span>
+              </a>
+            </li>
+            {% endif %} {% for num in page_obj.paginator.page_range %}
+            <li
+              class="page-item {% if page_obj.number == num %}active{% endif %}"
+            >
+              <a class="page-link" href="?page={{ num }}">{{ num }}</a>
+            </li>
+            {% endfor %} {% if page_obj.has_next %}
+            <li class="page-item">
+              <a
+                class="page-link"
+                href="?page={{ page_obj.next_page_number }}"
+                aria-label="Próxima"
+              >
+                <span aria-hidden="true">»</span>
+                <span class="sr-only">Próxima</span>
+              </a>
+            </li>
+            {% endif %}
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %} {% block scripts %}
+<script src="{% static 'js/plugin/sweetalert/sweetalert.min.js' %}"></script>
+
+<script src="{% static 'js/transactions.js' %}"></script>
+{% endblock %} {% block end_body %}
+<div
+  style="
+    left: -1000px;
+    overflow: scroll;
+    position: absolute;
+    top: -1000px;
+    border: none;
+    box-sizing: content-box;
+    height: 200px;
+    margin: 0px;
+    padding: 0px;
+    width: 200px;
+  "
+>
+  <div
+    style="
+      border: none;
+      box-sizing: content-box;
+      height: 200px;
+      margin: 0px;
+      padding: 0px;
+      width: 200px;
+    "
+  ></div>
+</div>
+<div class="swal-overlay" tabindex="-1">
+  <div class="swal-modal" role="dialog" aria-modal="true">
+    <div class="swal-text" style="">Message Text</div>
+    <div class="swal-footer">
+      <div class="swal-button-container">
+        <button class="swal-button swal-button--confirm btn btn-success">
+          OK
+        </button>
+
+        <div class="swal-button__loader">
+          <div></div>
+          <div></div>
+          <div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div
+  class="modal fade"
+  id="editModal"
+  tabindex="-1"
+  aria-labelledby="editModalLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog modal-lg modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="editModalLabel">Editar Transação</h5>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        ></button>
+      </div>
+      <div class="modal-body">
+        <form class="row needs-validation" method="post" id="editTransactionForm">
+          {% csrf_token %}
+
+          <div class="col-md-6 col-sm-12">
+            <div class="form-group">
+              <label for="editDescriptionInput" class="form-label">Descrição</label>
+              <input
+                name="description"
+                type="text"
+                class="form-control"
+                id="editDescriptionInput"
+                placeholder="Ex: Compra de supermercado"
+                required
+              />
+            </div>
+
+            <div class="form-group">
+              <label for="editValueInput" class="form-label">Valor (R$)</label>
+              <input
+                name="amount"
+                type="number"
+                class="form-control"
+                id="editValueInput"
+                placeholder="0,00"
+                step="0.01"
+                required
+              />
+              <div id="editEmailHelp" class="form-text">
+                Em caso de parcelamento, informar o valor da parcela
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="editAttachmentInput" class="form-label">Comprovante</label>
+              <input
+                name="attachment"
+                type="file"
+                class="form-control"
+                id="editAttachmentInput"
+              />
+              <div id="editAttachmentHelp" class="form-text">
+                Deixe em branco para manter o comprovante atual!
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="editPaymentDateInput" class="form-label"
+                >Data de Pagamento</label
+              >
+              <input
+                name="payment_at"
+                type="date"
+                class="form-control"
+                id="editPaymentDateInput"
+              />
+            </div>
+          </div>
+
+          <div class="col-md-6 col-sm-12">
+            <div class="form-group">
+              <label for="editCategoryInput" class="form-label"
+                >Categoria</label
+              >
+              <select
+                name="category"
+                id="editCategoryInput"
+                class="form-select"
+              >
+                <option value="">Selecione uma categoria</option>
+                {% for category in categories %}
+                  <option value="{{ category.id }}">{{ category.name }}</option>
+                {% empty %}
+                  <option value="" selected>Nenhuma categoria cadastrada</option>
+                {% endfor %}
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="editTransactionType" class="form-label"
+                >Tipo de Transação</label
+              >
+              <select
+                name="transaction_type"
+                id="editTransactionType"
+                class="form-select"
+              >
+                <option value="account" selected>Conta Bancária</option>
+                <option value="card">Cartão de Crédito</option>
+              </select>
+            </div>
+
+            <!-- Seção para Cartão de Crédito (oculto por padrão) -->
+            <div id="editCardFields" class="d-none">
+              <div class="form-group">
+                <label for="editCreditCardSelect" class="form-label"
+                  >Cartão de Crédito</label
+                >
+                <select
+                  name="credit_card"
+                  id="editCreditCardSelect"
+                  class="form-select"
+                >
+                  <option value="">Selecione um cartão</option>
+                  {% for card in credit_cards %}
+                    <option value="{{ card.id }}">{{ card.name }}</option>
+                  {% endfor %}
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label for="editInstallmentsInput" class="form-label"
+                  >Número de Parcelas</label
+                >
+                <input
+                  name="installments"
+                  type="number"
+                  class="form-control"
+                  id="editInstallmentsInput"
+                  value="1"
+                  min="1"
+                />
+              </div>
+            </div>
+
+            <!-- Seção para Conta Bancária -->
+            <div id="editAccountFields">
+              <div class="form-group">
+                <label for="editAccountInput" class="form-label">Conta</label>
+                <select name="account" id="editAccountInput" class="form-select">
+                  <option value="">Selecione uma conta</option>
+                  {% for account in accounts %}
+                    <option value="{{ account.id }}">{{ account.name }}</option>
+                  {% endfor %}
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label for="editExpirationDateInput" class="form-label"
+                  >Data de Vencimento</label
+                >
+                <input
+                  name="expire_at"
+                  type="date"
+                  class="form-control"
+                  id="editExpirationDateInput"
+                />
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+          Cancelar
+        </button>
+        <button type="submit" form="editTransactionForm" class="btn btn-primary">Salvar Alterações</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div
+  class="modal fade"
+  id="detailModal"
+  tabindex="-1"
+  aria-labelledby="detailModalLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog modal-lg modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="detailModalLabel">Detalhes da Transação</h5>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        ></button>
+      </div>
+      <div class="modal-body">
+        <div class="row d-flex align-items-stretch">
+          <div class="col-md-6 col-sm-12">
+            <ul class="list-group list-group-flush" id="transaction-details">
+              <li class="list-group-item gap-2">
+                <strong>Descrição:</strong>
+                <span id="description">Compra de materiais de escritório</span>
+              </li>
+              <li class="list-group-item gap-2">
+                <strong>Valor:</strong>
+                <span id="description">R$ 150,00</span>
+              </li>
+              <li class="list-group-item gap-2">
+                <strong>Tipo:</strong>
+                <span id="description">Despesa</span>
+              </li>
+              <li class="list-group-item gap-2">
+                <strong>Categoria:</strong>
+                <span id="description">Operacional</span>
+              </li>
+              <li class="list-group-item gap-2">
+                <strong>Data e Hora da Transação:</strong>
+                <span>2025-01-07 10:15</span>
+              </li>
+              <li class="list-group-item gap-2">
+                <strong>Data de Vencimento:</strong>
+                <span>2025-01-07</span>
+              </li>
+              <li class="list-group-item gap-2">
+                <strong>Conta:</strong>
+                <span>Conta Corrente</span>
+              </li>
+
+              <li class="list-group-item gap-2">
+                <strong>Fixa:</strong>
+                <span>Não</span>
+              </li>
+            </ul>
+          </div>
+          <div class="col-md-6 col-sm-12" style="max-height: 250px">
+            <strong>Comprovante de Pagamento:</strong>
+            <div class="overflow-auto h-100" id="attachment">
+              <img
+                id="attachment"
+                src="{% static 'imgs/comprovante.webp' %}"
+                alt="Comprovante"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+          Fechar
+        </button>
+        <button
+          id="modal-edit-button"
+          type="button"
+          onPress="{EditTransction(1)}"
+          class="btn btn-primary"
+        >
+          Editar Transação
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div
+  class="modal fade"
+  id="createModal"
+  tabindex="-1"
+  aria-labelledby="createModalLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog modal-lg modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="createModalLabel">
+          Adicionar um nova transação
+        </h5>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        ></button>
+      </div>
+      <div class="modal-body">
+        <form
+          class="row needs-validation"
+          id="createTransactionForm"
+          action="{% url 'transaction-create' %}"
+          method="post"
+        >
+          {% csrf_token %}
+
+          <div class="col-md-6 col-sm-12">
+            <div class="form-group">
+              <label for="descriptionInput" class="form-label">Descrição</label>
+              <input
+                name="description"
+                type="text"
+                class="form-control"
+                id="descriptionInput"
+                placeholder="Ex: Compra de supermercado"
+                required
+              />
+            </div>
+
+            <div class="form-group">
+              <label for="valueInput" class="form-label">Valor (R$)</label>
+              <input
+                name="amount"
+                type="number"
+                class="form-control"
+                id="valueInput"
+                placeholder="0,00"
+                step="0.01"
+                required
+              />
+              <div id="emailHelp" class="form-text">
+                Em caso de parcelamento, informar o valor da parcela
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="accountInput" class="form-label">Comprovante</label>
+              <input
+                name="attachment"
+                type="file"
+                class="form-control"
+                id="receiptInput"
+              />
+            </div>
+
+            <div class="form-group">
+              <label for="paymentDateInput" class="form-label"
+                >Data de Pagamento</label
+              >
+              <input
+                name="payment_at"
+                type="date"
+                class="form-control"
+                id="paymentDateInput"
+              />
+            </div>
+          </div>
+
+          <div class="col-md-6 col-sm-12">
+            <div class="form-group">
+              <label for="categoryInput" class="form-label"
+                >Categoria</label
+              >
+              <select
+                name="category"
+                id="categoryInput"
+                class="form-select"
+              >
+                <option value="">Selecione uma categoria</option>
+                {% for category in categories %}
+                  <option value="{{ category.id }}">{{ category.name }}</option>
+                {% empty %}
+                  <option value="" selected>Nenhuma categoria cadastrada</option>
+                {% endfor %}
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="transactionType" class="form-label"
+                >Tipo de Transação</label
+              >
+              <select
+                name="transaction_type"
+                id="transactionType"
+                class="form-select"
+              >
+                <option value="account" selected>Conta Bancária</option>
+                <option value="card">Cartão de Crédito</option>
+              </select>
+            </div>
+
+            <!-- Seção para Cartão de Crédito (oculto por padrão) -->
+            <div id="cardFields" class="d-none">
+              <div class="form-group">
+                <label for="creditCardSelect" class="form-label"
+                  >Cartão de Crédito</label
+                >
+                <select
+                  name="credit_card"
+                  id="creditCardSelect"
+                  class="form-select"
+                >
+                  <option value="">Selecione um cartão</option>
+                  {% for card in credit_cards %}
+                    <option value="{{ card.id }}">{{ card.name }}</option>
+                  {% endfor %}
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label for="installmentsInput" class="form-label"
+                  >Número de Parcelas</label
+                >
+                <input
+                  name="installments"
+                  type="number"
+                  class="form-control"
+                  id="installmentsInput"
+                  value="1"
+                  min="1"
+                />
+              </div>
+            </div>
+
+            <!-- Seção para Conta Bancária -->
+            <div id="accountFields">
+              <div class="form-group">
+                <label for="accountInput" class="form-label">Conta</label>
+                <select name="account" class="form-select">
+                  <option value="">Selecione uma conta</option>
+                  {% for account in accounts %}
+                    <option value="{{ account.id }}">{{ account.name }}</option>
+                  {% endfor %}
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label for="expirationDateInput" class="form-label"
+                  >Data de Vencimento</label
+                >
+                <input
+                  name="expire_at"
+                  type="date"
+                  class="form-control"
+                  id="expirationDateInput"
+                />
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+          Cancelar
+        </button>
+        <button
+          type="submit"
+          form="createTransactionForm"
+          class="btn btn-primary"
+        >
+          Adicionar Transação
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  .dropdown-item {
+    font-size: 1rem;
+    padding: 8px 16px;
+    background-color: transparent;
+    color: #000;
+  }
+
+  .dropdown-item:hover {
+    background-color: #f8f9fa;
+  }
+
+  .dropdown-item.active,
+  .dropdown-item:active {
+    background-color: #6c757d;
+    color: white;
+  }
+
+  .dropdown-menu {
+    position: fixed;
+    min-width: 120px;
+    border: none;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  }
+
+  .table-responsive {
+    overflow-x: auto;
+    position: relative;
+  }
+</style>
+{% endblock %}

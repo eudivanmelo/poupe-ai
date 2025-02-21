@@ -1,0 +1,335 @@
+{% extends 'poupeai/poupeai_base.html' %}
+
+{% load static %}
+
+{% block title %}Cartões de Crédito - Poupe.AI{% endblock title %}
+
+{% block head %}
+<link rel="stylesheet" href="{% static 'css/credit-cards.css' %}">
+{% endblock %}
+
+{% block page_title %}Cartões de Crédito{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <div class="card shadow-sm">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <div class="card-title">Cartões de Crédito</div>
+                <div class="d-flex gap-3">
+                    <button class="btn btn-icon btn-round btn-primary" id="add-credit-card" data-bs-toggle="modal"
+                        data-bs-target="#creditCardModal">
+                        <i class="fa fa-plus"></i>
+                    </button>
+                </div>
+            </div>
+
+            <div class="card-body px-0 px-md-3">
+                <div class="grid-container">
+                    {% for card in credit_cards %}
+                        <div id="credit-card-{{ card.id }}">
+                            <div class="align-items-center border p-3 rounded shadow-sm">
+                                <div class="d-flex justify-content-between align-items-center py-1">
+                                    <div>
+                                        <p class="mb-0 fw-bold fs-4 fs-md-3 text-truncate">{{ card.name }}</p>
+                                    </div>
+                                    <div class="d-flex">
+                                        <div class="d-flex align-items-center">
+                                            <button class="btn custom-btn addExpenseBtn" type="button"
+                                                data-bs-toggle="modal" data-bs-target="#expenseModal"
+                                                data-card-id="{{ card.id }}">
+                                                <i class="fas fa-plus"></i>
+                                            </button>
+                                        </div>
+                                        <div class="dropdown d-flex align-items-center ms-3">
+                                            <button class="btn custom-btn" type="button" id="dropdownMenu{{ card.id }}"
+                                                data-bs-toggle="dropdown" aria-expanded="false">
+                                                <i class="fas fa-ellipsis-v"></i>
+                                            </button>
+                                            <ul class="dropdown-menu dropdown-menu-end"
+                                                aria-labelledby="dropdownMenu{{ card.id }}">
+                                                <li>
+                                                    <button class="dropdown-item fs-6 edit-card-btn" data-id="{{ card.id }}"
+                                                        data-name="{{ card.name }}"
+                                                        data-limit="{{ card.limit }}"
+                                                        data-additional-data="{{ card.additional_data }}"
+                                                        data-brand="{{ card.brand }}"
+                                                        data-closing-day="{{ card.closing_day }}"
+                                                        data-due-day="{{ card.due_day }}">Editar</button>
+                                                </li>
+                                                <li>
+                                                    <button class="dropdown-item fs-6 delete-card-btn"
+                                                        id="delete-credit-card-{{ card.id }}"
+                                                        data-id="{{ card.id }}"
+                                                        data-name="{{ card.name }}">Excluir</button>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="d-flex justify-content-between align-items-center py-1">
+                                    <div class="text-start flex-grow-1" data-limit="{{ card.limit }}">
+                                        <p class="mb-0 fw-bold fs-6 fs-md-5 text-truncate">Limite</p>
+                                        <p class="mb-0 text-truncate">R$ {{ card.limit|floatformat:2 }}</p>
+                                    </div>
+                                    <div class="text-center flex-grow-1" data-outstanding="{{ card.outstanding }}">
+                                        <p class="mb-0 fw-bold fs-6 fs-md-5 text-truncate">Em Aberto</p>
+                                        <p class="mb-0 text-truncate">R$ {{ card.outstanding|floatformat:2 }}</p>
+                                    </div>
+                                    <div class="text-end flex-grow-1">
+                                        <p class="mb-0 fw-bold fs-6 fs-md-5 text-truncate">Disponível</p>
+                                        <p class="mb-0 text-truncate">R$ {{ card.available|floatformat:2 }}</p>
+                                    </div>
+                                </div>
+
+                                <div class="my-3">
+                                    <div class="progress" style="height: 10px;">
+                                        <div class="progress-bar" role="progressbar" id="progress-bar" style="width: 0%;"
+                                            aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"
+                                            data-limit="{{ card.limit }}" data-outstanding="{{ card.outstanding }}">
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="d-flex justify-content-between dashed-border py-2">
+                                    <div class="text-center">
+                                        <p class="mb-1 fw-bold fs-6 fs-md-5 text-truncate">Fechamento</p>
+                                        <p class="mb-0">{{ card.closing_date }}</p>
+                                    </div>
+                                    <div class="text-center">
+                                        <p class="mb-1 fw-bold fs-6 fs-md-5 text-truncate">Vencimento</p>
+                                        <p class="mb-0">{{ card.due_date }}</p>
+                                    </div>
+                                </div>
+                                <div class="d-flex justify-content-between py-2">
+                                    <div class="text-center">
+                                        <p class="mb-1 fw-bold">Fatura</p>
+                                    </div>
+                                    <div class="text-center">
+                                        <p class="mb-1 fw-bold">R$ {{ card.invoice_amount|floatformat:2 }}</p>
+                                    </div>
+                                </div>
+                                <div class="d-flex justify-content-between align-items-center py-1">
+                                    <div>
+                                        <span
+                                            class="badge rounded-pill text-bg-{% if card.status == 'Aberta' %}success{% else %}danger{% endif %} border-0">{{ card.status }}</span>
+                                    </div>
+                                    <div>
+                                        <a href="#"
+                                            class="text-dark d-inline-flex align-items-center disabled-link link-active p-1"
+                                            data-bs-toggle="modal" aria-disabled="true"
+                                            data-bs-target="#registerPaymentModal">
+                                            <i class="fas fa-check-circle me-2"></i> Registrar Pagamento
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {% empty %}
+                        <div class="col-12"><div
+                            class="d-flex justify-content-center align-items-center p-3">Nenhuma Cartão de Crédito Encontrado</div></div>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <div class="card-footer text-center">
+                <p class="mb-0">Total de Cartões: <strong>{{ credit_cards|length }}</strong></p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal de Registrar Pagamento -->
+<div class="modal fade" id="registerPaymentModal" tabindex="-1" aria-labelledby="registerPaymentModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog modal-md modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="registerPaymentModalLabel">Registrar Pagamento</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="registerPaymentForm">
+                    <div class="mb-3">
+                        <label for="registerPaymentAmountInput" class="form-label">Quanto você quer pagar?</label>
+                        <input type="number" class="form-control" id="registerPaymentAmountInput" placeholder="0,00"
+                            step="0.01" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="registerPaymentEffectiveDateInput" class="form-label">Data da Efetivação</label>
+                        <input type="date" class="form-control" id="registerPaymentEffectiveDateInput" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="registerPaymentAccountSelectInput" class="form-label">Conta</label>
+                        <select class="form-select" id="registerPaymentAccountSelectInput" required>
+                            {% for account in accounts %}
+                            <option value="{{ account.id }}">{{ account.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="registerPaymentAttachedDocumentInput" class="form-label">Anexar Documento</label>
+                        <input type="file" class="form-control" id="registerPaymentAttachedDocumentInput" required>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                        <button type="submit" class="btn btn-primary" id="registerPaymentSave">Salvar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Nova Depesa -->
+<div class="modal fade" id="expenseModal" tabindex="-1" aria-labelledby="expenseModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="expenseModalLabel">Nova Despesa</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="expenseForm" method="post" action="#" enctype="multipart/form-data">
+                    {% csrf_token %}
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="expenseDescription" class="form-label">Descrição</label>
+                                <input type="text" class="form-control" id="expenseDescription" name="description"
+                                    placeholder="Ex: Compra de Supermercado" required>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="expenseValue" class="form-label">Valor</label>
+                                <input type="number" class="form-control" id="expenseValue" name="value"
+                                    placeholder="0,00" step="0.01" required>
+                            </div>
+
+                            <div class="form-check form-switch p-0 mb-3">
+                                <label class="form-check-label" for="expenseFixed">Fixa?</label>
+                                <input class="form-check-input" type="checkbox" id="expenseFixed" name="fixed">
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="expenseCreditCard" class="form-label">Cartão de Crédito</label>
+                                <select class="form-select" id="expenseCreditCard" name="credit_card" required>
+                                    <option value="" disabled selected>Selecione um Cartão</option>
+                                    {% for card in credit_cards %}
+                                    <option value="{{ card.id }}">{{ card.name }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="expenseInvoice" class="form-label">Fatura</label>
+                                <select class="form-select" id="expenseInvoice" name="invoice" required>
+                                    <option value="" disabled selected>Selecione a Fatura</option>
+                                    {% for invoice in invoices %}
+                                    <option value="{{ invoice.id }}">{{ invoice.month }}/{{ invoice.year }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="expenseCategory" class="form-label">Categoria</label>
+                                <select class="form-select" id="expenseCategory" name="category" required>
+                                    <option value="" disabled selected>Selecione uma Categoria</option>
+                                    {% for category in categories %}
+                                    <option value="{{ category.id }}">{{ category.name }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="expenseAttachment" class="form-label">Anexar Documento</label>
+                                <input class="form-control" type="file" id="expenseAttachment" name="attachment"
+                                    accept=".pdf,.jpg,.png">
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="submit" class="btn btn-primary" form="expenseForm">Salvar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal de Cadastro de Cartão de Crédito -->
+<div class="modal fade" id="creditCardModal" tabindex="-1" aria-labelledby="creditCardModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="creditCardModalLabel">Adicionar Cartão de Crédito</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="creditCardForm" method="post" action="#" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="creditCardName" class="form-label">Nome</label>
+                                <input type="text" class="form-control" id="creditCardName" name="name"
+                                    placeholder="Ex: Banco do Brasil" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="creditCardLimit" class="form-label">Limite</label>
+                                <input type="number" class="form-control" id="creditCardLimit" name="limit"
+                                    placeholder="0,00" step="0.01" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="creditCardAdditionalData" class="form-label">Dados Adicionais</label>
+                                <textarea class="form-control" id="creditCardAdditionalData"
+                                    name="additional_data"></textarea>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="creditCardBrand" class="form-label">Bandeira</label>
+                                <select class="form-select" id="creditCardBrand" name="brand" required>
+                                    {% for card in credit_card_brands %}
+                                    <option value="{{ card.id }}">{{ card.name }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label for="creditCardClosingDay" class="form-label">Dia de Fechamento</label>
+                                <select class="form-select" id="creditCardClosingDay" name="closing_day" required>
+                                    <option value="1">1</option>
+                                    <option value="2">2</option>
+                                    <option value="3">3</option>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label for="creditCardDueDay" class="form-label">Dia de Vencimento</label>
+                                <select class="form-select" id="creditCardDueDay" name="due_day" required>
+                                    <option value="1">1</option>
+                                    <option value="5">5</option>
+                                    <option value="10">10</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="submit" class="btn btn-primary" form="creditCardForm" id="saveCreditCard">Salvar</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{% static 'js/credit-cards.js' %}"></script>
+<script src="{% static 'js/plugin/sweetalert/sweetalert.min.js' %}"></script>
+{% endblock %}
