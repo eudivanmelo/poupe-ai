@@ -27,7 +27,7 @@ class CategoryAdmin(admin.ModelAdmin):
 
 @admin.register(Transaction)
 class TransactionAdmin(admin.ModelAdmin):
-    list_display = ['user', 'description', 'amount', 'category', 'created_at']
+    list_display = ['user', 'description', 'amount', 'category', 'created_at', 'payment_at']
     search_fields = ['user__email', 'description']
     ordering = ['user', 'description', 'created_at']
 
@@ -50,5 +50,5 @@ class InvoiceAdmin(admin.ModelAdmin):
 
 @admin.register(AccountTransaction)
 class AccountTransactionAdmin(admin.ModelAdmin):
-    list_display = ('transaction', 'account', 'expire_at', 'payment_at', 'type')
+    list_display = ('transaction', 'account', 'expire_at')
     search_fields = ('transaction__description', 'credit_card__name', 'invoice__month')
