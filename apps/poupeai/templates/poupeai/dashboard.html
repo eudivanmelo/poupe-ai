@@ -1,0 +1,645 @@
+{% extends 'poupeai/poupeai_base.html' %}
+
+{% load static %}
+
+{% block title %}
+  Dashboard - Poupe.AI
+{% endblock %}
+
+{% block page_title %}
+  Dashboard
+{% endblock %}
+
+{% block content %}
+  <div class="row d-flex justify-content-between align-items-end p-0 m-0">
+    <div class="col p-0" style="margin-top: -15px;">Como está sua saúde financeira hoje?</div>
+
+    <div class="col d-flex justify-content-end gap-2 px-0" style="margin-top: -30px;">
+      <button class="btn btn-secondary btn-rounded" data-bs-toggle="modal" data-bs-target="#reportIaModal">Relatório de IA</button>
+      <button class="btn btn-primary btn-rounded" data-bs-toggle="modal" data-bs-target="#createModal">Nova Transação</button>
+    </div>
+  </div>
+
+  <div class="row mt-3">
+    <div class="col-sm-6 col-md-3">
+      <div class="card card-stats card-round">
+        <div class="card-body">
+          <div class="row align-items-center">
+            <div class="col-icon">
+              <div class="icon-big text-center icon-primary bubble-shadow-small">
+                <i class="fas fa-wallet"></i>
+              </div>
+            </div>
+            <div class="col col-stats ms-3 ms-sm-0">
+              <div class="numbers">
+                <p class="card-category">Saldo Total</p>
+                <h4 class="card-title">R$ 1.248,49</h4>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-sm-6 col-md-3">
+      <div class="card card-stats card-round">
+        <div class="card-body">
+          <div class="row align-items-center">
+            <div class="col-icon">
+              <div class="icon-big text-center icon-info bubble-shadow-small">
+                <i class="fas fa-money-bill-alt"></i>
+              </div>
+            </div>
+            <div class="col col-stats ms-3 ms-sm-0">
+              <div class="numbers">
+                <p class="card-category">Gastos Mensal</p>
+                <h4 class="card-title">R$ 8.023,54</h4>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-sm-6 col-md-3">
+      <div class="card card-stats card-round">
+        <div class="card-body">
+          <div class="row align-items-center">
+            <div class="col-icon">
+              <div class="icon-big text-center icon-success bubble-shadow-small">
+                <i class="fas fa-chart-line"></i>
+              </div>
+            </div>
+            <div class="col col-stats ms-3 ms-sm-0">
+              <div class="numbers">
+                <p class="card-category">Entradas Mensais</p>
+                <h4 class="card-title">R$ 1.418,23</h4>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-sm-6 col-md-3">
+      <div class="card card-stats card-round">
+        <div class="card-body">
+          <div class="row align-items-center">
+            <div class="col-icon">
+              <div class="icon-big text-center icon-secondary bubble-shadow-small">
+                <i class="fas fa-luggage-cart"></i>
+              </div>
+            </div>
+            <div class="col col-stats ms-3 ms-sm-0">
+              <div class="numbers">
+                <p class="card-category">Despesas Fíxas</p>
+                <h4 class="card-title">R$ 1.345,55</h4>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-8">
+      <div class="card card-round">
+        <div class="card-header">
+          <div class="card-head-row card-tools-still-right">
+            <div class="card-title">Análise do Saldo</div>
+            <div class="card-tools">
+              <div class="dropdown">
+                <button class="btn btn-icon btn-clean me-0" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-ellipsis-h"></i></button>
+                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton" style="">
+                  <a class="dropdown-item" href="#">Hoje</a>
+                  <a class="dropdown-item" href="#">Ultimo semana</a>
+                  <a class="dropdown-item" href="#">Ultimo mês</a>
+                  <a class="dropdown-item" href="#">Ultimo ano</a>
+                  <div class="dropdown-divider"></div>
+                  <a class="dropdown-item" href="#">Exportar</a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="chart-container" style="min-height: 375px">
+            <div class="chartjs-size-monitor" style="position: absolute; inset: 0px; overflow: hidden; pointer-events: none; visibility: hidden; z-index: -1;">
+              <div class="chartjs-size-monitor-expand" style="position:absolute;left:0;top:0;right:0;bottom:0;overflow:hidden;pointer-events:none;visibility:hidden;z-index:-1;">
+                <div style="position:absolute;width:1000000px;height:1000000px;left:0;top:0"></div>
+              </div>
+              <div class="chartjs-size-monitor-shrink" style="position:absolute;left:0;top:0;right:0;bottom:0;overflow:hidden;pointer-events:none;visibility:hidden;z-index:-1;">
+                <div style="position:absolute;width:200%;height:200%;left:0; top:0"></div>
+              </div>
+            </div>
+            <canvas id="balance-analytics-chart" width="305" height="375" style="display: block; width: 305px; height: 375px;" class="chartjs-render-monitor"></canvas>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="card card-round">
+        <div class="card-header">
+          <div class="card-head-row card-tools-still-right">
+            <div class="card-title">Cartões de Crédito</div>
+            <div class="card-tools">
+              <div class="dropdown">
+                <button class="btn btn-icon btn-clean me-0" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-ellipsis-h"></i></button>
+                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton" style="">
+                  <a class="dropdown-item" href="#">Hoje</a>
+                  <a class="dropdown-item" href="#">Ultimo semana</a>
+                  <a class="dropdown-item" href="#">Ultimo mês</a>
+                  <a class="dropdown-item" href="#">Ultimo ano</a>
+                  <div class="dropdown-divider"></div>
+                  <a class="dropdown-item" href="#">Exportar</a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="chart-container" style="min-height: 375px">
+            <div class="chartjs-size-monitor" style="position: absolute; inset: 0px; overflow: hidden; pointer-events: none; visibility: hidden; z-index: -1;">
+              <div class="chartjs-size-monitor-expand" style="position:absolute;left:0;top:0;right:0;bottom:0;overflow:hidden;pointer-events:none;visibility:hidden;z-index:-1;">
+                <div style="position:absolute;width:1000000px;height:1000000px;left:0;top:0"></div>
+              </div>
+              <div class="chartjs-size-monitor-shrink" style="position:absolute;left:0;top:0;right:0;bottom:0;overflow:hidden;pointer-events:none;visibility:hidden;z-index:-1;">
+                <div style="position:absolute;width:200%;height:200%;left:0; top:0"></div>
+              </div>
+            </div>
+            <canvas id="cards-analytics-chart" width="381" height="300" style="display: block; width: 381px; height: 300px;" class="chartjs-render-monitor"></canvas>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-4 d-flex align-items-stretch">
+      <div class="card card-round w-100">
+        <div class="card-header">
+          <div class="card-head-row card-tools-still-right">
+            <div class="card-title">Ultimas Transações</div>
+            <div class="card-tools">
+              <div class="dropdown">
+                <button class="btn btn-icon btn-clean me-0" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-ellipsis-h"></i></button>
+                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton" style="">
+                  <a class="dropdown-item" href="#">Hoje</a>
+                  <a class="dropdown-item" href="#">Ultimo semana</a>
+                  <a class="dropdown-item" href="#">Ultimo mês</a>
+                  <a class="dropdown-item" href="#">Ultimo ano</a>
+                  <div class="dropdown-divider"></div>
+                  <a class="dropdown-item" href="#">Exportar</a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="card-body p-0">
+          <div class="table-responsive overflow-auto" style="max-height: 375px; min-height: 375px;">
+            <table class="table table-sm table-head-bg mt-0">
+              <thead>
+                <tr class="text-uppercase">
+                  <th>Data</th>
+                  <th>Valor</th>
+                  <th>Categoria</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr class="no-wrap-lg">
+                  <td>12/09/2021</td>
+                  <td>R$ 150,00</td>
+                  <td>
+                    <span class="badge badge-secondary">Viagem</span>
+                  </td>
+                </tr>
+                <tr class="no-wrap-lg">
+                  <td>12/09/2021</td>
+                  <td>R$ 150,00</td>
+                  <td>
+                    <span class="badge badge-secondary">Viagem</span>
+                  </td>
+                </tr>
+                <tr class="no-wrap-lg">
+                  <td>12/09/2021</td>
+                  <td>R$ 150,00</td>
+                  <td>
+                    <span class="badge badge-secondary">Viagem</span>
+                  </td>
+                </tr>
+                <tr class="no-wrap-lg">
+                  <td>12/09/2021</td>
+                  <td>R$ 150,00</td>
+                  <td>
+                    <span class="badge badge-secondary">Viagem</span>
+                  </td>
+                </tr>
+                <tr class="no-wrap-lg">
+                  <td>12/09/2021</td>
+                  <td>R$ 150,00</td>
+                  <td>
+                    <span class="badge badge-secondary">Viagem</span>
+                  </td>
+                </tr>
+                <tr class="no-wrap-lg">
+                  <td>12/09/2021</td>
+                  <td>R$ 150,00</td>
+                  <td>
+                    <span class="badge badge-secondary">Viagem</span>
+                  </td>
+                </tr>
+                <tr class="no-wrap-lg">
+                  <td>12/09/2021</td>
+                  <td>R$ 150,00</td>
+                  <td>
+                    <span class="badge badge-secondary">Viagem</span>
+                  </td>
+                </tr>
+                <tr class="no-wrap-lg">
+                  <td>12/09/2021</td>
+                  <td>R$ 150,00</td>
+                  <td>
+                    <span class="badge badge-secondary">Viagem</span>
+                  </td>
+                </tr>
+                <tr class="no-wrap-lg">
+                  <td>12/09/2021</td>
+                  <td>R$ 150,00</td>
+                  <td>
+                    <span class="badge badge-secondary">Viagem</span>
+                  </td>
+                </tr>
+                <tr class="no-wrap-lg">
+                  <td>12/09/2021</td>
+                  <td>R$ 150,00</td>
+                  <td>
+                    <span class="badge badge-secondary">Viagem</span>
+                  </td>
+                </tr>
+                <tr class="no-wrap-lg">
+                  <td>12/09/2021</td>
+                  <td>R$ 150,00</td>
+                  <td>
+                    <span class="badge badge-secondary">Viagem</span>
+                  </td>
+                </tr>
+                <tr class="no-wrap-lg">
+                  <td>12/09/2021</td>
+                  <td>R$ 150,00</td>
+                  <td>
+                    <span class="badge badge-secondary">Viagem</span>
+                  </td>
+                </tr>
+                <tr class="no-wrap-lg">
+                  <td>12/09/2021</td>
+                  <td>R$ 150,00</td>
+                  <td>
+                    <span class="badge badge-secondary">Viagem</span>
+                  </td>
+                </tr>
+                <tr class="no-wrap-lg">
+                  <td>12/09/2021</td>
+                  <td>R$ 150,00</td>
+                  <td>
+                    <span class="badge badge-secondary">Viagem</span>
+                  </td>
+                </tr>
+                <tr class="no-wrap-lg">
+                  <td>12/09/2021</td>
+                  <td>R$ 150,00</td>
+                  <td>
+                    <span class="badge badge-secondary">Viagem</span>
+                  </td>
+                </tr>
+                <tr class="no-wrap-lg">
+                  <td>12/09/2021</td>
+                  <td>R$ 150,00</td>
+                  <td>
+                    <span class="badge badge-secondary">Viagem</span>
+                  </td>
+                </tr>
+                <tr class="no-wrap-lg">
+                  <td>12/09/2021</td>
+                  <td>R$ 150,00</td>
+                  <td>
+                    <span class="badge badge-secondary">Viagem</span>
+                  </td>
+                </tr>
+                <tr class="no-wrap-lg">
+                  <td>12/09/2021</td>
+                  <td>R$ 150,00</td>
+                  <td>
+                    <span class="badge badge-secondary">Viagem</span>
+                  </td>
+                </tr>
+                <tr class="no-wrap-lg">
+                  <td>12/09/2021</td>
+                  <td>R$ 150,00</td>
+                  <td>
+                    <span class="badge badge-secondary">Viagem</span>
+                  </td>
+                </tr>
+                <tr class="no-wrap-lg">
+                  <td>12/09/2021</td>
+                  <td>R$ 150,00</td>
+                  <td>
+                    <span class="badge badge-secondary">Viagem</span>
+                  </td>
+                </tr>
+                <tr class="no-wrap-lg">
+                  <td>12/09/2021</td>
+                  <td>R$ 150,00</td>
+                  <td>
+                    <span class="badge badge-secondary">Viagem</span>
+                  </td>
+                </tr>
+                <tr class="no-wrap-lg">
+                  <td>12/09/2021</td>
+                  <td>R$ 150,00</td>
+                  <td>
+                    <span class="badge badge-secondary">Viagem</span>
+                  </td>
+                </tr>
+                <tr class="no-wrap-lg">
+                  <td>12/09/2021</td>
+                  <td>R$ 150,00</td>
+                  <td>
+                    <span class="badge badge-secondary">Viagem</span>
+                  </td>
+                </tr>
+                <tr class="no-wrap-lg">
+                  <td>12/09/2021</td>
+                  <td>R$ 150,00</td>
+                  <td>
+                    <span class="badge badge-secondary">Viagem</span>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="card card-round">
+        <div class="card-header">
+          <div class="card-head-row card-tools-still-right">
+            <div class="card-title">Análise de Categorias</div>
+            <div class="card-tools">
+              <div class="dropdown">
+                <button class="btn btn-icon btn-clean me-0" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-ellipsis-h"></i></button>
+                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton" style="">
+                  <a class="dropdown-item" href="#">Hoje</a>
+                  <a class="dropdown-item" href="#">Ultimo semana</a>
+                  <a class="dropdown-item" href="#">Ultimo mês</a>
+                  <a class="dropdown-item" href="#">Ultimo ano</a>
+                  <div class="dropdown-divider"></div>
+                  <a class="dropdown-item" href="#">Exportar</a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="card-body p-0">
+          <div class="chart-container" style="max-height: 375px; min-height: 375px;">
+            <div class="chartjs-size-monitor" style="position: absolute; inset: 0px; overflow: hidden; pointer-events: none; visibility: hidden; z-index: -1;">
+              <div class="chartjs-size-monitor-expand" style="position:absolute;left:0;top:0;right:0;bottom:0;overflow:hidden;pointer-events:none;visibility:hidden;z-index:-1;">
+                <div style="position:absolute;width:1000000px;height:1000000px;left:0;top:0"></div>
+              </div>
+              <div class="chartjs-size-monitor-shrink" style="position:absolute;left:0;top:0;right:0;bottom:0;overflow:hidden;pointer-events:none;visibility:hidden;z-index:-1;">
+                <div style="position:absolute;width:200%;height:200%;left:0; top:0"></div>
+              </div>
+            </div>
+            <canvas id="category-chart" style="width: 304px; height: 300px; display: block;" width="304" height="300" class="chartjs-render-monitor"></canvas>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="card card-round">
+        <div class="card-header">
+          <div class="card-head-row card-tools-still-right">
+            <div class="card-title">Dicas IA</div>
+            <div class="card-tools">
+              <div class="dropdown">
+                <button class="btn btn-icon btn-clean me-0" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-ellipsis-h"></i></button>
+                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton" style="">
+                  <a class="dropdown-item" href="#">Gerar nova dica</a>
+                  <div class="dropdown-divider"></div>
+                  <a class="dropdown-item" href="#">Reportar</a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="card-body p-0">
+          <div class="p-3" style="min-height: 375px; max-height: 375px;">
+            <h5>What is Lorem Ipsum?</h5>
+            <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}
+
+{% block scripts %}
+  <script src="{% static 'js/plugin/chart.js/chart.min.js' %}"></script>
+
+  <script src="{% static 'js/dashboard.js' %}"></script>
+{% endblock %}
+
+{% block end_body %}
+  <div class="modal fade" id="createModal" tabindex="-1" aria-labelledby="createModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="createModalLabel">Adicionar um nova transação</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <form class="row needs-validation">
+            {% csrf_token %}
+
+            <div class="col-md-6 col-sm-12">
+              <div class="form-group">
+                <label for="descriptionInput" class="form-label">Descrição</label>
+                <input name="description" type="text" class="form-control" id="descriptionInput" placeholder="Ex: Compra de supermercado" required />
+                {% if form.description.errors %}
+                  <div class="invalid-feedback">
+                    {% for error in form.description.errors %}
+                      <p>{{ error }}</p>
+                    {% endfor %}
+                  </div>
+                {% endif %}
+              </div>
+              <div class="form-group">
+                <label for="valueInput" class="form-label">Valor (R$)</label>
+                <input name="value" type="number" class="form-control" id="valueInput" placeholder="0,00" step="0.01" required />
+                <div id="emailHelp" class="form-text">Valores negativos serão considerados despesas!</div>
+                {% if form.value.errors %}
+                  <div class="invalid-feedback">
+                    {% for error in form.value.errors %}
+                      <p>{{ error }}</p>
+                    {% endfor %}
+                  </div>
+                {% endif %}
+              </div>
+              <div class="form-group">
+                <label for="categoryInput" class="form-label">Categoria</label>
+                <select name="category" class="form-select" aria-label="Categoria">
+                  <option value="1" selected>Transporte</option>
+                  <option value="2">Alimentação</option>
+                  <option value="3">Lazer</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="accountInput" class="form-label">Conta</label>
+                <select name="account" class="form-select" aria-label="Conta bancária">
+                  <option value="1">Conta Poupança</option>
+                  <option value="2" selected>Conta Corrente</option>
+                  <option value="3">Cartão de Crédito</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="col-md-6 col-sm-12">
+              <div class="form-group">
+                <label for="expirationDateInput" class="form-label">Data de Vencimento</label>
+                <input name="expirationDate" type="date" class="form-control" id="expirationDateInput" required />
+                {% if form.expirationDate.errors %}
+                  <div class="invalid-feedback">
+                    {% for error in form.expirationDate.errors %}
+                      <p>{{ error }}</p>
+                    {% endfor %}
+                  </div>
+                {% endif %}
+              </div>
+              <div class="form-group my-0 py-0">
+                <div class="form-check form-switch p-0 m-0 d-flex justify-content-between">
+                  <label class="form-check-label" for="fixedInput">Fixa?</label>
+                  <input name="fixed" class="form-check-input" type="checkbox" id="fixedInput" />
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="paymentDateInput" class="form-label">Data de Pagamento</label>
+                <input name="paymentDate" type="date" class="form-control" id="paymentDateInput" />
+                {% if form.paymentDate.errors %}
+                  <div class="invalid-feedback">
+                    {% for error in form.paymentDate.errors %}
+                      <p>{{ error }}</p>
+                    {% endfor %}
+                  </div>
+                {% endif %}
+              </div>
+              <div class="form-group">
+                <label for="accountInput" class="form-label">Comprovante</label>
+                <input name="receipt" type="file" class="form-control" id="receiptInput" />
+                {% if form.receipt.errors %}
+                  <div class="invalid-feedback">
+                    {% for error in form.receipt.errors %}
+                      <p>{{ error }}</p>
+                    {% endfor %}
+                  </div>
+                {% endif %}
+              </div>
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+          <button type="button" class="btn btn-primary">Adicionar Transação</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal fade" id="reportIaModal" tabindex="-1" aria-labelledby="reportIaModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="reportIaModalLabel">Relatório de IA</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <h6 class="mb-3"><strong>Resumo Geral</strong></h6>
+          <ul>
+            <li>
+              <strong>Total de Entradas:</strong> R$ 3.500,00
+            </li>
+            <li>
+              <strong>Total de Saídas:</strong> R$ 2.750,00
+            </li>
+            <li>
+              <strong>Saldo Atual:</strong> R$ 750,00
+            </li>
+          </ul>
+
+          <h6 class="mt-4">Últimas Transações</h6>
+          <div class="table-responsive">
+            <table class="table table-sm table-bordered">
+              <thead>
+                <tr>
+                  <th>Data</th>
+                  <th>Descrição</th>
+                  <th>Categoria</th>
+                  <th>Valor</th>
+                  <th>Instituição</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>10/01/2025</td>
+                  <td>Pagamento de Salário</td>
+                  <td>Renda</td>
+                  <td class="text-success">R$ 2.500,00</td>
+                  <td>Banco do Brasil</td>
+                </tr>
+                <tr>
+                  <td>12/01/2025</td>
+                  <td>Supermercado</td>
+                  <td>Alimentação</td>
+                  <td class="text-danger">R$ 450,00</td>
+                  <td>Cartão de Crédito</td>
+                </tr>
+                <tr>
+                  <td>15/01/2025</td>
+                  <td>Assinatura Netflix</td>
+                  <td>Entretenimento</td>
+                  <td class="text-danger">R$ 39,90</td>
+                  <td>Cartão de Crédito</td>
+                </tr>
+                <tr>
+                  <td>18/01/2025</td>
+                  <td>Combustível</td>
+                  <td>Transporte</td>
+                  <td class="text-danger">R$ 250,00</td>
+                  <td>Cartão de Crédito</td>
+                </tr>
+                <tr>
+                  <td>20/01/2025</td>
+                  <td>Venda de Produtos</td>
+                  <td>Renda Extra</td>
+                  <td class="text-success">R$ 1.000,00</td>
+                  <td>Pix</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h6 class="mt-4"><strong>Análise de Gastos</strong></h6>
+          <p>
+            Seu maior gasto do mês foi com <strong>Alimentação</strong>, totalizando R$ 950,00, representando 34,5% do total de despesas.
+          </p>
+
+          <h6 class="mt-4"><strong>Dica da IA</strong></h6>
+          <p>
+            Para melhorar suas finanças, considere estabelecer um limite para gastos com <strong>Alimentação</strong>
+            e explore alternativas mais econômicas, como planejamento de refeições semanais e compras em atacadões. Além disso, canalize uma parte do saldo mensal de R$ 750,00 para um fundo de emergência ou investimento.
+          </p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}

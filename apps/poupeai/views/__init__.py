@@ -1,25 +1,53 @@
-from .accounts import accounts_view
-from .categories import categories_view
-from .creditcard import creditcard_view
-from .dashboard import dashboard_view
-from .help import help_view
-from .mygoals import mygoals_view
-from .profile import profile_view
-from .transactions import transactions_view
-from .account_deletion import account_deletion_view
 from .admin_dashboard import admin_view
-from .notifications import *
+
+from .core.dashboard import dashboard_view
+from .core.help import HelpView
+from .core.home import home_view
+from .core.notifications import notifications_view
+
+from .finance.accounts import AccountsListView, AccountCreateView, AccountDeleteView, AccountDetailView, AccountUpdateView
+
+from .finance.categories import CategoriesListView, CategoryCreateView, CategoryDeleteView, CategoryUpdateView
+from .finance.credit_cards import CreditCardsView
+
+from .finance.goals import GoalsListView, GoalCreateView, GoalDeleteView, GoalUpdateView, GoalDepositCreateView
+
+from .finance.transactions import TransactionsView
+
+from .profile.profiles import ProfileDeleteView
+from .profile.profiles import ProfileView
+
 
 __all__ = [
-    'accounts_view',
-    'categories_view',
-    'creditcard_view',
-    'dashboard_view',
-    'help_view',
-    'mygoals_view',
-    'profile_view',
-    'transactions_view',
-    'account_deletion_view',
     'admin_view',
+    'dashboard_view',
+
+    'HelpView',
+    
+    'home_view',
     'notifications_view',
+    
+    'AccountsListView',
+    'AccountCreateView',
+    'AccountDeleteView',
+    'AccountDetailView',
+    'AccountUpdateView',
+    
+    'CategoriesListView',
+    'CategoryCreateView',
+    'CategoryDeleteView',
+    'CategoryUpdateView',
+    
+    'CreditCardsView',
+    
+    'GoalsListView',
+    'GoalCreateView',
+    'GoalDeleteView',
+    'GoalUpdateView',
+    'GoalDepositCreateView',
+    
+    'TransactionsView',
+    
+    'ProfileDeleteView',
+    'ProfileView',
 ]

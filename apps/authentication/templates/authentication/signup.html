@@ -1,0 +1,102 @@
+{% extends 'authentication/auth_base.html' %} {% load static %} {% block title %} Login -
+Poupe.AI {% endblock %} {% block card %}
+<div class="card-body p-4">
+  <div class="card-title text-center">
+    <img
+      src="{% static 'imgs/logo-light.svg' %}"
+      alt="Poupe.AI"
+      class="img-fluid"
+      style="max-width: 200px"
+    />
+    <p class="text-muted fw-light mt-3 mx-2 lh-sm">
+      Crie sua conta agora e comece a ter controle sobre suas finanças.
+    </p>
+  </div>
+  <form method="post">
+    {% csrf_token %}
+    <div class="form-group">
+      <label class="m-0" for="name">Nome</label>
+      <input
+        type="text"
+        class="form-control {% if form.name.errors %}is-invalid{% endif %}"
+        id="name"
+        name="name"
+        placeholder="José Silva"
+        value="{% if form.name.value %}{{ form.name.value }}{% endif %}"
+        required
+      />
+
+      {% if form.name.errors %}
+      <div class="invalid-feedback">
+        {% for error in form.name.errors %} {{ error }} {% endfor %}
+      </div>
+      {% endif %}
+    </div>
+
+    <div class="form-group">
+      <label class="m-0" for="email">Email</label>
+      <input
+        type="email"
+        class="form-control {% if form.email.errors %}is-invalid{% endif %}"
+        id="email"
+        name="email"
+        placeholder="exemplo@email.com"
+        value="{% if form.email.value %}{{ form.email.value }}{% endif %}"
+        required
+      />
+
+      {% if form.email.errors %}
+      <div class="invalid-feedback">
+        {% for error in form.email.errors %} {{ error }} {% endfor %}
+      </div>
+      {% endif %}
+    </div>
+
+    <div class="form-group">
+      <label class="m-0" for="password">Senha</label>
+      <input
+        type="password"
+        class="form-control {% if form.password1.errors %}is-invalid{% endif %}"
+        id="password"
+        name="password1"
+        placeholder="●●●●●●●●"
+        value="{% if form.password1.value %}{{ form.password1.value }}{% endif %}"
+        required
+      />
+
+      {% if form.password1.errors %}
+      <div class="invalid-feedback">
+        {% for error in form.password1.errors %} {{ error }} {% endfor %}
+      </div>
+      {% endif %}
+    </div>
+
+    <div class="form-group">
+      <label class="m-0" for="confirm-password">Confirmar sua senha</label>
+      <input
+        type="password"
+        class="form-control {% if form.password2.errors %}is-invalid{% endif %}"
+        id="confirm-password"
+        name="password2"
+        placeholder="●●●●●●●●"
+        value="{% if form.password2.value %}{{ form.password2.value }}{% endif %}"
+        required
+      />
+
+      {% if form.password2.errors %}
+      <div class="invalid-feedback">
+        {% for error in form.password2.errors %} {{ error }} {% endfor %}
+      </div>
+      {% endif %}
+    </div>
+
+    <div class="w-100 px-3 mt-4">
+      <button type="submit" class="btn btn-primary w-100">Confirmar</button>
+    </div>
+  </form>
+
+  <a href="{% url 'sign-in' %}" class="btn btn-link w-100 link-dark mt-2"
+    >Já tem uma conta? Clique aqui!</a
+  >
+</div>
+{% endblock %}
