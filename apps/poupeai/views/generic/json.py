@@ -36,7 +36,7 @@ class DetailJsonView(LoginRequiredMixin, DetailView):
         Get the object data to be returned in the JSON response
         '''
         if self.fields:
-            data = obj.__dict__.copy()  # Copia os atributos do objeto
+            data = obj.__dict__.copy()
             data = {key: data[key] for key in self.fields if key in data}
         else:
             data = model_to_dict(obj)
@@ -87,21 +87,39 @@ class UpdateJsonView(LoginRequiredMixin, UpdateView):
     success_message = 'Objeto atualizado com sucesso'
     error_message = 'Erro ao atualizar objeto'
 
+    def get_object_data(self, obj):
+        '''
+        Get the object data to be returned in the JSON response
+        '''
+        if self.fields:
+            data = obj.__dict__.copy()
+            data = {key: data[key] for key in self.fields if key in data}
+        else:
+            data = model_to_dict(obj)
+        
+        # Adicionar também as propertys
+        for attr_name in dir(obj):
+            attr_value = getattr(obj.__class__, attr_name, None)
+            if isinstance(attr_value, property):
+                if self.fields is None or attr_name in self.fields:
+                    data[attr_name] = getattr(obj, attr_name)
+                
+        return data
+
     def get(self, request, *args, **kwargs):
         if self.request.headers.get('X-Requested-With') == 'XMLHttpRequest':
-            obj = self.get_object()
-            data = model_to_dict(obj, fields=self.fields) if self.fields else model_to_dict(obj)
-            return JsonResponse({'success': True, self.context_object_name: data})
+            obj = self.get_object_data(self.get_object())
+            return JsonResponse({'success': True, self.context_object_name: obj})
         
-        return HttpResponseBadRequest('Requisição inválida')
+        return super().get(request, *args, **kwargs)
 
     def form_valid(self, form):
         self.object = form.save()
         if self.request.headers.get('X-Requested-With') == 'XMLHttpRequest':
             return JsonResponse({'success': True, 'message': self.success_message})
-        return HttpResponseBadRequest('Requisição inválida')
+        return super().form_valid(form)
 
     def form_invalid(self, form):
         if self.request.headers.get('X-Requested-With') == 'XMLHttpRequest':
             return JsonResponse({'success': False, 'message': self.error_message, 'errors': form.errors}, status=400)
-        return HttpResponseBadRequest('Requisição inválida')
+        return super().form_invalid(form)

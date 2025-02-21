@@ -13,7 +13,7 @@ urlpatterns = [
     path('transactions/', TransactionsListView.as_view(), name='transactions'),
     path('transaction/create/', TransactionCreateView.as_view(), name='transaction-create'),
     path('transaction/delete/<int:pk>/', TransactionDeleteView.as_view(), name='transaction-delete'),
-    #path('transaction/update/<int:pk>/', TransactionUpdateView.as_view(), name='transaction-update'),
+    path('transaction/update/<int:pk>/', TransactionUpdateView.as_view(), name='transaction-update'),
     path('transaction/detail/<int:pk>/', TransactionDetailView.as_view(), name='transaction-detail'),
     
     path('accounts/', AccountsListView.as_view(), name='accounts'),

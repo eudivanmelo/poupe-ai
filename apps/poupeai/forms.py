@@ -98,41 +98,88 @@ class TransactionForm(forms.ModelForm):
         return invoice
 
 
-    
     def save(self, commit=True):
         transaction = super().save(commit=False)
         transaction_type = self.cleaned_data.get("transaction_type")
+        previous_transaction_type = self.instance.type if self.instance.pk else None
         
         if commit:
+            # Se o tipo de transação mudou de 'card' para 'account' ou vice-versa
+            if previous_transaction_type != transaction_type:
+                # Se o tipo anterior era 'card' e mudou para 'account', excluir as CardTransactions
+                if previous_transaction_type == "card":
+                    CardTransaction.objects.filter(transaction=transaction).delete()
+                else:
+                    AccountTransaction.objects.filter(transaction=transaction).delete()
+            
             transaction.save()
             
             if transaction_type == "card":
                 credit_card = self.cleaned_data.get("credit_card")
                 payment_at = self.cleaned_data.get("payment_at")
+                num_installments = self.cleaned_data.get("installments")
                 
-                for i in range(0, self.cleaned_data.get("installments")):
+                # Obter as transações existentes
+                existing_card_transactions = CardTransaction.objects.filter(
+                    transaction=transaction,
+                    credit_card=credit_card
+                )
+                
+                # Remover transações extras, se o número de parcelas diminuiu
+                if len(existing_card_transactions) > num_installments:
+                    extra_transactions = existing_card_transactions[num_installments:]
+                    for extra_transaction in extra_transactions:
+                        extra_transaction.delete()
+                
+                for i in range(0, num_installments):
                     invoice_month = payment_at.month if payment_at.day <= credit_card.closing_day else (payment_at.month % 12) + 1
                     invoice_year = payment_at.year if payment_at.month == invoice_month else payment_at.year + 1
                     
                     # Criar ou buscar a fatura para o cartão de crédito
                     invoice = self.get_or_create_invoice(credit_card, invoice_month, invoice_year)
                     
-                    # Criar uma nova CardTransaction para cada parcela com o valor especificado
-                    CardTransaction.objects.create(
-                        transaction=transaction,
-                        credit_card=credit_card,
+                    # Verificar se já existe uma CardTransaction para a parcela
+                    card_transaction = existing_card_transactions.filter(
                         invoice=invoice,
-                        installment_number=i + 1,  # Número da parcela
-                    )
+                        installment_number=i + 1
+                    ).first()
+                    
+                    if not card_transaction:
+                        # Criar uma nova CardTransaction para cada parcela com o valor especificado
+                        CardTransaction.objects.create(
+                            transaction=transaction,
+                            credit_card=credit_card,
+                            invoice=invoice,
+                            installment_number=i + 1,  # Número da parcela
+                        )
+                    else:
+                        # Atualizar a transação existente
+                        card_transaction.transaction = transaction
+                        card_transaction.credit_card = credit_card
+                        card_transaction.invoice = invoice
+                        card_transaction.installment_number = i + 1
+                        card_transaction.save()
                     
                     # Atualizar a data de pagamento para a próxima parcela
                     payment_at = payment_at.replace(month=(payment_at.month % 12) + 1)
-                
+            
             if transaction_type == 'account':
-                AccountTransaction.objects.create(
-                    transaction=transaction,
-                    account=self.cleaned_data.get("account"),
-                    expire_at=self.cleaned_data.get("expire_at"),
-                )
+                # Verificar se já existe uma AccountTransaction para a transação
+                account_transaction = AccountTransaction.objects.filter(
+                    transaction=transaction
+                ).first()
+                
+                if not account_transaction:
+                    # Criar uma nova AccountTransaction
+                    AccountTransaction.objects.create(
+                        transaction=transaction,
+                        account=self.cleaned_data.get("account"),
+                        expire_at=self.cleaned_data.get("expire_at"),
+                    )
+                else:
+                    account_transaction.transaction = transaction
+                    account_transaction.account = self.cleaned_data.get("account")
+                    account_transaction.expire_at = self.cleaned_data.get("expire_at")
+                    account_transaction.save()
         
         return transaction

@@ -4,7 +4,7 @@ from django.urls import reverse_lazy
 from apps.poupeai.mixins import PoupeAIMixin
 from apps.poupeai.models import Transaction
 from apps.poupeai.forms import TransactionForm
-from apps.poupeai.views.generic.json import DeleteJsonView, DetailJsonView, CreateJsonView
+from apps.poupeai.views.generic.json import DeleteJsonView, DetailJsonView, CreateJsonView, UpdateJsonView
 from django.db.models import Q
 from django.forms.models import model_to_dict
 
@@ -84,6 +84,27 @@ class TransactionCreateView(CreateJsonView):
     success_message = "Transação criada com sucesso!"
     error_message = "Erro ao criar transação!"
     
-    def form_valid(self, form):
-        form.instance.user = self.request.user
-        return super().form_valid(form)
+class TransactionUpdateView(UpdateJsonView):
+    model = Transaction
+    context_object_name = 'transaction'
+    form_class = TransactionForm
+    success_url = reverse_lazy('transactions')
+    success_message = "Transação atualizada com sucesso!"
+    error_message = "Erro ao atualizar transação!"
+    
+    def get_object_data(self, obj):
+        data = super().get_object_data(obj)
+
+        data['attachment'] = obj.attachment.url if obj.attachment else None
+        data['category'] = obj.category.id
+        
+        if obj.type == 'card':
+            data['credit_card'] = obj.card_transactions.first().credit_card.id
+            data['installments'] = obj.card_transactions.count()
+        else:
+            data['account'] = obj.account_transaction.account.id
+            data['expire_at'] = obj.account_transaction.expire_at
+        
+        return data
+    
+    
