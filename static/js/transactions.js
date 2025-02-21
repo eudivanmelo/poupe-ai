@@ -166,7 +166,39 @@ var Alerts = (function () {
     });
 
     $('[id^="edit-transaction-"]').click(function (e) {
-      var itemId = $(this).data("item-id");
+      var url = $(this).data("url");
+      var modal = $("#editModal");
+
+      fetch(url, {
+        method: "GET",
+        headers: { "X-Requested-With": "XMLHttpRequest" },
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          if (data.success) {
+            modal.find("#editDescriptionInput").val(data.transaction.description);
+            modal.find("#editValueInput").val(data.transaction.amount);
+            modal.find("#editPaymentDateInput").val(new Date(data.transaction.payment_at).toISOString().split('T')[0]);
+            modal.find("#editCategoryInput").val(data.transaction.category);
+
+            if (data.transaction.type === "card") {
+              modal.find("#editTransactionType").val('card').change();
+              modal.find("#editCreditCardSelect").val(data.transaction.credit_card);
+              modal.find("#editInstallmentsInput").val(data.transaction.installments);
+            }
+            else {
+              modal.find("#editTransactionType").val('account').change();
+              modal.find("#editAccountInput").val(data.transaction.account);
+              modal.find("#editExpirationDateInput").val(data.transaction.expire_at);
+            }
+            
+            modal.find("#editTransactionForm").attr("action", url);
+            modal.modal("show");
+          } else {
+            alert("Erro ao carregar os dados da conta");
+          }
+        })
+        .catch((error) => console.error("Erro:", error));
     });
 
     $('[id^="delete-transaction-"]').click(function (e) {
@@ -325,4 +357,20 @@ jQuery(document).ready(function () {
       accountFields.removeClass("d-none");
     }
   });
+
+  $("#editTransactionType").change(function () {
+    var type = $(this).val();
+    var cardFields = $("#editCardFields");
+    var accountFields = $("#editAccountFields");
+
+    if (type === "card") {
+      cardFields.removeClass("d-none");
+      accountFields.addClass("d-none");
+    } else {
+      cardFields.addClass("d-none");
+      accountFields.removeClass("d-none");
+    }
+  });
+
+
 });

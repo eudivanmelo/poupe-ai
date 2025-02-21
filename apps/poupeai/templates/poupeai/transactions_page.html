@@ -122,8 +122,7 @@ Transações
                         <button
                           class="dropdown-item fs-6 edit-transaction-btn"
                           id="edit-transaction-{{transaction.id}}"
-                          data-item-name="{{transaction.description}}"
-                          data-id="1"
+                          data-url="{% url 'transaction-update' transaction.id %}"
                         >
                           Editar
                         </button>
@@ -258,144 +257,153 @@ Transações
         ></button>
       </div>
       <div class="modal-body">
-        <form class="row needs-validation">
+        <form class="row needs-validation" method="post" id="editTransactionForm">
           {% csrf_token %}
 
           <div class="col-md-6 col-sm-12">
             <div class="form-group">
-              <label for="descriptionInput" class="form-label">Descrição</label>
+              <label for="editDescriptionInput" class="form-label">Descrição</label>
               <input
                 name="description"
                 type="text"
                 class="form-control"
-                id="descriptionInput"
+                id="editDescriptionInput"
                 placeholder="Ex: Compra de supermercado"
                 required
               />
-              {% if form.description.errors %}
-              <div class="invalid-feedback">
-                {% for error in form.description.errors %}
-                <p>{{ error }}</p>
-                {% endfor %}
-              </div>
-              {% endif %}
             </div>
+
             <div class="form-group">
-              <label for="valueInput" class="form-label">Valor (R$)</label>
+              <label for="editValueInput" class="form-label">Valor (R$)</label>
               <input
-                name="value"
+                name="amount"
                 type="number"
                 class="form-control"
-                id="valueInput"
+                id="editValueInput"
                 placeholder="0,00"
                 step="0.01"
                 required
               />
-              <div id="emailHelp" class="form-text">
-                Valores negativos serão considerados despesas!
+              <div id="editEmailHelp" class="form-text">
+                Em caso de parcelamento, informar o valor da parcela
               </div>
-              {% if form.value.errors %}
-              <div class="invalid-feedback">
-                {% for error in form.value.errors %}
-                <p>{{ error }}</p>
-                {% endfor %}
+            </div>
+
+            <div class="form-group">
+              <label for="editAttachmentInput" class="form-label">Comprovante</label>
+              <input
+                name="attachment"
+                type="file"
+                class="form-control"
+                id="editAttachmentInput"
+              />
+              <div id="editAttachmentHelp" class="form-text">
+                Deixe em branco para manter o comprovante atual!
               </div>
-              {% endif %}
             </div>
+
             <div class="form-group">
-              <label for="categoryInput" class="form-label">Categoria</label>
-              <select
-                name="category"
-                id="categoryInput"
-                class="form-select"
-                aria-label="Categoria"
+              <label for="editPaymentDateInput" class="form-label"
+                >Data de Pagamento</label
               >
-                <option value="1" selected>Transporte</option>
-                <option value="2">Alimentação</option>
-                <option value="3">Lazer</option>
-              </select>
-            </div>
-            <div class="form-group">
-              <label for="accountInput" class="form-label">Conta</label>
-              <select
-                name="account"
-                id="accountInput"
-                class="form-select"
-                aria-label="Conta bancária"
-              >
-                <option value="1">Conta Poupança</option>
-                <option value="2" selected>Conta Corrente</option>
-                <option value="3">Cartão de Crédito</option>
-              </select>
+              <input
+                name="payment_at"
+                type="date"
+                class="form-control"
+                id="editPaymentDateInput"
+              />
             </div>
           </div>
 
           <div class="col-md-6 col-sm-12">
             <div class="form-group">
-              <label for="expirationDateInput" class="form-label"
-                >Data de Vencimento</label
+              <label for="editCategoryInput" class="form-label"
+                >Categoria</label
               >
-              <input
-                name="expirationDate"
-                type="date"
-                class="form-control"
-                id="expirationDateInput"
-                required
-              />
-              {% if form.expirationDate.errors %}
-              <div class="invalid-feedback">
-                {% for error in form.expirationDate.errors %}
-                <p>{{ error }}</p>
+              <select
+                name="category"
+                id="editCategoryInput"
+                class="form-select"
+              >
+                <option value="">Selecione uma categoria</option>
+                {% for category in categories %}
+                  <option value="{{ category.id }}">{{ category.name }}</option>
+                {% empty %}
+                  <option value="" selected>Nenhuma categoria cadastrada</option>
                 {% endfor %}
-              </div>
-              {% endif %}
+              </select>
             </div>
-            <div class="form-group my-0 py-0">
-              <div
-                class="form-check form-switch p-0 m-0 d-flex justify-content-between"
+
+            <div class="form-group">
+              <label for="editTransactionType" class="form-label"
+                >Tipo de Transação</label
               >
-                <label class="form-check-label" for="fixedInput">Fixa?</label>
+              <select
+                name="transaction_type"
+                id="editTransactionType"
+                class="form-select"
+              >
+                <option value="account" selected>Conta Bancária</option>
+                <option value="card">Cartão de Crédito</option>
+              </select>
+            </div>
+
+            <!-- Seção para Cartão de Crédito (oculto por padrão) -->
+            <div id="editCardFields" class="d-none">
+              <div class="form-group">
+                <label for="editCreditCardSelect" class="form-label"
+                  >Cartão de Crédito</label
+                >
+                <select
+                  name="credit_card"
+                  id="editCreditCardSelect"
+                  class="form-select"
+                >
+                  <option value="">Selecione um cartão</option>
+                  {% for card in credit_cards %}
+                    <option value="{{ card.id }}">{{ card.name }}</option>
+                  {% endfor %}
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label for="editInstallmentsInput" class="form-label"
+                  >Número de Parcelas</label
+                >
                 <input
-                  name="fixed"
-                  class="form-check-input"
-                  type="checkbox"
-                  id="fixedInput"
+                  name="installments"
+                  type="number"
+                  class="form-control"
+                  id="editInstallmentsInput"
+                  value="1"
+                  min="1"
                 />
               </div>
             </div>
-            <div class="form-group">
-              <label for="paymentDateInput" class="form-label"
-                >Data de Pagamento</label
-              >
-              <input
-                name="paymentDate"
-                type="date"
-                class="form-control"
-                id="paymentDateInput"
-              />
-              {% if form.paymentDate.errors %}
-              <div class="invalid-feedback">
-                {% for error in form.paymentDate.errors %}
-                <p>{{ error }}</p>
-                {% endfor %}
+
+            <!-- Seção para Conta Bancária -->
+            <div id="editAccountFields">
+              <div class="form-group">
+                <label for="editAccountInput" class="form-label">Conta</label>
+                <select name="account" id="editAccountInput" class="form-select">
+                  <option value="">Selecione uma conta</option>
+                  {% for account in accounts %}
+                    <option value="{{ account.id }}">{{ account.name }}</option>
+                  {% endfor %}
+                </select>
               </div>
-              {% endif %}
-            </div>
-            <div class="form-group">
-              <label for="accountInput" class="form-label">Comprovante</label>
-              <input
-                name="receipt"
-                type="file"
-                class="form-control"
-                id="receiptInput"
-              />
-              {% if form.receipt.errors %}
-              <div class="invalid-feedback">
-                {% for error in form.receipt.errors %}
-                <p>{{ error }}</p>
-                {% endfor %}
+
+              <div class="form-group">
+                <label for="editExpirationDateInput" class="form-label"
+                  >Data de Vencimento</label
+                >
+                <input
+                  name="expire_at"
+                  type="date"
+                  class="form-control"
+                  id="editExpirationDateInput"
+                />
               </div>
-              {% endif %}
             </div>
           </div>
         </form>
@@ -404,7 +412,7 @@ Transações
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
           Cancelar
         </button>
-        <button type="button" class="btn btn-primary">Salvar Alterações</button>
+        <button type="submit" form="editTransactionForm" class="btn btn-primary">Salvar Alterações</button>
       </div>
     </div>
   </div>

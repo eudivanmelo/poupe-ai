@@ -81,7 +81,7 @@ class AccountDetailView(DetailJsonView):
         data['transactions'] = [
         {
             'amount': transaction.transaction.amount,
-            'type': transaction.type,
+            'type': transaction.transaction.type,
             'description': transaction.transaction.description,
             'created_at': transaction.transaction.created_at
         }
