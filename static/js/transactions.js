@@ -1,73 +1,251 @@
 const EditTransaction = (itemId) => {
-    // $('#recipient-name').val('Recipient ' + itemId);
-    // $('#message-text').val('Message content for transaction ' + itemId);
+  // $('#recipient-name').val('Recipient ' + itemId);
+  // $('#message-text').val('Message content for transaction ' + itemId);
 
-    $('#editModal').modal('show');
-}
+  $("#editModal").modal("show");
+};
 
 var Alerts = (function () {
-    var init_buttons = function () {
-        $('[id^="detail-transaction-"]').click(function (e) {
-            var itemId = $(this).data('item-id')
-            var modal = $('#detailModal')
+  var init_buttons = function () {
+    $('[id^="detail-transaction-"]').click(function (e) {
+      var url = $(this).data("url");
+      var modal = $("#detailModal");
 
-            modal.find('#modal-edit-button').click(() => {
-                modal.modal('hide')
-                EditTransaction(itemId)
-            })
-            
-            modal.modal('show')
+      fetch(url, {
+        method: "GET",
+        headers: { "X-Requested-With": "XMLHttpRequest" },
+      })
+        .then((response) => {
+          if (!response.ok) {
+            throw new Error(`Erro HTTP! Status: ${response.status}`);
+          }
+          return response.json();
         })
+        .then((data) => {
+          if (data.success) {
+            const description = data.transaction.description;
+            let amount = Number(data.transaction.amount).toLocaleString(
+              "pt-BR",
+              {
+                minimumFractionDigits: 2,
+              }
+            );
 
-        $('[id^="edit-transaction-"]').click(function (e) {
-            var itemId = $(this).data('item-id')
+            if (data.transaction.type === "card") {
+              amount = Number(
+                data.transaction.installments_total_amount
+              ).toLocaleString("pt-BR", {
+                minimumFractionDigits: 2,
+              });
+            }
 
-            EditTransaction(itemId)
-        })
+            const typeMap = {
+              card: "Cartão de Crédito",
+              expense: "Despesa",
+              income: "Receita",
+            };
 
-        $('[id^="delete-transaction-"]').click(function (e) {
-            var itemId = $(this).data('item-id')
+            const type = typeMap[data.transaction.type] || "Receita";
+            const category = data.transaction.category;
 
+            html = `<li class="list-group-item gap-2">
+                      <strong>Descrição:</strong>
+                      <span>${description}</span>
+                    </li>
+                    <li class="list-group-item gap-2">
+                      <strong>Valor:</strong>
+                      <span>R$ ${amount}</span>
+                    </li>
+                    <li class="list-group-item gap-2">
+                      <strong>Tipo:</strong>
+                      <span>${type}</span>
+                    </li>
+                    <li class="list-group-item gap-2">
+                      <strong>Categoria:</strong>
+                      <span>${category}</span>
+                    </li>
+                    `;
+
+            if (data.transaction.type === "card") {
+              const card_transaction = data.transaction.card_transaction;
+              const paymentDate = new Date(data.transaction.payment_at);
+
+              const paymentDateFormatted = new Intl.DateTimeFormat("pt-BR", {
+                day: "2-digit",
+                month: "2-digit",
+                year: "numeric",
+              }).format(paymentDate);
+
+              const installmentValue = Number(
+                data.transaction.amount
+              ).toLocaleString("pt-BR", {
+                minimumFractionDigits: 2,
+              });
+
+              html += `<li class="list-group-item gap-2">
+                          <strong>Parcelas:</strong>
+                          <span>${data.transaction.total_installments}</span>
+                        </li>
+                        <li class="list-group-item gap-2">
+                          <strong>Valor da Parcela:</strong>
+                          <span>R$ ${installmentValue}</span>
+                        </li>
+                        <li class="list-group-item gap-2">
+                          <strong>Data de Pagamento:</strong>
+                          <span>${paymentDateFormatted}</span>
+                        </li>`;
+            } else {
+              const acc_transaction = data.transaction.account_transaction;
+              let paymentDateFormatted = "";
+              if (data.transaction.payment_at) {
+                const paymentDate = new Date(data.transaction.payment_at);
+
+                paymentDateFormatted = new Intl.DateTimeFormat("pt-BR", {
+                  day: "2-digit",
+                  month: "2-digit",
+                  year: "numeric",
+                }).format(paymentDate);
+              } else {
+                const statusMap = {
+                  paid: "Pago",
+                  unpaid: "Aguardando Pagamento",
+                  warning: "Proximo de Vencer",
+                  expired: "Vencida",
+                };
+                paymentDateFormatted = statusMap[data.transaction.status];
+              }
+
+              const expireDate = new Date(acc_transaction.expire_at);
+
+              const expireDateFormatted = new Intl.DateTimeFormat("pt-BR", {
+                day: "2-digit",
+                month: "2-digit",
+                year: "numeric",
+              }).format(expireDate);
+
+              html += `<li class="list-group-item gap-2">
+                        <strong>Data de Pagamento:</strong>
+                        <span>${paymentDateFormatted}</span>
+                      </li>
+                      <li class="list-group-item gap-2">
+                        <strong>Data de Vencimento:</strong>
+                        <span>${expireDateFormatted}</span>
+                      </li>
+                      <li class="list-group-item gap-2">
+                        <strong>Conta:</strong>
+                        <span>${acc_transaction.account}</span>
+                      </li>`;
+            }
+
+            modal.find("#transaction-details").html(html);
+
+            if (data.transaction.image) {
+              modal
+                .find("#attachment")
+                .html(
+                  `<img src="${data.transaction.image}" alt="Anexo da transação" />`
+                );
+            } else {
+              modal
+                .find("#attachment")
+                .html(`<p>Nenhum comprovante de pagamento informado!</p>`);
+            }
+          } else {
             swal({
-                title: 'Tem certeza?',
-                text: `Ao apagar a transação (${itemId}) você não poderá reverter isso!`,
-                type: 'warning',
-                buttons: {
-                    confirm: {
-                        text: 'Sim, deletar!',
-                        className: 'btn btn-secondary'
-                    },
-                    cancel: {
-                        visible: true,
-                        className: 'btn btn-danger'
-                    }
-                }
-            }).then((Delete) => {
-                if (Delete) {
-                    swal({
-                        title: 'Deletado!',
-                        text: 'A transação foi removida com sucesso.',
-                        type: 'success',
-                        buttons: {
-                            confirm: {
-                                className: 'btn btn-success'
-                            }
-                        }
-                    })
-                } else {
-                    swal.close()
-                }
-            })
+              title: "Erro!",
+              text: "Erro ao buscar detalhes da conta!",
+              icon: "error",
+              buttons: {
+                confirm: {
+                  className: "btn btn-danger",
+                },
+              },
+            });
+          }
         })
-    }
+        .catch((error) => console.error("Erro:", error));
 
-    return {
-        init: function () {
-            init_buttons()
+      modal.modal("show");
+    });
+
+    $('[id^="edit-transaction-"]').click(function (e) {
+      var itemId = $(this).data("item-id");
+
+      EditTransaction(itemId);
+    });
+
+    $('[id^="delete-transaction-"]').click(function (e) {
+      var itemName = $(this).data("item-name");
+      var url = $(this).data("url");
+
+      swal({
+        title: "Tem certeza?",
+        text: `Ao apagar a transação '${itemName}' você não poderá reverter isso!`,
+        type: "warning",
+        buttons: {
+          confirm: {
+            text: "Sim, deletar!",
+            className: "btn btn-secondary",
+          },
+          cancel: {
+            visible: true,
+            className: "btn btn-danger",
+          },
+        },
+      }).then((Delete) => {
+        if (Delete) {
+          if (!url) return;
+
+          fetch(url, {
+            method: "DELETE",
+            headers: {
+              "X-Requested-With": "XMLHttpRequest",
+              "X-CSRFToken": getCookie("csrftoken"),
+            },
+          })
+            .then((response) => response.json())
+            .then((data) => {
+              if (data.success) {
+                swal({
+                  title: "Deletado!",
+                  text: data.message,
+                  icon: "success",
+                  buttons: {
+                    confirm: {
+                      className: "btn btn-success",
+                    },
+                  },
+                }).then(() => {
+                  location.reload();
+                });
+              } else {
+                swal({
+                  title: "Erro!",
+                  text: data.message,
+                  icon: "error",
+                  buttons: {
+                    confirm: {
+                      className: "btn btn-danger",
+                    },
+                  },
+                });
+              }
+            })
+            .catch((error) => console.error("Erro:", error));
+        } else {
+          swal.close();
         }
-    }
-})()
+      });
+    });
+  };
+
+  return {
+    init: function () {
+      init_buttons();
+    },
+  };
+})();
 
 jQuery(document).ready(function () {
-    Alerts.init()
-})
+  Alerts.init();
+});

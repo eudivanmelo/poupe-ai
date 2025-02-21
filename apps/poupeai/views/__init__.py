@@ -8,11 +8,12 @@ from .core.notifications import notifications_view
 from .finance.accounts import AccountsListView, AccountCreateView, AccountDeleteView, AccountDetailView, AccountUpdateView
 
 from .finance.categories import CategoriesListView, CategoryCreateView, CategoryDeleteView, CategoryUpdateView
+
 from .finance.credit_cards import CreditCardsView
 
 from .finance.goals import GoalsListView, GoalCreateView, GoalDeleteView, GoalUpdateView, GoalDepositCreateView
 
-from .finance.transactions import TransactionsView
+from .finance.transactions import TransactionsListView, TransactionDeleteView, TransactionDetailView
 
 from .profile.profiles import ProfileDeleteView
 from .profile.profiles import ProfileView
@@ -44,7 +45,9 @@ __all__ = [
     'GoalUpdateView',
     'GoalDepositCreateView',
     
-    'TransactionsView',
+    'TransactionsListView',
+    'TransactionDeleteView',
+    'TransactionDetailView',
     
     'ProfileDeleteView',
     'ProfileView',
