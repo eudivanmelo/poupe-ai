@@ -1,8 +1,5 @@
 from pathlib import Path
-from dotenv import load_dotenv
 import os
-
-load_dotenv()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -27,8 +24,8 @@ INSTALLED_APPS = [
 
     'apps.authentication',
     'apps.poupeai',
+    'apps.home_page',
     
-    'social_django',
 ]
 
 MIDDLEWARE = [
@@ -54,9 +51,6 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
-                
-                'social_django.context_processors.backends',
-                'social_django.context_processors.login_redirect',
             ],
         },
     },
@@ -64,11 +58,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'core.wsgi.application'
 
-AUTHENTICATION_BACKENDS = (
-    'social_core.backends.google.GoogleOAuth2',
-    
-    'django.contrib.auth.backends.ModelBackend',
-)
 
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
@@ -80,28 +69,8 @@ DATABASES = {
     }
 }
 
-AUTH_USER_MODEL = 'authentication.CustomUser'
-
-# Google Authentication
-SOCIAL_AUTH_USER_MODEL = AUTH_USER_MODEL
-SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = os.getenv('SOCIAL_AUTH_GOOGLE_OAUTH2_KEY')
-SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = os.getenv('SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET')
-
-SOCIAL_AUTH_PIPELINE = (
-    'social_core.pipeline.social_auth.social_details',
-    'social_core.pipeline.social_auth.social_uid',
-    'social_core.pipeline.social_auth.social_user',
-    'social_core.pipeline.social_auth.auth_allowed',
-    'social_core.pipeline.user.get_username',
-    'social_core.pipeline.user.create_user',
-    'apps.authentication.pipeline.save_profile',
-    'social_core.pipeline.social_auth.associate_user',
-    'social_core.pipeline.social_auth.load_extra_data',
-    'social_core.pipeline.user.user_details',
-)
-
-LOGIN_REDIRECT_URL = '/dashboard/'
-LOGIN_URL = '/auth/signin/'
+# TODO Habilitar o modelo de usuário customizado
+# AUTH_USER_MODEL = 'authentication.User'
 
 # Password validation
 # https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators
@@ -146,6 +115,3 @@ STATICFILES_DIRS = [
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
-MEDIA_URL = '/media/'

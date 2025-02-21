@@ -107,9 +107,3 @@
 .table-sm thead tr th {
     padding: 3px 10px !important;
 }
-
-.alert-error {
-    background-color: #F8D7DA;
-    color: #721C24;
-    border-color: #F5C6CB;
-}
