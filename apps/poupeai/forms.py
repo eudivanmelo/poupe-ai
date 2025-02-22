@@ -1,6 +1,11 @@
 from django import forms
 from .models import Transaction, CardTransaction, AccountTransaction
-from .models import CreditCard, Account, Invoice
+from .models import CreditCard, Account, Invoice, Category
+from django.db import transaction
+import calendar
+from datetime import datetime, timedelta
+from django.core.exceptions import ValidationError
+from decimal import Decimal
 
 class TransactionForm(forms.ModelForm):
     TRANSACTION_TYPE_CHOICES = (
@@ -54,7 +59,9 @@ class TransactionForm(forms.ModelForm):
         cleaned_data = super().clean()
         
         transaction_type = cleaned_data.get('transaction_type')
-        
+        amount = cleaned_data.get('amount')
+        num_installments = self.cleaned_data.get("installments")
+   
         if transaction_type == 'card':
             credit_card = cleaned_data.get('credit_card')
             payment_at = cleaned_data.get('payment_at')
@@ -64,7 +71,12 @@ class TransactionForm(forms.ModelForm):
                 
             if not payment_at:
                 self.add_error('payment_at', 'Informe a data de pagamento')
-        
+
+            # Verifica se o valor da transação excede o limite disponível
+            if credit_card and amount:
+                if amount * num_installments > credit_card.available:
+                    self.add_error('amount', f'O valor da transação excede o limite disponível ({credit_card.available:.2f}).')
+
         if transaction_type == 'account':
             account = cleaned_data.get('account')
             expire_at = cleaned_data.get('expire_at')
@@ -84,14 +96,16 @@ class TransactionForm(forms.ModelForm):
                                         year=invoice_year
                                     ).first()
 
-        if not invoice:
+        if invoice:
+            if invoice.paid:
+                invoice.paid = False
+                invoice.save()
+        else:
             invoice = Invoice.objects.create(
                                             credit_card=credit_card,
                                             month=invoice_month,
                                             year=invoice_year,
-                                            total_due=0.00,
                                             amount_paid=0.00,
-                                            balance_due=0.00,
                                             paid=False
                                         )
 
@@ -133,8 +147,15 @@ class TransactionForm(forms.ModelForm):
                         extra_transaction.delete()
                 
                 for i in range(0, num_installments):
-                    invoice_month = payment_at.month if payment_at.day <= credit_card.closing_day else (payment_at.month % 12) + 1
-                    invoice_year = payment_at.year if payment_at.month == invoice_month else payment_at.year + 1
+                    last_day_of_month = calendar.monthrange(payment_at.year, payment_at.month)[1]
+                    if payment_at.day == last_day_of_month:
+                        invoice_month = (payment_at.month % 12) + 1
+                        invoice_year = payment_at.year if payment_at.month != 12 else payment_at.year + 1
+                        last_day_of_next_month = calendar.monthrange(invoice_year, invoice_month)[1]
+                        payment_at = payment_at.replace(day=last_day_of_next_month, month=invoice_month, year=invoice_year)
+                    else:
+                        invoice_month = payment_at.month if payment_at.day <= credit_card.closing_day else (payment_at.month % 12) + 1
+                        invoice_year = payment_at.year if payment_at.month == invoice_month or payment_at.month != 12 else payment_at.year + 1
                     
                     # Criar ou buscar a fatura para o cartão de crédito
                     invoice = self.get_or_create_invoice(credit_card, invoice_month, invoice_year)
@@ -162,7 +183,7 @@ class TransactionForm(forms.ModelForm):
                         card_transaction.save()
                     
                     # Atualizar a data de pagamento para a próxima parcela
-                    payment_at = payment_at.replace(month=(payment_at.month % 12) + 1)
+                    payment_at = payment_at.replace(month=(payment_at.month % 12) + 1, year=invoice_year)
             
             if transaction_type == 'account':
                 # Verificar se já existe uma AccountTransaction para a transação
@@ -184,3 +205,57 @@ class TransactionForm(forms.ModelForm):
                     account_transaction.save()
         
         return transaction
+
+
+class CreditCardForm(forms.ModelForm):
+    class Meta:
+        model = CreditCard
+        fields = ['name', 'limit', 'additional_info', 'brand', 'closing_day', 'due_day']
+
+    def clean(self):
+        cleaned_data = super().clean()
+        closing_day = cleaned_data.get('closing_day')
+        due_day = cleaned_data.get('due_day')
+
+        if closing_day and due_day:
+            # Regra 1: Fechamento e vencimento não podem ser no mesmo dia
+            if closing_day == due_day:
+                raise forms.ValidationError("O dia de fechamento e o dia de vencimento não podem ser iguais.")
+
+            # Regra 2: O vencimento deve ser após o fechamento OU nos primeiros dias do mês seguinte
+            if not (due_day > closing_day or (closing_day >= 27 and due_day <= 10)):
+                raise forms.ValidationError(
+                    "O dia de vencimento deve ser posterior ao fechamento ou estar dentro dos primeiros 10 dias do mês seguinte."
+                )
+
+        return cleaned_data
+    
+class RegisterPaymentForm(forms.Form):
+    amount = forms.DecimalField(
+        max_digits=10,
+        decimal_places=2,
+        min_value=Decimal("0.01"),
+        error_messages={"min_value": "O valor deve ser maior que zero."}
+    )
+    account = forms.ModelChoiceField(
+        queryset=Account.objects.all(),
+        empty_label=None,
+        error_messages={"required": "Selecione uma conta."}
+    )
+
+    def __init__(self, *args, **kwargs):
+        self.invoice = kwargs.pop("invoice", None)  # Captura a fatura passada na view
+        self.user = kwargs.pop("user", None)  # Captura o usuário logado
+        super().__init__(*args, **kwargs)
+
+        # Filtra as contas para mostrar apenas as do usuário
+        if self.user:
+            self.fields["account"].queryset = Account.objects.filter(user=self.user)
+
+    def clean_amount(self):
+        amount = self.cleaned_data.get("amount")
+
+        if self.invoice and amount > self.invoice.balance_due:
+            raise ValidationError(f"O valor não pode ser maior que R$ {self.invoice.balance_due:.2f}")
+
+        return amount

@@ -1,11 +1,11 @@
-from django.shortcuts import render
-from django.views.generic import TemplateView, ListView
+from django.views.generic import ListView
 from django.urls import reverse_lazy
 from apps.poupeai.mixins import PoupeAIMixin
 from apps.poupeai.views.generic.json import CreateJsonView, DeleteJsonView, UpdateJsonView
 from apps.poupeai.models import CreditCard, Invoice
 from django.db.models import Prefetch
 from django.utils.timezone import now
+from apps.poupeai.forms import CreditCardForm
 
 class CreditCardsListView(PoupeAIMixin, ListView):
     '''
@@ -14,6 +14,15 @@ class CreditCardsListView(PoupeAIMixin, ListView):
 
     template_name = 'poupeai/credit_cards_page.html'
     context_object_name = 'credit_cards'
+
+    def get_name(self):
+        return "credit-cards"
+    
+    def get_breadcrumbs(self):
+        return [
+            {"name": "Dashboard", "url": reverse_lazy('dashboard')},
+            {"name": "Cartões de Crédito", "url": None},
+        ]
 
     def get_queryset(self):
         # Obter mês e ano atuais
@@ -38,7 +47,7 @@ class CreditCardCreateView(CreateJsonView):
     '''
     success_url = reverse_lazy('credit-cards')
     model = CreditCard
-    fields = ['name', 'limit', 'additional_info', 'brand', 'closing_day', 'due_day']
+    form_class = CreditCardForm
     success_message = 'Cartão de Crédito criado com sucesso!'
     error_message = 'Ocorreu um erro ao criar o cartão de crédito, verifique as informações ou tente novamente mais tarde.'
 
@@ -56,99 +65,8 @@ class CreditCardUpdateView(UpdateJsonView):
     View for updating an credit card
     '''
     model = CreditCard
-    fields = ['name', 'limit', 'additional_info', 'brand', 'closing_day', 'due_day']
+    form_class = CreditCardForm
     success_url = reverse_lazy('credit-cards')
     context_object_name = 'credit_card'
     success_message = 'Cartão de crédito atualizado com sucesso!'
     error_message = 'Ocorreu um erro ao atualizar o cartão de crédito, verifique as informações ou tente novamente mais tarde.'
-
-# class CreditCardsView(PoupeAIMixin, TemplateView):
-#     template_name = "poupeai/credit_cards_page.html"
-
-#     def get_name(self):
-#         return "credit-cards"
-    
-#     def get_breadcrumbs(self):
-#         return [
-#             {"name": "Dashboard", "url": reverse_lazy('dashboard')},
-#             {"name": "Cartões de Crédito", "url": None},
-#         ]
-    
-#     def get_context_data(self, **kwargs):
-#         context = super().get_context_data(**kwargs)
-        
-#         credit_cards = [
-#             {
-#                 "id": 1,
-#                 "limit": 14005.00,
-#                 "outstanding": 12000.00,
-#                 "available": 3500.00,
-#                 "closing_date": "30/10",
-#                 "additional_data": "My additional data1",
-#                 "brand": 1,
-#                 "due_date": "05/11",
-#                 "associated_account": "none",
-#                 "closing_day": "2",
-#                 "due_day": "10",
-#                 "invoice_amount": 0.00,
-#                 "name": "Nubank",
-#                 "status": "Aberta",
-#             },
-#             {
-#                 "id": 2,
-#                 "limit": 10000.00,
-#                 "outstanding": 5000.00,
-#                 "available": 5000.00,
-#                 "name": "Banco do Brasil",
-#                 "closing_date": "15/11",
-#                 "additional_data": "My additional data2",
-#                 "brand": 2,
-#                 "due_date": "20/11",
-#                 "associated_account": "none",
-#                 "closing_day": "1",
-#                 "due_day": "5",
-#                 "invoice_amount": 3500.00,
-#                 "status": "Fechada",
-#             },
-#         ]
-
-#         accounts = [
-#             {"id": 1, "name": "Conta Corrente"},
-#             {"id": 2, "name": "Conta Poupança"},
-#         ]
-
-#         categories = [
-#             {"id": 1, "name": "Aluguel", "valor": 1000.50, "cor": "#ff0000"},
-#             {"id": 2, "name": "Supermercado", "valor": 500.00, "cor": "#00ff00"},
-#             {"id": 3, "name": "Transporte", "valor": 150.00, "cor": "#ff6600"},
-#             {"id": 4, "name": "Internet", "valor": 120.00, "cor": "#00ffff"},
-#             {"id": 5, "name": "Saúde", "valor": 300.00, "cor": "#ff99cc"},
-#         ]
-
-#         invoices = [
-#             {"id": 1, "month": "Janeiro", "year": 2025},
-#             {"id": 2, "month": "Fevereiro", "year": 2025},
-#             {"id": 3, "month": "Março", "year": 2025},
-#         ]
-
-#         credit_card_brands = [
-#             {"id": 1, "name": "Visa"},
-#             {"id": 2, "name": "Mastercard"},
-#             {"id": 3, "name": "American Express"},
-#             {"id": 4, "name": "Elo"},
-#             {"id": 5, "name": "Hipercard"},
-#             {"id": 6, "name": "Diners Club"},
-#         ]
-
-#         for card in credit_cards:
-#             card["usage_percentage"] = "{:.1f}".format((card["outstanding"] / card["limit"]) * 100)
-
-#         context.update({
-#             "credit_cards": credit_cards,
-#             "categories": categories,
-#             "accounts": accounts,
-#             "invoices": invoices,
-#             "credit_card_brands": credit_card_brands,
-#         })
-        
-#         return context
