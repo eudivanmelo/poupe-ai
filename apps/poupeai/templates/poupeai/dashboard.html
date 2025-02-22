@@ -49,7 +49,7 @@ Dashboard
           <div class="col col-stats ms-3 ms-sm-0">
             <div class="numbers">
               <p class="card-category">Saldo Total</p>
-              <h4 class="card-title">R$ 1.248,49</h4>
+              <h4 class="card-title">R$ {{balance_total|floatformat:2}}</h4>
             </div>
           </div>
         </div>
@@ -68,7 +68,7 @@ Dashboard
           <div class="col col-stats ms-3 ms-sm-0">
             <div class="numbers">
               <p class="card-category">Gastos Mensal</p>
-              <h4 class="card-title">R$ 8.023,54</h4>
+              <h4 class="card-title">R$ {{total_expense_month|floatformat:2}}</h4>
             </div>
           </div>
         </div>
@@ -87,7 +87,7 @@ Dashboard
           <div class="col col-stats ms-3 ms-sm-0">
             <div class="numbers">
               <p class="card-category">Entradas Mensais</p>
-              <h4 class="card-title">R$ 1.418,23</h4>
+              <h4 class="card-title">R$ {{total_income_month|floatformat:2}}</h4>
             </div>
           </div>
         </div>
@@ -107,7 +107,7 @@ Dashboard
           </div>
           <div class="col col-stats ms-3 ms-sm-0">
             <div class="numbers">
-              <p class="card-category">Despesas Fíxas</p>
+              <p class="card-category">Faturas em Aberto</p>
               <h4 class="card-title">R$ 1.345,55</h4>
             </div>
           </div>
@@ -338,32 +338,6 @@ Dashboard
       <div class="card-header">
         <div class="card-head-row card-tools-still-right">
           <div class="card-title">Ultimas Transações</div>
-          <div class="card-tools">
-            <div class="dropdown">
-              <button
-                class="btn btn-icon btn-clean me-0"
-                type="button"
-                id="dropdownMenuButton"
-                data-bs-toggle="dropdown"
-                aria-haspopup="true"
-                aria-expanded="false"
-              >
-                <i class="fas fa-ellipsis-h"></i>
-              </button>
-              <div
-                class="dropdown-menu"
-                aria-labelledby="dropdownMenuButton"
-                style=""
-              >
-                <a class="dropdown-item" href="#">Hoje</a>
-                <a class="dropdown-item" href="#">Ultimo semana</a>
-                <a class="dropdown-item" href="#">Ultimo mês</a>
-                <a class="dropdown-item" href="#">Ultimo ano</a>
-                <div class="dropdown-divider"></div>
-                <a class="dropdown-item" href="#">Exportar</a>
-              </div>
-            </div>
-          </div>
         </div>
       </div>
       <div class="card-body p-0">
@@ -415,32 +389,6 @@ Dashboard
       <div class="card-header">
         <div class="card-head-row card-tools-still-right">
           <div class="card-title">Análise de Categorias</div>
-          <div class="card-tools">
-            <div class="dropdown">
-              <button
-                class="btn btn-icon btn-clean me-0"
-                type="button"
-                id="dropdownMenuButton"
-                data-bs-toggle="dropdown"
-                aria-haspopup="true"
-                aria-expanded="false"
-              >
-                <i class="fas fa-ellipsis-h"></i>
-              </button>
-              <div
-                class="dropdown-menu"
-                aria-labelledby="dropdownMenuButton"
-                style=""
-              >
-                <a class="dropdown-item" href="#">Hoje</a>
-                <a class="dropdown-item" href="#">Ultimo semana</a>
-                <a class="dropdown-item" href="#">Ultimo mês</a>
-                <a class="dropdown-item" href="#">Ultimo ano</a>
-                <div class="dropdown-divider"></div>
-                <a class="dropdown-item" href="#">Exportar</a>
-              </div>
-            </div>
-          </div>
         </div>
       </div>
       <div class="card-body p-0">
