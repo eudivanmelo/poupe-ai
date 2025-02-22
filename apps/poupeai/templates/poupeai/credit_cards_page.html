@@ -85,14 +85,15 @@
                                 </div>
                             </div>
 
+                            {% for invoice in card.filtered_invoices %}
                             <div class="d-flex justify-content-between dashed-border py-2">
                                 <div class="text-center">
                                     <p class="mb-1 fw-bold fs-6 fs-md-5 text-truncate">Fechamento</p>
-                                    <p class="mb-0">{{ card.closing_date }}</p>
+                                    <p class="mb-0">{{ card.closing_day }}</p>
                                 </div>
                                 <div class="text-center">
                                     <p class="mb-1 fw-bold fs-6 fs-md-5 text-truncate">Vencimento</p>
-                                    <p class="mb-0">{{ card.due_date }}</p>
+                                    <p class="mb-0">{{ card.due_day }}</p>
                                 </div>
                             </div>
                             <div class="d-flex justify-content-between py-2">
@@ -100,13 +101,13 @@
                                     <p class="mb-1 fw-bold">Fatura</p>
                                 </div>
                                 <div class="text-center">
-                                    <p class="mb-1 fw-bold">R$ {{ card.invoice_amount|floatformat:2 }}</p>
+                                    <p class="mb-1 fw-bold">R$ {{ invoice.total_due|floatformat:2 }}</p>
                                 </div>
                             </div>
                             <div class="d-flex justify-content-between align-items-center py-1">
                                 <div>
                                     <span
-                                        class="badge rounded-pill text-bg-{% if card.status == 'Aberta' %}success{% else %}danger{% endif %} border-0">{{ card.status }}</span>
+                                        class="badge rounded-pill text-bg-{% if invoice.status == 'open' %}success{% else %}danger{% endif %} border-0">{% if invoice.status == 'open' %}Aberta{% else %}Fechada{% endif %}</span>
                                 </div>
                                 <div>
                                     <a href="#"
@@ -117,6 +118,40 @@
                                     </a>
                                 </div>
                             </div>
+                            {% empty %}
+                            <div class="d-flex justify-content-between dashed-border py-2">
+                                <div class="text-center">
+                                    <p class="mb-1 fw-bold fs-6 fs-md-5 text-truncate">Fechamento</p>
+                                    <p class="mb-0">{{ card.closing_day }}</p>
+                                </div>
+                                <div class="text-center">
+                                    <p class="mb-1 fw-bold fs-6 fs-md-5 text-truncate">Vencimento</p>
+                                    <p class="mb-0">{{ card.due_day }}</p>
+                                </div>
+                            </div>
+                            <div class="d-flex justify-content-between py-2">
+                                <div class="text-center">
+                                    <p class="mb-1 fw-bold">Fatura</p>
+                                </div>
+                                <div class="text-center">
+                                    <p class="mb-1 fw-bold">R$ {{ 0|floatformat:2 }}</p>
+                                </div>
+                            </div>
+                            <div class="d-flex justify-content-between align-items-center py-1">
+                                <div>
+                                    <span
+                                        class="badge rounded-pill text-bg-success border-0">Aberta</span>
+                                </div>
+                                <div>
+                                    <a href="#"
+                                        class="text-dark d-inline-flex align-items-center disabled-link link-active p-1"
+                                        data-bs-toggle="modal" aria-disabled="true"
+                                        data-bs-target="#registerPaymentModal">
+                                        <i class="fas fa-check-circle me-2"></i> Registrar Pagamento
+                                    </a>
+                                </div>
+                            </div>
+                            {% endfor %}
                         </div>
                     </div>
                     {% empty %}

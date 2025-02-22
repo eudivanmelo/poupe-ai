@@ -37,13 +37,13 @@ class CreditCard(models.Model):
         return f"{self.user.email} - {self.name}"
     
     @property   
-    def used_limit(self):
+    def outstanding(self):
         total = sum(invoice.total_due for invoice in self.invoices.filter(paid=False))
         return Decimal(total or 0)
 
     @property
-    def available_limit(self):
-        return self.limit - self.used_limit
+    def available(self):
+        return self.limit - self.outstanding
 
 class Invoice(models.Model):
     credit_card = models.ForeignKey(CreditCard, on_delete=models.CASCADE, related_name="invoices")

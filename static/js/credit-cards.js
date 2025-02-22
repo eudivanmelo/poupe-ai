@@ -235,7 +235,7 @@ const CreditCardManager = {
         progressBars.forEach(bar => {
             const limite = parseFloat(bar.getAttribute('data-limit'));
             const limiteDisponivel = parseFloat(bar.getAttribute('data-outstanding'));
-            const percentage = ((limite - limiteDisponivel) / limite) * 100;
+            const percentage = (limiteDisponivel / limite) * 100;
 
             bar.style.width = percentage + '%';
             bar.setAttribute('aria-valuenow', percentage);

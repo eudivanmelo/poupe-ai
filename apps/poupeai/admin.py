@@ -33,7 +33,7 @@ class TransactionAdmin(admin.ModelAdmin):
 
 @admin.register(CreditCard)
 class CreditCardAdmin(admin.ModelAdmin):
-    list_display = ['user', 'name', 'brand', 'limit', 'closing_day', 'due_day', 'used_limit', 'available_limit', 'created_at']
+    list_display = ['user', 'name', 'brand', 'limit', 'closing_day', 'due_day', 'outstanding', 'available', 'created_at']
     search_fields = ['user__name', 'user__email', 'name', 'brand']
     ordering = ['user', 'name', 'limit']
 
