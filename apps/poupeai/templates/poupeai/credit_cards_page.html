@@ -35,8 +35,8 @@
                                 </div>
                                 <div class="d-flex">
                                     <div class="d-flex align-items-center">
-                                        <button class="btn custom-btn addExpenseBtn" type="button"
-                                            data-bs-toggle="modal" data-bs-target="#expenseModal"
+                                        <button class="btn custom-btn addExpenseBtn" type="button" id="addExpenseBtn-{{card.id}}"
+                                        data-bs-toggle="modal" data-bs-target="#createModal"
                                             data-card-id="{{ card.id }}">
                                             <i class="fas fa-plus"></i>
                                         </button>
@@ -224,84 +224,7 @@
 </div>
 
 <!-- Modal Nova Depesa -->
-<div class="modal fade" id="expenseModal" tabindex="-1" aria-labelledby="expenseModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="expenseModalLabel">Nova Despesa</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <form id="expenseForm" method="post" action="#" enctype="multipart/form-data">
-                    {% csrf_token %}
-
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="mb-3">
-                                <label for="expenseDescription" class="form-label">Descrição</label>
-                                <input type="text" class="form-control" id="expenseDescription" name="description"
-                                    placeholder="Ex: Compra de Supermercado" required>
-                            </div>
-
-                            <div class="mb-3">
-                                <label for="expenseValue" class="form-label">Valor</label>
-                                <input type="number" class="form-control" id="expenseValue" name="value"
-                                    placeholder="0,00" step="0.01" required>
-                            </div>
-
-                            <div class="form-check form-switch p-0 mb-3">
-                                <label class="form-check-label" for="expenseFixed">Fixa?</label>
-                                <input class="form-check-input" type="checkbox" id="expenseFixed" name="fixed">
-                            </div>
-
-                            <div class="mb-3">
-                                <label for="expenseCreditCard" class="form-label">Cartão de Crédito</label>
-                                <select class="form-select" id="expenseCreditCard" name="credit_card" required>
-                                    <option value="" disabled selected>Selecione um Cartão</option>
-                                    {% for card in credit_cards %}
-                                    <option value="{{ card.id }}">{{ card.name }}</option>
-                                    {% endfor %}
-                                </select>
-                            </div>
-                        </div>
-
-                        <div class="col-md-6">
-                            <div class="mb-3">
-                                <label for="expenseInvoice" class="form-label">Fatura</label>
-                                <select class="form-select" id="expenseInvoice" name="invoice" required>
-                                    <option value="" disabled selected>Selecione a Fatura</option>
-                                    {% for invoice in invoices %}
-                                    <option value="{{ invoice.id }}">{{ invoice.month }}/{{ invoice.year }}</option>
-                                    {% endfor %}
-                                </select>
-                            </div>
-
-                            <div class="mb-3">
-                                <label for="expenseCategory" class="form-label">Categoria</label>
-                                <select class="form-select" id="expenseCategory" name="category" required>
-                                    <option value="" disabled selected>Selecione uma Categoria</option>
-                                    {% for category in categories %}
-                                    <option value="{{ category.id }}">{{ category.name }}</option>
-                                    {% endfor %}
-                                </select>
-                            </div>
-
-                            <div class="mb-3">
-                                <label for="expenseAttachment" class="form-label">Anexar Documento</label>
-                                <input class="form-control" type="file" id="expenseAttachment" name="attachment"
-                                    accept=".pdf,.jpg,.png">
-                            </div>
-                        </div>
-                    </div>
-                </form>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                <button type="submit" class="btn btn-primary" form="expenseForm">Salvar</button>
-            </div>
-        </div>
-    </div>
-</div>
+{% include 'poupeai/modals/create_transaction.html' %}
 
 <!-- Modal Adicionar Cartão de Crédito -->
 <div class="modal fade" id="addCreditCardModal" tabindex="-1" aria-labelledby="addCreditCardModalLabel"

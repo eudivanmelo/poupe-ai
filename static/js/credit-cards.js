@@ -13,7 +13,7 @@ const handleSubmitForm = (form) => {
         .then((response) => response.json())
         .then((data) => {
             if (data.success) {
-                location.reload();
+                location.reload(true);
             } else {
                 alert("Erro ao criar cartão de crédito: " + JSON.stringify(data.errors));
             }
@@ -36,6 +36,7 @@ const CreditCardManager = {
             this.handleCardAccessibility();
             this.handleSaveCreditCard();
             this.handleAddCreditCard();
+            this.handleChangeTransactionType();
         });
     },
 
@@ -127,6 +128,41 @@ const CreditCardManager = {
         });
     },
 
+    handleChangeTransactionType: function () {
+        $(document).on("click", '[id^="addExpenseBtn-"]', function () {
+            var cardId = $(this).data("card-id").toString(); // Converte para string
+            var transactionType = $("#transactionType");
+            var creditCardSelect = $("#creditCardSelect");
+            var accountFields = $("#accountFields");
+            var cardFields = $("#cardFields");
+
+            console.log("Card ID capturado:", cardId); // Debugging
+
+            // Define o valor fixo para 'card'
+            transactionType.val("card");
+
+            // Habilita temporariamente para garantir que seja enviado no formulário
+            transactionType.prop("disabled", false);
+
+            // Verifica se a opção existe e define o valor
+            if (creditCardSelect.find('option[value="' + cardId + '"]').length > 0) {
+                creditCardSelect.val(cardId).trigger("change").prop("disabled", false);
+                console.log("Valor do select definido:", creditCardSelect.val()); // Debugging
+            } else {
+                console.warn("Opção não encontrada no select para o ID:", cardId);
+            }
+
+            // Garante que os campos corretos estejam visíveis
+            cardFields.removeClass("d-none");
+            accountFields.addClass("d-none");
+
+            // Antes do envio do formulário, desabilita novamente o select
+            $("form").on("submit", function () {
+                transactionType.prop("disabled", false);
+            });
+        });
+    },
+
     handleEditCreditCardModal: function () {
         $(document).on("click", '[id^="edit-credit-card-"]', function () {
             const url = $(this).data("url");
@@ -213,15 +249,67 @@ const CreditCardManager = {
     },
 
     handleAddExpense: function () {
-        document.querySelectorAll('.addExpenseBtn').forEach(button => {
-            button.addEventListener('click', function () {
-                const creditCard = button.getAttribute('data-card-id');
-                document.getElementById('expenseCreditCard').value = creditCard;
+        $("#createTransactionForm").submit(function (e) {
+            e.preventDefault(); // Impedir o envio padrão do formulário
 
-                const modalElement = document.getElementById('expenseModal');
-                const modal = bootstrap.Modal.getInstance(modalElement) || new bootstrap.Modal(modalElement);
-                modal.show();
-            });
+            const formData = new FormData(e.target);
+
+            fetch(e.target.action, {
+                method: "POST",
+                body: formData,
+                headers: {
+                    "X-Requested-With": "XMLHttpRequest",
+                },
+            })
+                .then((response) => response.json())
+                .then((data) => {
+                    if (data.success) {
+                        $('#createModal').modal('hide');
+
+                        swal({
+                            title: "Sucesso!",
+                            text: data.message,
+                            icon: "success",
+                            buttons: {
+                                confirm: {
+                                    className: "btn btn-success",
+                                },
+                            },
+                        }).then(() => {
+                            location.reload();
+                        });
+                    } else {
+                        if (data.errors) {
+                            let errors = "";
+                            for (const key in data.errors) {
+                                errors += `${data.errors[key].join(", ")}\n`;
+                            }
+
+                            swal({
+                                title: "Erro!",
+                                text: errors,
+                                icon: "error",
+                                buttons: {
+                                    confirm: {
+                                        className: "btn btn-danger",
+                                    },
+                                },
+                            });
+                        } else {
+                            swal({
+                                title: "Erro!",
+                                text: data.message,
+                                icon: "error",
+                                buttons: {
+                                    confirm: {
+                                        className: "btn btn-danger",
+                                    },
+                                },
+                            });
+                        }
+                    }
+                })
+                .catch((error) => console.error("Erro:", error));
         });
     },
 
