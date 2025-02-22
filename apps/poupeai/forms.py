@@ -104,6 +104,8 @@ class TransactionForm(forms.ModelForm):
         previous_transaction_type = self.instance.type if self.instance.pk else None
         
         if commit:
+            transaction.save()
+            
             # Se o tipo de transação mudou de 'card' para 'account' ou vice-versa
             if previous_transaction_type != transaction_type:
                 # Se o tipo anterior era 'card' e mudou para 'account', excluir as CardTransactions
@@ -112,7 +114,6 @@ class TransactionForm(forms.ModelForm):
                 else:
                     AccountTransaction.objects.filter(transaction=transaction).delete()
             
-            transaction.save()
             
             if transaction_type == "card":
                 credit_card = self.cleaned_data.get("credit_card")
