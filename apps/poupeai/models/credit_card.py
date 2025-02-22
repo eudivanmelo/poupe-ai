@@ -1,6 +1,9 @@
 from django.db import models
+from django.db.models import Sum
 from django.core.exceptions import ValidationError
 from apps.authentication.models import CustomUser
+from decimal import Decimal
+from datetime import date
 
 def validate_day(value):
     """Garante que o dia esteja entre 1 e 31."""
@@ -32,15 +35,22 @@ class CreditCard(models.Model):
 
     def __str__(self):
         return f"{self.user.email} - {self.name}"
+    
+    @property   
+    def used_limit(self):
+        total = sum(invoice.total_due for invoice in self.invoices.filter(paid=False))
+        return Decimal(total or 0)
+
+    @property
+    def available_limit(self):
+        return self.limit - self.used_limit
 
 class Invoice(models.Model):
     credit_card = models.ForeignKey(CreditCard, on_delete=models.CASCADE, related_name="invoices")
 
     month = models.PositiveSmallIntegerField()
     year = models.PositiveSmallIntegerField()
-    total_due = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
     amount_paid = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
-    balance_due = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
     paid = models.BooleanField(default=False)
 
     class Meta:
@@ -50,3 +60,17 @@ class Invoice(models.Model):
     def __str__(self):
         status = "Paga" if self.paid else "Pendente"
         return f"Fatura {self.month}/{self.year} - R$ {self.total_due:.2f} ({status})"
+    
+    @property
+    def total_due(self):
+        total = self.card_transactions.filter(invoice=self).aggregate(total=Sum('transaction__amount'))['total']
+        return Decimal(total or 0)
+    
+    @property
+    def balance_due(self):
+        return self.total_due - self.amount_paid
+    
+    @property
+    def status(self):
+        today = date.today()
+        return 'open' if today.day <= self.credit_card.closing_day else 'closed'
