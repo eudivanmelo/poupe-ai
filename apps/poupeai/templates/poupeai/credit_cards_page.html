@@ -112,7 +112,10 @@
                                 <div>
                                     <a href="#"
                                         class="text-dark d-inline-flex align-items-center disabled-link link-active p-1"
-                                        data-bs-toggle="modal" aria-disabled="true"
+                                        id="#registerPaymentModal-{{ invoice.id }}"
+                                        data-bs-toggle="modal"
+                                        data-url="{% url 'credit-card-payment' invoice.id %}"
+                                        aria-disabled="true"
                                         data-bs-target="#registerPaymentModal">
                                         <i class="fas fa-check-circle me-2"></i> Registrar Pagamento
                                     </a>
@@ -187,27 +190,28 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <form id="registerPaymentForm">
+                <form id="registerPaymentForm" method="post">
+                    {% csrf_token %}
                     <div class="mb-3">
-                        <label for="registerPaymentAmountInput" class="form-label">Quanto você quer pagar?</label>
-                        <input type="number" class="form-control" id="registerPaymentAmountInput" placeholder="0,00"
+                        <label for="id_amount" class="form-label">Quanto você quer pagar?</label>
+                        <input type="number" class="form-control" id="id_amount" name="amount" placeholder="0,00"
                             step="0.01" required>
                     </div>
                     <div class="mb-3">
-                        <label for="registerPaymentEffectiveDateInput" class="form-label">Data da Efetivação</label>
-                        <input type="date" class="form-control" id="registerPaymentEffectiveDateInput" required>
+                        <label for="id_payment_at" class="form-label">Data da Efetivação</label>
+                        <input type="date" class="form-control" id="id_payment_at" name="payment_at" required>
                     </div>
                     <div class="mb-3">
-                        <label for="registerPaymentAccountSelectInput" class="form-label">Conta</label>
-                        <select class="form-select" id="registerPaymentAccountSelectInput" required>
+                        <label for="id_account" class="form-label">Conta</label>
+                        <select class="form-select" id="id_account" name="account" required>
                             {% for account in accounts %}
                             <option value="{{ account.id }}">{{ account.name }}</option>
                             {% endfor %}
                         </select>
                     </div>
                     <div class="mb-3">
-                        <label for="registerPaymentAttachedDocumentInput" class="form-label">Anexar Documento</label>
-                        <input type="file" class="form-control" id="registerPaymentAttachedDocumentInput" required>
+                        <label for="id_attachment" class="form-label">Anexar Documento</label>
+                        <input type="file" class="form-control" id="id_attachment" name="attachment">
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>

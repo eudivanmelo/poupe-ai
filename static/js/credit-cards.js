@@ -198,21 +198,17 @@ const CreditCardManager = {
     },
 
     handleRegisterPayment: function () {
-        document.getElementById('registerPaymentSave').addEventListener('click', function () {
-            const valorPagamento = document.getElementById('valorPagamento').value;
-            const dataEfetivacao = document.getElementById('dataEfetivacao').value;
-            const contaSelect = document.getElementById('contaSelect').value;
-            const documentoAnexo = document.getElementById('documentoAnexo').files[0];
+        $(document).on("click", '[id^="#registerPaymentModal-"]', function () {
+            const url = $(this).data("url");  // Pega a URL do atributo data-url
+            const modalId = $(this).data("bs-target");  // Pega o ID do modal
+            const modal = $(modalId);
 
-            if (!valorPagamento || !dataEfetivacao || !contaSelect || !documentoAnexo) {
-                alert("Por favor, preencha todos os campos.");
-                return;
-            }
+            // Configura o formulário dentro do modal
+            const form = modal.find("form");
+            form.attr("action", url);  // Define a ação do formulário com a URL da fatura
 
-            alert(`Pagamento de R$ ${valorPagamento} registrado para a conta ${contaSelect}. Documento: ${documentoAnexo.name}`);
-
-            const modal = bootstrap.Modal.getInstance(document.getElementById('registrarPagamentoModal'));
-            modal.hide();
+            // Adiciona o evento de submit ao formulário
+            form.off("submit").on("submit", handleSubmitForm);
         });
     },
 

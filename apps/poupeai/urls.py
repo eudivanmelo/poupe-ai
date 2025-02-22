@@ -26,6 +26,7 @@ urlpatterns = [
     path('credit-card/create/', CreditCardCreateView.as_view(), name='credit-card-create'),
     path('credit-card/delete/<int:pk>/', CreditCardDeleteView.as_view(), name='credit-card-delete'),
     path('credit-card/update/<int:pk>/', CreditCardUpdateView.as_view(), name='credit-card-update'),
+    path('credit-card/payment/<int:pk>/', InvoicePaymentView.as_view(), name='credit-card-payment'),
 
     path('goals/', GoalsListView.as_view(), name='goals'),
     path('goal/create/', GoalCreateView.as_view(), name='goal-create'),

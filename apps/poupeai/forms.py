@@ -230,32 +230,82 @@ class CreditCardForm(forms.ModelForm):
 
         return cleaned_data
     
-class RegisterPaymentForm(forms.Form):
-    amount = forms.DecimalField(
-        max_digits=10,
-        decimal_places=2,
-        min_value=Decimal("0.01"),
-        error_messages={"min_value": "O valor deve ser maior que zero."}
-    )
+class InvoicePaymentForm(forms.ModelForm):
     account = forms.ModelChoiceField(
         queryset=Account.objects.all(),
-        empty_label=None,
-        error_messages={"required": "Selecione uma conta."}
+        required=True,
+        label="Conta"
     )
+    
+    payment_at = forms.DateField(
+        required=True,
+        widget=forms.DateInput(attrs={'type': 'date'}),
+        label="Data de Pagamento"
+    )
+    
+    class Meta:
+        model = Transaction
+        fields = ['amount', 'attachment', 'account', 'payment_at']
+        
+    def clean(self):
+        cleaned_data = super().clean()
 
-    def __init__(self, *args, **kwargs):
-        self.invoice = kwargs.pop("invoice", None)  # Captura a fatura passada na view
-        self.user = kwargs.pop("user", None)  # Captura o usuário logado
-        super().__init__(*args, **kwargs)
+        account = cleaned_data.get('account')
+        payment_at = cleaned_data.get('payment_at')
+            
+        if not account:
+            self.add_error('account', 'Informe a conta bancária')
+            
+        if not payment_at:
+            self.add_error('payment_at', 'Informe a data de pagamento')
+        
+        return cleaned_data
 
-        # Filtra as contas para mostrar apenas as do usuário
-        if self.user:
-            self.fields["account"].queryset = Account.objects.filter(user=self.user)
+    def save(self, commit=True, invoice=None, user=None):
 
-    def clean_amount(self):
-        amount = self.cleaned_data.get("amount")
+        print("Caiu no save")
 
-        if self.invoice and amount > self.invoice.balance_due:
-            raise ValidationError(f"O valor não pode ser maior que R$ {self.invoice.balance_due:.2f}")
-
-        return amount
+        if invoice is None:
+            raise ValueError("O parâmetro 'invoice' não pode ser None")
+    
+        if user is None:
+            raise ValueError("O parâmetro 'user' não pode ser None")
+    
+        transaction = super().save(commit=False)
+    
+        # Define o usuário da transação
+        transaction.user = user
+    
+        # Definir a descrição padrão
+        transaction.description = f"Pagamento de Fatura do Cartão {invoice.credit_card.name} - {invoice.month:02d}/{invoice.year}"
+    
+        # Verificar se a categoria "Faturas" existe, caso contrário, criar
+        category, created = Category.objects.get_or_create(
+            user=user,  # Usa o usuário logado
+            name="Faturas",
+            defaults={'color': '#000000', 'type': 'expense'}
+        )
+        transaction.category = category
+    
+        if commit:
+            transaction.save()
+        
+            # Criar a AccountTransaction
+            AccountTransaction.objects.create(
+                transaction=transaction,
+                account=self.cleaned_data.get("account"),
+                expire_at=self.cleaned_data.get("payment_at"),  # expire_at igual a payment_at
+            )
+        
+            # Atualizar o saldo da conta
+            account = self.cleaned_data.get("account")
+            account.balance -= transaction.amount
+            account.save()
+        
+            # Atualizar o valor pago na fatura
+            invoice.amount_paid += transaction.amount
+            if invoice.balance_due == 0:
+                invoice.paid = True
+            invoice.save()
+    
+        return transaction

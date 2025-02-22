@@ -1,11 +1,14 @@
+from django.http import HttpResponseBadRequest, JsonResponse
+from django.shortcuts import get_object_or_404
 from django.views.generic import ListView
 from django.urls import reverse_lazy
 from apps.poupeai.mixins import PoupeAIMixin
+from apps.poupeai.models.account import Account
 from apps.poupeai.views.generic.json import CreateJsonView, DeleteJsonView, UpdateJsonView
-from apps.poupeai.models import CreditCard, Invoice
+from apps.poupeai.models import CreditCard, Invoice, Transaction
 from django.db.models import Prefetch
 from django.utils.timezone import now
-from apps.poupeai.forms import CreditCardForm
+from apps.poupeai.forms import CreditCardForm, InvoicePaymentForm
 
 class CreditCardsListView(PoupeAIMixin, ListView):
     '''
@@ -40,6 +43,12 @@ class CreditCardsListView(PoupeAIMixin, ListView):
         queryset = CreditCard.objects.all().order_by('created_at').prefetch_related(invoice_filter)
 
         return queryset
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['accounts'] = self.request.user.accounts.all()
+        
+        return context
 
 class CreditCardCreateView(CreateJsonView):
     '''
@@ -70,3 +79,25 @@ class CreditCardUpdateView(UpdateJsonView):
     context_object_name = 'credit_card'
     success_message = 'Cartão de crédito atualizado com sucesso!'
     error_message = 'Ocorreu um erro ao atualizar o cartão de crédito, verifique as informações ou tente novamente mais tarde.'
+
+class InvoicePaymentView(CreateJsonView):
+    model = Transaction
+    form_class = InvoicePaymentForm
+    template_name = 'credit-cards.html'  # Template onde o modal está inserido
+    success_url = reverse_lazy('credit_cards')  # Redirecionar para a lista de cartões após o sucesso
+    success_message = "Pagamento registrado com sucesso!"
+    error_message = "Erro ao registrar pagamento!"
+
+    def form_valid(self, form):
+        invoice = get_object_or_404(Invoice, id=self.kwargs['pk'])
+        
+        # Salva o formulário manualmente e evita a chamada duplicada
+        transaction = form.save(invoice=invoice, user=self.request.user)
+        
+        # Define o objeto salvo para a classe genérica
+        self.object = transaction
+        
+        # Retorna a resposta JSON ou HTTP
+        if self.request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+            return JsonResponse({'success': True, 'id': self.object.id, 'message': self.success_message})
+        return HttpResponseBadRequest('Requisição inválida')
