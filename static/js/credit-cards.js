@@ -76,46 +76,6 @@ const CreditCardManager = {
                 }
             });
         });
-
-        // document.querySelectorAll('[id^="delete-credit-card-"]').forEach(button => {
-        //     button.addEventListener('click', function () {
-        //         const itemId = this.getAttribute('data-id');
-        //         const itemName = this.getAttribute('data-name');
-
-        //         swal({
-        //             title: 'Excluir esse cartão?',
-        //             text: `Todas as transações relacionadas ao cartão "${itemName}" serão removidas.`,
-        //             buttons: {
-        //                 cancel: {
-        //                     text: 'Cancelar',
-        //                     visible: true,
-        //                     className: 'btn btn-secondary'
-        //                 },
-        //                 confirm: {
-        //                     text: 'Excluir',
-        //                     className: 'btn btn-primary'
-        //                 }
-        //             }
-        //         }).then((Delete) => {
-        //             if (Delete) {
-        //                 swal({
-        //                     title: 'Cartão Deletado!',
-        //                     icon: 'success',
-        //                     buttons: {
-        //                         confirm: {
-        //                             className: 'btn btn-success'
-        //                         }
-        //                     }
-        //                 }).then(() => {
-        //                     document.getElementById(`credit-card-${itemId}`).remove();
-        //                     console.log(`Cartão "${itemName}" excluído para "Outros"`);
-        //                 });
-        //             } else {
-        //                 swal.close();
-        //             }
-        //         });
-        //     });
-        // });
     },
 
     handleAddCreditCardModal: function () {
@@ -209,48 +169,30 @@ const CreditCardManager = {
                     .catch(error => console.error("Erro:", error));
             });
         }
-
-        // document.querySelectorAll('[id^="edit-credit-card-"]').forEach(button => {
-        //     button.addEventListener('click', function () {
-        //         const name = button.getAttribute('data-name');
-        //         const limit = button.getAttribute('data-limit');
-        //         const additionalData = button.getAttribute('data-additional-data');
-        //         const brand = button.getAttribute('data-brand');
-        //         const closingDay = button.getAttribute('data-closing-day');
-        //         const dueDay = button.getAttribute('data-due-day');
-
-        //         document.getElementById('inputNameEdit').value = name;
-        //         document.getElementById('inputLimitEdit').value = limit;
-        //         document.getElementById('inputAditionalInfoEdit').value = additionalData;
-        //         document.getElementById('inputBrandEdit').value = brand;
-        //         document.getElementById('inputClosingDayEdit').value = closingDay;
-        //         document.getElementById('inputDueDayEdit').value = dueDay;
-
-        //         const modalElement = document.getElementById('editCreditCardModal');
-        //         const modal = bootstrap.Modal.getInstance(modalElement) || new bootstrap.Modal(modalElement);
-        //         modal.show();
-        //     });
-        // });
     },
 
     handleRegisterPayment: function () {
-        $(document).on("click", '[id^="#registerPaymentModal-"]', function () {
-            const url = $(this).data("url");  // Pega a URL do atributo data-url
-            const modalId = $(this).data("bs-target");  // Pega o ID do modal
+        $(document).on("click", '[id^="registerPaymentModal-"]', function () {
+            const url = $(this).data("url");
+            const modalId = $(this).data("bs-target");
+            const balance_due = $(this).data("outstanding");
             const modal = $(modalId);
-
-            // Configura o formulário dentro do modal
+    
+            const now = new Date();
+            const formattedDate = now.toISOString().split('T')[0];
+    
             const form = modal.find("form");
-            form.attr("action", url);  // Define a ação do formulário com a URL da fatura
-
-            // Adiciona o evento de submit ao formulário
+            form.attr("action", url);
+            form.find("#id_amount").val(balance_due);
+            form.find("#id_payment_at").val(formattedDate);
+    
             form.off("submit").on("submit", handleSubmitForm);
         });
     },
 
     handleAddExpense: function () {
         $("#createTransactionForm").submit(function (e) {
-            e.preventDefault(); // Impedir o envio padrão do formulário
+            e.preventDefault();
 
             const formData = new FormData(e.target);
 
@@ -276,7 +218,7 @@ const CreditCardManager = {
                                 },
                             },
                         }).then(() => {
-                            location.reload();
+                            location.reload(true);
                         });
                     } else {
                         if (data.errors) {
@@ -330,14 +272,16 @@ const CreditCardManager = {
         document.querySelectorAll('[id^="credit-card-"]').forEach(card => {
             const badge = card.querySelector('.badge');
             const link = card.querySelector('a');
-
+    
             if (badge && link) {
                 if (badge.textContent.trim() === 'Fechada') {
                     link.classList.remove('disabled-link');
                     link.removeAttribute('aria-disabled');
                 } else {
-                    link.classList.add('disabled-link');
-                    link.setAttribute('aria-disabled', 'true');
+                    if (!link.querySelector('.fa-check-circle') || link.textContent.trim() !== 'Pago') {
+                        link.classList.add('disabled-link');
+                        link.setAttribute('aria-disabled', 'true');
+                    }
                 }
             }
         });

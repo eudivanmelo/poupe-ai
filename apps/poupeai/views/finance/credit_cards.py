@@ -8,19 +8,16 @@ from apps.poupeai.views.generic.json import CreateJsonView, DeleteJsonView, Upda
 from apps.poupeai.models import CreditCard, Invoice, Transaction
 from django.db.models import Prefetch
 from django.utils.timezone import now
+from datetime import date
 from apps.poupeai.forms import CreditCardForm, InvoicePaymentForm
 
 class CreditCardsListView(PoupeAIMixin, ListView):
-    '''
-    View for listing all credit cards
-    '''
-
     template_name = 'poupeai/credit_cards_page.html'
     context_object_name = 'credit_cards'
 
     def get_name(self):
         return "credit-cards"
-    
+
     def get_breadcrumbs(self):
         return [
             {"name": "Dashboard", "url": reverse_lazy('dashboard')},
@@ -28,27 +25,40 @@ class CreditCardsListView(PoupeAIMixin, ListView):
         ]
 
     def get_queryset(self):
-        # Obter mês e ano atuais
-        month = now().month
-        year = now().year
+        # Obter mês e ano da requisição ou usar o mês e ano atuais
+        month = int(self.request.GET.get('month', now().month))
+        year = int(self.request.GET.get('year', now().year))
 
-        # Criar um filtro de faturas para o mês e ano atuais
+        # Criar um filtro de faturas para o mês e ano selecionados
         invoice_filter = Prefetch(
             'invoices', 
             queryset=Invoice.objects.filter(month=month, year=year),
-            to_attr='filtered_invoices'  # Salvar as faturas filtradas no atributo 'filtered_invoices'
+            to_attr='filtered_invoices'
         )
 
         # Filtrando cartões de crédito e aplicando o prefetch das faturas
         queryset = CreditCard.objects.all().order_by('created_at').prefetch_related(invoice_filter)
 
         return queryset
-    
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['accounts'] = self.request.user.accounts.all()
         context['categories'] = self.request.user.categories.all()
-        
+
+        # Adicionar meses e anos para o formulário de filtragem
+        context['months'] = [
+            {'value': 1, 'name': 'Janeiro'}, {'value': 2, 'name': 'Fevereiro'},
+            {'value': 3, 'name': 'Março'}, {'value': 4, 'name': 'Abril'},
+            {'value': 5, 'name': 'Maio'}, {'value': 6, 'name': 'Junho'},
+            {'value': 7, 'name': 'Julho'}, {'value': 8, 'name': 'Agosto'},
+            {'value': 9, 'name': 'Setembro'}, {'value': 10, 'name': 'Outubro'},
+            {'value': 11, 'name': 'Novembro'}, {'value': 12, 'name': 'Dezembro'},
+        ]
+        context['years'] = range(now().year - 5, now().year + 5)  # Últimos 5 anos e o atual
+        context['selected_month'] = int(self.request.GET.get('month', now().month))
+        context['selected_year'] = int(self.request.GET.get('year', now().year))
+
         return context
 
 class CreditCardCreateView(CreateJsonView):

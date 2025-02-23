@@ -73,4 +73,9 @@ class Invoice(models.Model):
     @property
     def status(self):
         today = date.today()
-        return 'open' if today.day <= self.credit_card.closing_day else 'closed'
+        closing_date = date(self.year, self.month, self.credit_card.closing_day)
+        
+        if today > closing_date:
+            return 'closed'
+        else:
+            return 'open'
