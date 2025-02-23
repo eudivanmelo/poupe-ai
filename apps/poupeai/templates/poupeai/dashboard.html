@@ -61,7 +61,7 @@ Dashboard
       <div class="card-body">
         <div class="row align-items-center">
           <div class="col-icon">
-            <div class="icon-big text-center icon-info bubble-shadow-small">
+            <div class="icon-big text-center icon-danger bubble-shadow-small">
               <i class="fas fa-money-bill-alt"></i>
             </div>
           </div>
@@ -107,8 +107,8 @@ Dashboard
           </div>
           <div class="col col-stats ms-3 ms-sm-0">
             <div class="numbers">
-              <p class="card-category">Faturas em Aberto</p>
-              <h4 class="card-title">R$ 1.345,55</h4>
+              <p class="card-category">Faturas Não Pagas</p>
+              <h4 class="card-title">R$ {{total_closed_unpaid_invoices|floatformat:2}}</h4>
             </div>
           </div>
         </div>
@@ -215,6 +215,7 @@ Dashboard
           </div>
           <canvas
             id="balance-analytics-chart"
+            data-url="{% url 'balance-chart' %}"
             width="305"
             height="375"
             style="display: block; width: 305px; height: 375px"
@@ -321,6 +322,7 @@ Dashboard
           </div>
           <canvas
             id="cards-analytics-chart"
+            data-url="{% url 'cards-chart' %}"
             width="381"
             height="300"
             style="display: block; width: 381px; height: 300px"
@@ -462,6 +464,7 @@ Dashboard
             width="304"
             height="300"
             class="chartjs-render-monitor"
+            data-url="{% url 'category-chart' %}"
           ></canvas>
         </div>
       </div>
@@ -496,7 +499,7 @@ Dashboard
         </div>
       </div>
       <div class="card-body p-0">
-        <div class="p-3" style="min-height: 375px; max-height: 375px" id="iaTips" data-url="{% url 'ai-tip' %}">
+        <div class="p-3" style="min-height: 375px; max-height: 375px; color: #192034;" id="iaTips" data-url="{% url 'ai-tip' %}">
           <h5>Carregando...</h5>
         </div>
       </div>

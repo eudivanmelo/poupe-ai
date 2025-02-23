@@ -5,6 +5,8 @@ from apps.poupeai.services.gemini import generate_financial_summary, tip
 from django.views.generic import TemplateView
 from apps.poupeai.mixins import PoupeAIMixin
 from django.utils.timezone import now
+from apps.poupeai.utils import generate_color
+from datetime import datetime, date
 
 
 class DashboardView(PoupeAIMixin, TemplateView):
@@ -13,6 +15,9 @@ class DashboardView(PoupeAIMixin, TemplateView):
     def get_context_data(self, **kwargs):
         current_month_start = now().replace(day=1, hour=0, minute=0, second=0, microsecond=0)
         current_month_end = now().replace(hour=23, minute=59, second=59, microsecond=999999)
+        current_month = date.today().month
+        current_year = date.today().year
+    
         
         context = super().get_context_data(**kwargs)
         context['credit_cards'] = self.request.user.credit_cards.all()
@@ -34,8 +39,19 @@ class DashboardView(PoupeAIMixin, TemplateView):
                 transaction__created_at__range=(current_month_start, current_month_end)
             ).aggregate(total=Sum('transaction__amount'))['total'] or 0
             for account in context['accounts']
-])
+        ])
         
+    # Calcula o total das faturas fechadas mas não pagas
+        total_closed_unpaid_invoices = sum([
+        invoice.balance_due for credit_card in context['credit_cards'] for invoice in credit_card.invoices.filter(
+                paid=False,
+                month__lte=current_month,
+                year=current_year
+            )
+            if invoice.status == 'closed'  # Verificação do status da fatura
+        ])
+        context["total_closed_unpaid_invoices"] = total_closed_unpaid_invoices
+    
         context['categories'] = self.request.user.categories.all()
         context['transactions'] = self.request.user.transactions.all()
        
@@ -111,7 +127,98 @@ def tip_view(request):
     
     response = tip(prompt_data)
     return JsonResponse({'success': True, 'message': re.sub(r"```html|```", "", response).strip()})
+
+def category_chart_data(request):
+    categories = request.user.categories.all()
     
+    data = {
+        "labels": [],
+        "datasets": [
+            {
+                "data": [],
+                "backgroundColor": [],
+                "borderWidth": 0,
+            }
+        ]
+    }
+    
+    for category in categories:
+        total_value = category.total_transactions_value
+        if total_value > 0:
+            data["labels"].append(category.name)
+            data["datasets"][0]["data"].append(float(total_value))
+            data["datasets"][0]["backgroundColor"].append(category.color)
+    
+    return JsonResponse(data)
+
+def cards_analytics_chart_data(request):
+    credit_cards = request.user.credit_cards.all()
+    
+    data = {
+        "labels": [],
+        "datasets": [
+            {
+                "label": "Limite",
+                "backgroundColor": "rgb(25, 32, 52)",
+                "borderColor": "rgb(25, 32, 52)",
+                "data": [],
+            },
+            {
+                "label": "Gastos",
+                "backgroundColor": "rgb(250, 80, 7)",
+                "borderColor": "rgb(250, 80, 7)",
+                "data": [],
+            },
+        ],
+    }
+
+    for card in credit_cards:
+        data["labels"].append(card.name)
+        data["datasets"][0]["data"].append(float(card.limit))  # Limite do cartão
+        data["datasets"][1]["data"].append(float(card.outstanding))  # Gastos pendentes
+
+    return JsonResponse(data)
+
+def balance_analytics_chart_data(request):
+    user = request.user
+    accounts = user.accounts.all()
+    months = ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"]
+
+    datasets = []
+    for i, account in enumerate(accounts):
+        monthly_balances = []
+        for month in range(1, 13):
+            transactions = account.account_transactions.filter(
+                expire_at__month=month, expire_at__year=datetime.now().year
+            )
+            
+            total_income = transactions.filter(transaction__category__type='income').aggregate(Sum('transaction__amount'))['transaction__amount__sum'] or 0
+            total_expense = transactions.filter(transaction__category__type='expense').aggregate(Sum('transaction__amount'))['transaction__amount__sum'] or 0
+            monthly_balance = float(total_income) - float(total_expense)
+
+            monthly_balances.append(monthly_balance)
+
+        datasets.append({
+            "label": account.name,
+            "borderColor": generate_color(i),
+            "pointBorderColor": "#FFF",
+            "pointBackgroundColor": generate_color(i),
+            "pointBorderWidth": 2,
+            "pointHoverRadius": 4,
+            "pointHoverBorderWidth": 1,
+            "pointRadius": 4,
+            "backgroundColor": generate_color(i) + "aa",
+            "fill": True,
+            "borderWidth": 2,
+            "data": monthly_balances,
+        })
+
+    data = {
+        "labels": months,
+        "datasets": datasets
+    }
+
+    return JsonResponse(data)
     
     
     
