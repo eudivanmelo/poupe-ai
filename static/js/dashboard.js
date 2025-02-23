@@ -187,8 +187,75 @@ var Elements = (function () {
   };
 })();
 
+const LoadTip = function () {
+  var content = $("#iaTips");
+  var url = content.data("url");
+
+  fetch(url, {
+    method: "GET",
+    headers: {
+      "X-Requested-With": "XMLHttpRequest",
+    },
+  })
+    .then((response) => response.json())
+    .then((data) => {
+      if (data.success) {
+        content.html(data.message);
+      } else {
+        swal({
+          title: "Erro!",
+          text: data.message,
+          icon: "error",
+          buttons: {
+            confirm: {
+              className: "btn btn-danger",
+            },
+          },
+        });
+      }
+    })
+    .catch((error) => console.error("Erro:", error));
+};
+
 jQuery(document).ready(function () {
   Elements.init();
+
+  LoadTip();
+  $("#iaTipButton").click(function () {
+    LoadTip();
+  });
+
+  $("#reportIaButton").click(function () {
+    const modal = $("#reportIaModal");
+    const url = $(this).data("url");
+
+    fetch(url, {
+      method: "GET",
+      headers: {
+        "X-Requested-With": "XMLHttpRequest",
+      },
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        if (data.success) {
+          modal.find(".modal-body").html(data.message);
+
+          modal.modal("show");
+        } else {
+          swal({
+            title: "Erro!",
+            text: data.message,
+            icon: "error",
+            buttons: {
+              confirm: {
+                className: "btn btn-danger",
+              },
+            },
+          });
+        }
+      })
+      .catch((error) => console.error("Erro:", error));
+  });
 
   $("#transactionType").change(function () {
     var type = $(this).val();

@@ -1,8 +1,9 @@
-from django.http import HttpResponse
+from django.http import JsonResponse
 from django.db.models import Sum
-from apps.poupeai.services.gemini import generate_financial_summary
+from apps.poupeai.services.gemini import generate_financial_summary, tip
 from django.views.generic import TemplateView
 from apps.poupeai.mixins import PoupeAIMixin
+import re
 
 class DashboardView(PoupeAIMixin, TemplateView):
     template_name = 'poupeai/dashboard.html'
@@ -55,7 +56,39 @@ def relatory_view(request):
     }
     
     response = generate_financial_summary(prompt_data)
-    return HttpResponse(response)
+    return JsonResponse({'success': True, 'message': re.sub(r"```html|```", "", response).strip()})
+
+def tip_view(request):
+    accounts = request.user.accounts.all()
+    transactions = request.user.transactions.all()
+    
+    total_income = sum(account.total_income for account in accounts)
+    total_expenses = sum(account.total_expense for account in accounts)
+    current_balance = total_income - total_expenses
+    
+    transactions_data = [
+        {
+            "date": transaction.payment_at,
+            "description": transaction.description,
+            "category": transaction.category,
+            "amount": transaction.installments_total_amount if transaction.type == 'card' else transaction.amount,
+            "type": transaction.type,
+        }
+        for transaction in transactions
+    ]
+    
+    prompt_data = {
+        "total_income": total_income,
+        "total_expenses": total_expenses,
+        "current_balance": current_balance,
+        "transactions": transactions_data,
+    }
+    
+    response = tip(prompt_data)
+    return JsonResponse({'success': True, 'message': re.sub(r"```html|```", "", response).strip()})
+    
+    
+    
     
 
 
