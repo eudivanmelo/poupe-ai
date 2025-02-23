@@ -27,7 +27,7 @@ class DashboardView(PoupeAIMixin, TemplateView):
         context["total_income_month"] = sum([
             account.account_transactions.filter(
                 transaction__category__type='income',
-                transaction__created_at__range=(current_month_start, current_month_end)
+                transaction__payment_at__range=(current_month_start, current_month_end)
             ).aggregate(total=Sum('transaction__amount'))['total'] or 0
             for account in context['accounts']
         ])
@@ -36,7 +36,7 @@ class DashboardView(PoupeAIMixin, TemplateView):
         context["total_expense_month"] = sum([
             account.account_transactions.filter(
                 transaction__category__type='expense',
-                transaction__created_at__range=(current_month_start, current_month_end)
+                transaction__payment_at__range=(current_month_start, current_month_end)
             ).aggregate(total=Sum('transaction__amount'))['total'] or 0
             for account in context['accounts']
         ])

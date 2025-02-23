@@ -272,14 +272,9 @@ Dashboard
             <tbody>
               {% for transaction in transactions %}
               <tr class="no-wrap-lg">
-                <td>{{transaction.created_at|date:"d/m/Y" }}</td>
-                {% if transaction.type == 'card' %}
-                <td>
-                  R$ {{transaction.installments_total_amount|floatformat:2}}
+                <td>{{transaction.payment_at|date:"d/m/Y" }}</td>
+                <td>R$ {% if transaction.category.type == 'expense' %}-{% endif %}{% if transaction.type == 'card' %}{{transaction.installments_total_amount|floatformat:2}}{% else %}{{transaction.amount|floatformat:2}}{% endif %}
                 </td>
-                {% else %}
-                <td>R$ {{transaction.amount|floatformat:2}}</td>
-                {% endif %}
 
                 <td>
                   <span 

@@ -83,7 +83,11 @@ Transações
                 <td class="d-none d-lg-table-cell">{{transaction.category}}</td>
 
                 <td class="d-none d-lg-table-cell">
-                  {{ transaction.created_at|date:"d/m/Y" }} - {{transaction.created_at|time:"H:i" }}
+                  {% if transaction.payment_at %}
+                    {{ transaction.payment_at|date:"d/m/Y" }}
+                  {% else %}
+                    Sem data de pagamento
+                  {% endif %}
                 </td>
 
                 {% if transaction.type == 'card' %}
