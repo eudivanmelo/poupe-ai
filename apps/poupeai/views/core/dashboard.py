@@ -62,6 +62,9 @@ def relatory_view(request):
     accounts = request.user.accounts.all()
     transactions = request.user.transactions.all()
     
+    if not transactions.exists():
+        return JsonResponse({'success': False, 'message': 'Nenhuma transação encontrada para gerar um relatório.'})
+    
     total_income = sum(account.total_income for account in accounts)
     total_expenses = sum(account.total_expense for account in accounts)
     current_balance = total_income - total_expenses

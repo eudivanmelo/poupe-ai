@@ -35,7 +35,7 @@ def tip(data):
     """
     Envia um prompt para o Gemini e retorna a resposta formatada como HTML.
     """
-    prompt = f'Gere um dica com até 3 parágrafos com base nos dados a seguir e em formato html, retorne apenas o html que contenha essa dica:\n\n'
+    prompt = f'Gere um dica com até 3 parágrafos com no máximo 750 caracteres com base nos dados a seguir e em formato html, lembre-se que os dados foram retirados da plataforma ao qual essa mensagem será exibida, mas não precisa explicar como adicionar informações, retorne apenas o html que contenha essa dica:\n\n'
     prompt += f'Total de renda: {data["total_income"]}\n'
     prompt += f'Total de despesas: {data["total_expenses"]}\n'
     prompt += f'Saldo atual: {data["current_balance"]}\n'
