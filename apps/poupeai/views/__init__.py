@@ -1,6 +1,6 @@
 from .admin_dashboard import admin_view
 
-from .core.dashboard import dashboard_view
+from .core.dashboard import DashboardView
 from .core.help import HelpView
 from .core.home import home_view
 from .core.notifications import notifications_view
@@ -8,8 +8,7 @@ from .core.notifications import notifications_view
 from .finance.accounts import AccountsListView, AccountCreateView, AccountDeleteView, AccountDetailView, AccountUpdateView
 
 from .finance.categories import CategoriesListView, CategoryCreateView, CategoryDeleteView, CategoryUpdateView
-
-from .finance.credit_cards import CreditCardsView
+from .finance.credit_cards import CreditCardsListView, CreditCardCreateView, CreditCardDeleteView, CreditCardUpdateView, InvoicePaymentView
 
 from .finance.goals import GoalsListView, GoalCreateView, GoalDeleteView, GoalUpdateView, GoalDepositCreateView
 
@@ -21,7 +20,7 @@ from .profile.profiles import ProfileView
 
 __all__ = [
     'admin_view',
-    'dashboard_view',
+    'DashboardView',
 
     'HelpView',
     
@@ -39,7 +38,11 @@ __all__ = [
     'CategoryDeleteView',
     'CategoryUpdateView',
     
-    'CreditCardsView',
+    'CreditCardsListView',
+    'CreditCardCreateView',
+    'CreditCardDeleteView',
+    'CreditCardUpdateView',
+    'InvoicePaymentView',
     
     'GoalsListView',
     'GoalCreateView',
