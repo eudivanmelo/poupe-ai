@@ -1,6 +1,6 @@
 from .admin_dashboard import admin_view
 
-from .core.dashboard import DashboardView
+from .core.dashboard import DashboardView, relatory_view, tip_view
 from .core.help import HelpView
 from .core.home import home_view
 from .core.notifications import notifications_view
@@ -21,6 +21,8 @@ from .profile.profiles import ProfileView
 __all__ = [
     'admin_view',
     'DashboardView',
+    'relatory_view',
+    'tip_view',
 
     'HelpView',
     
