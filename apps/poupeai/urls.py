@@ -6,6 +6,9 @@ urlpatterns = [
     path('dashboard/', DashboardView.as_view(), name='dashboard'),
     path('ai/relatory/', relatory_view, name='ai-relatory'),
     path('ai/tip/', tip_view, name='ai-tip'),
+    path('chart/category/', category_chart_data, name='category-chart'),
+    path('chart/cards/', cards_analytics_chart_data, name='cards-chart'),
+    path('chart/balance/', balance_analytics_chart_data, name='balance-chart'),
     
     path('categories/', CategoriesListView.as_view(), name='categories'),
     path('category/create/', CategoryCreateView.as_view(), name='category-create'),

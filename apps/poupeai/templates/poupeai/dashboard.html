@@ -49,7 +49,7 @@ Dashboard
           <div class="col col-stats ms-3 ms-sm-0">
             <div class="numbers">
               <p class="card-category">Saldo Total</p>
-              <h4 class="card-title">R$ 1.248,49</h4>
+              <h4 class="card-title">R$ {{balance_total|floatformat:2}}</h4>
             </div>
           </div>
         </div>
@@ -61,14 +61,14 @@ Dashboard
       <div class="card-body">
         <div class="row align-items-center">
           <div class="col-icon">
-            <div class="icon-big text-center icon-info bubble-shadow-small">
+            <div class="icon-big text-center icon-danger bubble-shadow-small">
               <i class="fas fa-money-bill-alt"></i>
             </div>
           </div>
           <div class="col col-stats ms-3 ms-sm-0">
             <div class="numbers">
               <p class="card-category">Gastos Mensal</p>
-              <h4 class="card-title">R$ 8.023,54</h4>
+              <h4 class="card-title">R$ {{total_expense_month|floatformat:2}}</h4>
             </div>
           </div>
         </div>
@@ -87,7 +87,7 @@ Dashboard
           <div class="col col-stats ms-3 ms-sm-0">
             <div class="numbers">
               <p class="card-category">Entradas Mensais</p>
-              <h4 class="card-title">R$ 1.418,23</h4>
+              <h4 class="card-title">R$ {{total_income_month|floatformat:2}}</h4>
             </div>
           </div>
         </div>
@@ -107,8 +107,8 @@ Dashboard
           </div>
           <div class="col col-stats ms-3 ms-sm-0">
             <div class="numbers">
-              <p class="card-category">Despesas Fíxas</p>
-              <h4 class="card-title">R$ 1.345,55</h4>
+              <p class="card-category">Faturas Não Pagas</p>
+              <h4 class="card-title">R$ {{total_closed_unpaid_invoices|floatformat:2}}</h4>
             </div>
           </div>
         </div>
@@ -215,6 +215,7 @@ Dashboard
           </div>
           <canvas
             id="balance-analytics-chart"
+            data-url="{% url 'balance-chart' %}"
             width="305"
             height="375"
             style="display: block; width: 305px; height: 375px"
@@ -321,6 +322,7 @@ Dashboard
           </div>
           <canvas
             id="cards-analytics-chart"
+            data-url="{% url 'cards-chart' %}"
             width="381"
             height="300"
             style="display: block; width: 381px; height: 300px"
@@ -338,32 +340,6 @@ Dashboard
       <div class="card-header">
         <div class="card-head-row card-tools-still-right">
           <div class="card-title">Ultimas Transações</div>
-          <div class="card-tools">
-            <div class="dropdown">
-              <button
-                class="btn btn-icon btn-clean me-0"
-                type="button"
-                id="dropdownMenuButton"
-                data-bs-toggle="dropdown"
-                aria-haspopup="true"
-                aria-expanded="false"
-              >
-                <i class="fas fa-ellipsis-h"></i>
-              </button>
-              <div
-                class="dropdown-menu"
-                aria-labelledby="dropdownMenuButton"
-                style=""
-              >
-                <a class="dropdown-item" href="#">Hoje</a>
-                <a class="dropdown-item" href="#">Ultimo semana</a>
-                <a class="dropdown-item" href="#">Ultimo mês</a>
-                <a class="dropdown-item" href="#">Ultimo ano</a>
-                <div class="dropdown-divider"></div>
-                <a class="dropdown-item" href="#">Exportar</a>
-              </div>
-            </div>
-          </div>
         </div>
       </div>
       <div class="card-body p-0">
@@ -415,32 +391,6 @@ Dashboard
       <div class="card-header">
         <div class="card-head-row card-tools-still-right">
           <div class="card-title">Análise de Categorias</div>
-          <div class="card-tools">
-            <div class="dropdown">
-              <button
-                class="btn btn-icon btn-clean me-0"
-                type="button"
-                id="dropdownMenuButton"
-                data-bs-toggle="dropdown"
-                aria-haspopup="true"
-                aria-expanded="false"
-              >
-                <i class="fas fa-ellipsis-h"></i>
-              </button>
-              <div
-                class="dropdown-menu"
-                aria-labelledby="dropdownMenuButton"
-                style=""
-              >
-                <a class="dropdown-item" href="#">Hoje</a>
-                <a class="dropdown-item" href="#">Ultimo semana</a>
-                <a class="dropdown-item" href="#">Ultimo mês</a>
-                <a class="dropdown-item" href="#">Ultimo ano</a>
-                <div class="dropdown-divider"></div>
-                <a class="dropdown-item" href="#">Exportar</a>
-              </div>
-            </div>
-          </div>
         </div>
       </div>
       <div class="card-body p-0">
@@ -514,6 +464,7 @@ Dashboard
             width="304"
             height="300"
             class="chartjs-render-monitor"
+            data-url="{% url 'category-chart' %}"
           ></canvas>
         </div>
       </div>
@@ -548,7 +499,7 @@ Dashboard
         </div>
       </div>
       <div class="card-body p-0">
-        <div class="p-3" style="min-height: 375px; max-height: 375px" id="iaTips" data-url="{% url 'ai-tip' %}">
+        <div class="p-3" style="min-height: 375px; max-height: 375px; color: #192034;" id="iaTips" data-url="{% url 'ai-tip' %}">
           <h5>Carregando...</h5>
         </div>
       </div>
