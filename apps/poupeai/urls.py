@@ -4,6 +4,8 @@ from .views import *
 urlpatterns = [
     path('', home_view, name='home'),
     path('dashboard/', DashboardView.as_view(), name='dashboard'),
+    path('ai/relatory/', relatory_view, name='ai-relatory'),
+    path('ai/tip/', tip_view, name='ai-tip'),
     
     path('categories/', CategoriesListView.as_view(), name='categories'),
     path('category/create/', CategoryCreateView.as_view(), name='category-create'),
@@ -22,8 +24,12 @@ urlpatterns = [
     path('account/detail/<int:pk>/', AccountDetailView.as_view(), name='account-detail'),
     path('account/update/<int:pk>/', AccountUpdateView.as_view(), name='account-update'),
   
-    path('credit-cards/', CreditCardsView.as_view(), name='credit-cards'),
-    
+    path('credit-cards/', CreditCardsListView.as_view(), name='credit-cards'),
+    path('credit-card/create/', CreditCardCreateView.as_view(), name='credit-card-create'),
+    path('credit-card/delete/<int:pk>/', CreditCardDeleteView.as_view(), name='credit-card-delete'),
+    path('credit-card/update/<int:pk>/', CreditCardUpdateView.as_view(), name='credit-card-update'),
+    path('credit-card/payment/<int:pk>/', InvoicePaymentView.as_view(), name='credit-card-payment'),
+
     path('goals/', GoalsListView.as_view(), name='goals'),
     path('goal/create/', GoalCreateView.as_view(), name='goal-create'),
     path('goal/delete/<int:pk>/', GoalDeleteView.as_view(), name='goal-delete'),

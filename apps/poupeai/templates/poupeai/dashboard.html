@@ -21,8 +21,8 @@ Dashboard
   >
     <button
       class="btn btn-secondary btn-rounded"
-      data-bs-toggle="modal"
-      data-bs-target="#reportIaModal"
+      id="reportIaButton"
+      data-url="{% url 'ai-relatory' %}"
     >
       Relatório de IA
     </button>
@@ -489,26 +489,15 @@ Dashboard
                 aria-labelledby="dropdownMenuButton"
                 style=""
               >
-                <a class="dropdown-item" href="#">Gerar nova dica</a>
-                <div class="dropdown-divider"></div>
-                <a class="dropdown-item" href="#">Reportar</a>
+                <button id="iaTipButton" class="dropdown-item">Gerar nova dica</button>
               </div>
             </div>
           </div>
         </div>
       </div>
       <div class="card-body p-0">
-        <div class="p-3" style="min-height: 375px; max-height: 375px">
-          <h5>What is Lorem Ipsum?</h5>
-          <p>
-            Lorem Ipsum is simply dummy text of the printing and typesetting
-            industry. Lorem Ipsum has been the industry's standard dummy text
-            ever since the 1500s, when an unknown printer took a galley of type
-            and scrambled it to make a type specimen book. It has survived not
-            only five centuries, but also the leap into electronic typesetting,
-            remaining essentially unchanged. It was popularised in the 1960s
-            with the release of Letraset sheets containing Lorem Ipsum passages.
-          </p>
+        <div class="p-3" style="min-height: 375px; max-height: 375px" id="iaTips" data-url="{% url 'ai-tip' %}">
+          <h5>Carregando...</h5>
         </div>
       </div>
     </div>
