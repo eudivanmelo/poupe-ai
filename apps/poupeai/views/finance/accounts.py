@@ -39,7 +39,7 @@ class AccountsListView(PoupeAIMixin, ListView):
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["balance_total"] = sum([account.balance for account in context['accounts']])
+        context["balance_total"] = sum([account.current_balance for account in context['accounts']])
         context["total_income"] = sum([account.total_income for account in context['accounts']])
         context["total_expense"] = sum([account.total_expense for account in context['accounts']])
         return context

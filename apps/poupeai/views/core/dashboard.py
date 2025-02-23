@@ -22,7 +22,7 @@ class DashboardView(PoupeAIMixin, TemplateView):
         context = super().get_context_data(**kwargs)
         context['credit_cards'] = self.request.user.credit_cards.all()
         context['accounts'] = self.request.user.accounts.all()
-        context["balance_total"] = sum([account.balance for account in context['accounts']])
+        context["balance_total"] = sum([account.current_balance for account in context['accounts']])
 
         context["total_income_month"] = sum([
             account.account_transactions.filter(
@@ -67,7 +67,7 @@ def relatory_view(request):
     
     total_income = sum(account.total_income for account in accounts)
     total_expenses = sum(account.total_expense for account in accounts)
-    current_balance = total_income - total_expenses
+    current_balance = sum([account.current_balance for account in accounts])
     
     transactions_data = [
         {
@@ -108,7 +108,7 @@ def tip_view(request):
     
     total_income = sum(account.total_income for account in accounts)
     total_expenses = sum(account.total_expense for account in accounts)
-    current_balance = total_income - total_expenses
+    current_balance = sum([account.current_balance for account in accounts])
     
     transactions_data = [
         {

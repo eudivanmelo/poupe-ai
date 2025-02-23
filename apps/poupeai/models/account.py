@@ -18,6 +18,12 @@ class Account(models.Model):
         return f'{self.user.email} - {self.name}'
     
     @property
+    def current_balance(self):
+        """Retorna o saldo atual da conta."""
+        total = self.total_income - self.total_expense + self.balance
+        return total or 0
+    
+    @property
     def total_income(self):
         """Retorna o valor total das receitas (entradas) associadas a esta conta."""
         total = self.account_transactions.filter(transaction__category__type='income').aggregate(total=Sum('transaction__amount'))['total']

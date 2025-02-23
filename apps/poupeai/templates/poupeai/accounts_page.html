@@ -45,7 +45,7 @@ Contas - Poupe.AI {% endblock %} {% block page_title %} Contas {% endblock %}
             {% for account in accounts %}
             <tr class="no-wrap-lg">
               <td>{{account.name}}</td>
-              <td>R$ {{account.balance|floatformat:2}}</td>
+              <td>R$ {{account.current_balance|floatformat:2}}</td>
               <td class="d-none d-lg-table-cell">
                 R$ {{account.total_income|floatformat:2}}
               </td>
