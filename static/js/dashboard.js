@@ -1,4 +1,6 @@
 var Elements = (function () {
+  var myBalanceAnalyticsChart, myCardsAnalyticsChart, myCategoryChart;
+
   var init_balanceAnalyticsChart = function () {
     var balanceAnalyticsChart = $("#balance-analytics-chart");
     const url = balanceAnalyticsChart.data("url");
@@ -7,7 +9,7 @@ var Elements = (function () {
       url: url,
       method: "GET",
       success: function (response) {
-        var myBalanceAnalyticsChart = new Chart(balanceAnalyticsChart, {
+        myBalanceAnalyticsChart = new Chart(balanceAnalyticsChart, {
           type: "line",
           data: response,
           options: {
@@ -57,7 +59,7 @@ var Elements = (function () {
       url: url,
       method: "GET",
       success: function (response) {
-        var myCardsAnalyticsChart = new Chart(cardsAnalyticsChart, {
+        myCardsAnalyticsChart = new Chart(cardsAnalyticsChart, {
           type: "bar",
           data: response, // Usa os dados retornados pela view
           options: {
@@ -89,7 +91,7 @@ var Elements = (function () {
       url: url,
       method: "GET",
       success: function (response) {
-        var myCategoryChart = new Chart(categoryChart, {
+        myCategoryChart = new Chart(categoryChart, {
           type: "pie",
           data: response, // Usa os dados retornados pela view
           options: {
@@ -126,6 +128,13 @@ var Elements = (function () {
       },
     });
   };
+
+  // Adicionar evento de resize para todos os gráficos
+  $(window).on("resize", function () {
+    if (myBalanceAnalyticsChart) myBalanceAnalyticsChart.resize();
+    if (myCardsAnalyticsChart) myCardsAnalyticsChart.resize();
+    if (myCategoryChart) myCategoryChart.resize();
+  });
 
   return {
     init: function () {
