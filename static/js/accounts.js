@@ -163,14 +163,8 @@ var Modals = (function () {
         text: `Ao apagar a conta '${itemName}' todas as transações vinculadas a ela também serão apagadas, este processo não pode ser revertido!`,
         dangerMode: true,
         buttons: {
-          confirm: {
-            text: "Sim, deletar!",
-            className: "btn btn-secondary",
-          },
-          cancel: {
-            visible: true,
-            className: "btn btn-danger",
-          },
+          cancel: { text: "Cancelar", visible: true, className: "btn btn-secondary" },
+          confirm: { text: "Excluir", className: "btn btn-primary" },
         },
       }).then((Delete) => {
         if (Delete) {

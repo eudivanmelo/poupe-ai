@@ -191,7 +191,7 @@ var Alerts = (function () {
               modal.find("#editAccountInput").val(data.transaction.account);
               modal.find("#editExpirationDateInput").val(data.transaction.expire_at);
             }
-            
+
             modal.find("#editTransactionForm").attr("action", url);
             modal.modal("show");
           } else {
@@ -210,14 +210,8 @@ var Alerts = (function () {
         text: `Ao apagar a transação '${itemName}' você não poderá reverter isso!`,
         type: "warning",
         buttons: {
-          confirm: {
-            text: "Sim, deletar!",
-            className: "btn btn-secondary",
-          },
-          cancel: {
-            visible: true,
-            className: "btn btn-danger",
-          },
+          cancel: { text: "Cancelar", visible: true, className: "btn btn-secondary" },
+          confirm: { text: "Excluir", className: "btn btn-primary" },
         },
       }).then((Delete) => {
         if (Delete) {
