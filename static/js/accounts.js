@@ -13,7 +13,7 @@ const handleSubmitForm = (form) => {
     .then((response) => response.json())
     .then((data) => {
       if (data.success) {
-        location.reload(); // Atualiza a página para exibir a nova conta
+        location.reload(true); // Atualiza a página para exibir a nova conta
       } else {
         alert("Erro ao criar conta: " + JSON.stringify(data.errors));
       }
@@ -163,14 +163,8 @@ var Modals = (function () {
         text: `Ao apagar a conta '${itemName}' todas as transações vinculadas a ela também serão apagadas, este processo não pode ser revertido!`,
         dangerMode: true,
         buttons: {
-          confirm: {
-            text: "Sim, deletar!",
-            className: "btn btn-secondary",
-          },
-          cancel: {
-            visible: true,
-            className: "btn btn-danger",
-          },
+          cancel: { text: "Cancelar", visible: true, className: "btn btn-secondary" },
+          confirm: { text: "Excluir", className: "btn btn-primary" },
         },
       }).then((Delete) => {
         if (Delete) {
@@ -196,7 +190,7 @@ var Modals = (function () {
                     },
                   },
                 }).then(() => {
-                  location.reload();
+                  location.reload(true);
                 });
               } else {
                 swal({

@@ -9,7 +9,7 @@ class AccountAdmin(admin.ModelAdmin):
 
 @admin.register(Goal)
 class GoalAdmin(admin.ModelAdmin):
-    list_display = ['user', 'name', 'goal', 'status', 'created_at']
+    list_display = ['user', 'name', 'goal', 'status', 'created_at', 'amount_needed']
     search_fields = ['user__email', 'name']
     ordering = ['user', 'name', 'created_at']
 

@@ -27,7 +27,7 @@ class AccountsListView(PoupeAIMixin, ListView):
 
     def get_queryset(self):
         search_query = self.request.GET.get('search', '')
-        queryset = Account.objects.all().order_by('created_at')
+        queryset = Account.objects.all().filter(user=self.request.user).order_by('created_at')
         
         if search_query:
             queryset = queryset.filter(

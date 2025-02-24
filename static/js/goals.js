@@ -58,7 +58,7 @@ const GoalManager = {
 
         modal.find("#depositForm").attr("action", url);
 
-        modal.modal('show');  
+        modal.modal('show');
       });
     });
   },
@@ -73,15 +73,8 @@ const GoalManager = {
           title: "Excluir essa meta?",
           text: `Você tem certeza que deseja desistir da meta '${itemName}'?`,
           buttons: {
-            cancel: {
-              text: "Cancelar",
-              visible: true,
-              className: "btn btn-secondary",
-            },
-            confirm: {
-              text: "Excluir",
-              className: "btn btn-primary",
-            },
+            cancel: { text: "Cancelar", visible: true, className: "btn btn-secondary" },
+            confirm: { text: "Excluir", className: "btn btn-primary" },
           },
         }).then((Delete) => {
           if (Delete) {
@@ -107,7 +100,7 @@ const GoalManager = {
                       },
                     },
                   }).then(() => {
-                    location.reload();
+                    location.reload(true);
                   });
                 } else {
                   swal({
@@ -139,31 +132,31 @@ const GoalManager = {
         var modal = $("#editModal");
 
         fetch(url, {
-            method: "GET",
-            headers: { "X-Requested-With": "XMLHttpRequest" },
+          method: "GET",
+          headers: { "X-Requested-With": "XMLHttpRequest" },
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            if (data.success) {
+              modal.find("#goal-name").val(data.goal.name);
+              modal.find("#initial-balance").val(data.goal.initial_balance);
+              modal.find("#goal-amount").val(data.goal.goal);
+              modal.find("#goal-date").val(data.goal.target_at);
+              modal.find("#goal-motivation").val(data.goal.motivation);
+
+              modal.find("#goalColorEditInput").val(data.goal.color);
+              modal.find("#colorPickerEdit").css("background-color", data.goal.color);
+
+              console.log(url);
+              modal.find("#editForm").attr("action", url);
+              modal.modal("show");
+            } else {
+              alert("Erro ao carregar os dados da conta");
+            }
           })
-            .then((response) => response.json())
-            .then((data) => {
-              if (data.success) {
-                modal.find("#goal-name").val(data.goal.name);
-                modal.find("#initial-balance").val(data.goal.initial_balance);
-                modal.find("#goal-amount").val(data.goal.goal);
-                modal.find("#goal-date").val(data.goal.target_at);
-                modal.find("#goal-motivation").val(data.goal.motivation);
+          .catch((error) => console.error("Erro:", error));
 
-                modal.find("#goalColorEditInput").val(data.goal.color);
-                modal.find("#colorPickerEdit").css("background-color", data.goal.color);
 
-                console.log(url);
-                modal.find("#editForm").attr("action", url);
-                modal.modal("show");
-              } else {
-                alert("Erro ao carregar os dados da conta");
-              }
-            })
-            .catch((error) => console.error("Erro:", error));
-
-        
       });
     });
   },
@@ -187,7 +180,7 @@ const GoalManager = {
           .then((response) => response.json())
           .then((data) => {
             if (data.success) {
-              location.reload(); // Atualiza a página para exibir a nova conta
+              location.reload(true); // Atualiza a página para exibir a nova conta
             } else {
               alert("Erro ao criar conta: " + JSON.stringify(data.errors));
             }
@@ -224,3 +217,30 @@ const GoalManager = {
 };
 
 GoalManager.init();
+
+const form = document.getElementById('depositForm');
+form.addEventListener('submit', function (e) {
+  e.preventDefault();
+  const formData = new FormData(form);
+
+  fetch(form.action, {
+    method: 'POST',
+    body: formData,
+    headers: {
+      'X-Requested-With': 'XMLHttpRequest',
+      'X-CSRFToken': form.querySelector('[name=csrfmiddlewaretoken]').value,
+    },
+  })
+    .then(response => response.json())
+    .then(data => {
+      if (data.success) {
+        alert(data.message);
+        location.reload(true);
+      } else {
+        alert(data.message); // Exibe mensagem de erro
+      }
+    })
+    .catch(error => {
+      console.error('Error:', error);
+    });
+});

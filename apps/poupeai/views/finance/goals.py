@@ -1,3 +1,4 @@
+from django.http import HttpResponseBadRequest, JsonResponse
 from django.shortcuts import render
 from django.views.generic import ListView
 from django.urls import reverse_lazy
@@ -5,6 +6,8 @@ from datetime import datetime
 from apps.poupeai.mixins import PoupeAIMixin
 from apps.poupeai.models import Goal, GoalDeposit
 from apps.poupeai.views.generic.json import CreateJsonView, DeleteJsonView, UpdateJsonView
+from django.shortcuts import get_object_or_404
+from django.utils import timezone
 
 class GoalsListView(PoupeAIMixin, ListView):
     '''
@@ -22,6 +25,10 @@ class GoalsListView(PoupeAIMixin, ListView):
             {"name": "Dashboard", "url": reverse_lazy('dashboard')},
             {"name": "Minhas Metas", "url": None},
         ]
+    
+    def get_queryset(self):
+        '''Filters categories by the logged-in user'''
+        return super().get_queryset().filter(user=self.request.user)
 
 class GoalCreateView(CreateJsonView):
     '''
@@ -64,19 +71,34 @@ class GoalDepositCreateView(CreateJsonView):
     error_message = "Erro ao realizar depósito. Verifique os campos e tente novamente."
     
     def form_valid(self, form):
-        form.instance.goal = Goal.objects.get(pk=self.kwargs.get('pk'))
-         
-        if form.instance.deposit_at > datetime.now().date():
+        # Obtém a meta associada ao depósito
+        goal = get_object_or_404(Goal, pk=self.kwargs.get('pk'))
+        form.instance.goal = goal
+        
+        # Validações
+        if form.instance.deposit_at > timezone.now().date():
             return self.form_invalid(form)
         
         if form.instance.deposit_amount <= 0:
             return self.form_invalid(form)
         
-        if form.instance.deposit_amount > form.instance.goal.amount_needed:
+        if form.instance.deposit_amount > goal.amount_needed:
             return self.form_invalid(form)
         
-        if form.instance.goal.completed_at:
+        if goal.completed_at:
             return self.form_invalid(form)
-       
-        return super().form_valid(form)
+        
+        super().form_valid(form)
+        
+        goal.save()
+        
+        if goal.amount_needed <= 0:
+            goal.completed_at = timezone.now()
+            goal.save()
+
+        self.object = goal    
+        
+        if self.request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+            return JsonResponse({'success': True, 'id': self.object.id, 'message': self.success_message})
+        return HttpResponseBadRequest('Requisição inválida')
     

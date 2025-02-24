@@ -178,7 +178,9 @@ var Alerts = (function () {
           if (data.success) {
             modal.find("#editDescriptionInput").val(data.transaction.description);
             modal.find("#editValueInput").val(data.transaction.amount);
-            modal.find("#editPaymentDateInput").val(new Date(data.transaction.payment_at).toISOString().split('T')[0]);
+            if (data.transaction.payment_at) {
+              modal.find("#editPaymentDateInput").val(new Date(data.transaction.payment_at).toISOString().split('T')[0]);
+            }
             modal.find("#editCategoryInput").val(data.transaction.category);
 
             if (data.transaction.type === "card") {
@@ -191,7 +193,7 @@ var Alerts = (function () {
               modal.find("#editAccountInput").val(data.transaction.account);
               modal.find("#editExpirationDateInput").val(data.transaction.expire_at);
             }
-            
+
             modal.find("#editTransactionForm").attr("action", url);
             modal.modal("show");
           } else {
@@ -210,14 +212,8 @@ var Alerts = (function () {
         text: `Ao apagar a transação '${itemName}' você não poderá reverter isso!`,
         type: "warning",
         buttons: {
-          confirm: {
-            text: "Sim, deletar!",
-            className: "btn btn-secondary",
-          },
-          cancel: {
-            visible: true,
-            className: "btn btn-danger",
-          },
+          cancel: { text: "Cancelar", visible: true, className: "btn btn-secondary" },
+          confirm: { text: "Excluir", className: "btn btn-primary" },
         },
       }).then((Delete) => {
         if (Delete) {
@@ -248,7 +244,7 @@ var Alerts = (function () {
                     },
                   },
                 }).then(() => {
-                  location.reload();
+                  location.reload(true);
                 });
               } else {
                 swal({
@@ -297,7 +293,7 @@ var Alerts = (function () {
                 },
               },
             }).then(() => {
-              location.reload();
+              location.reload(true);
             });
           } else {
             if (data.errors) {
