@@ -72,8 +72,8 @@ class Goal(models.Model):
     @property
     def status(self):
         if self.completed_at:
-            return 'Concluído'
-        return 'Em andamento'
+            return 'done'
+        return 'active'
 
     def __str__(self):
         return self.name

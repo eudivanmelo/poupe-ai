@@ -163,6 +163,7 @@
 }
 
 @media (max-width: 576px) {
+
     .btn-outline-primary,
     .btn-outline-success,
     .btn-outline-danger {
@@ -202,4 +203,28 @@
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(355px, 1fr));
     gap: 16px;
+}
+
+.trophy-icon {
+    z-index: 1;
+    animation: bounce 2s infinite;
+}
+
+@keyframes bounce {
+
+    0%,
+    20%,
+    50%,
+    80%,
+    100% {
+        transform: translateY(0);
+    }
+
+    40% {
+        transform: translateY(-10px);
+    }
+
+    60% {
+        transform: translateY(-5px);
+    }
 }

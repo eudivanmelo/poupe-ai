@@ -1,0 +1,1 @@
+default_app_config = 'apps.poupeai.apps.UsersConfig'  # Substitua 'your_app' pelo nome do seu aplicativo

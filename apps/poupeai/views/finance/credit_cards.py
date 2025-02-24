@@ -1,95 +1,114 @@
-from django.shortcuts import render
-from django.views.generic import TemplateView
+from django.http import HttpResponseBadRequest, JsonResponse
+from django.shortcuts import get_object_or_404
+from django.views.generic import ListView
 from django.urls import reverse_lazy
 from apps.poupeai.mixins import PoupeAIMixin
+from apps.poupeai.models.account import Account
+from apps.poupeai.views.generic.json import CreateJsonView, DeleteJsonView, UpdateJsonView
+from apps.poupeai.models import CreditCard, Invoice, Transaction
+from django.db.models import Prefetch
+from django.utils.timezone import now
+from datetime import date
+from apps.poupeai.forms import CreditCardForm, InvoicePaymentForm
 
-class CreditCardsView(PoupeAIMixin, TemplateView):
-    template_name = "poupeai/credit_cards_page.html"
+class CreditCardsListView(PoupeAIMixin, ListView):
+    template_name = 'poupeai/credit_cards_page.html'
+    context_object_name = 'credit_cards'
 
     def get_name(self):
         return "credit-cards"
-    
+
     def get_breadcrumbs(self):
         return [
             {"name": "Dashboard", "url": reverse_lazy('dashboard')},
             {"name": "Cartões de Crédito", "url": None},
         ]
-    
+
+    def get_queryset(self):
+        # Obter mês e ano da requisição ou usar o mês e ano atuais
+        month = int(self.request.GET.get('month', now().month))
+        year = int(self.request.GET.get('year', now().year))
+
+        # Criar um filtro de faturas para o mês e ano selecionados
+        invoice_filter = Prefetch(
+            'invoices', 
+            queryset=Invoice.objects.filter(month=month, year=year),
+            to_attr='filtered_invoices'
+        )
+
+        # Filtrando cartões de crédito e aplicando o prefetch das faturas
+        queryset = CreditCard.objects.all().filter(user=self.request.user).order_by('created_at').prefetch_related(invoice_filter)
+
+        return queryset
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        
-        credit_cards = [
-            {
-                "id": 1,
-                "limit": 14005.00,
-                "outstanding": 12000.00,
-                "available": 3500.00,
-                "closing_date": "30/10",
-                "additional_data": "My additional data1",
-                "brand": 1,
-                "due_date": "05/11",
-                "associated_account": "none",
-                "closing_day": "2",
-                "due_day": "10",
-                "invoice_amount": 0.00,
-                "name": "Nubank",
-                "status": "Aberta",
-            },
-            {
-                "id": 2,
-                "limit": 10000.00,
-                "outstanding": 5000.00,
-                "available": 5000.00,
-                "name": "Banco do Brasil",
-                "closing_date": "15/11",
-                "additional_data": "My additional data2",
-                "brand": 2,
-                "due_date": "20/11",
-                "associated_account": "none",
-                "closing_day": "1",
-                "due_day": "5",
-                "invoice_amount": 3500.00,
-                "status": "Fechada",
-            },
+        context['accounts'] = self.request.user.accounts.all()
+        context['categories'] = self.request.user.categories.all()
+
+        # Adicionar meses e anos para o formulário de filtragem
+        context['months'] = [
+            {'value': 1, 'name': 'Janeiro'}, {'value': 2, 'name': 'Fevereiro'},
+            {'value': 3, 'name': 'Março'}, {'value': 4, 'name': 'Abril'},
+            {'value': 5, 'name': 'Maio'}, {'value': 6, 'name': 'Junho'},
+            {'value': 7, 'name': 'Julho'}, {'value': 8, 'name': 'Agosto'},
+            {'value': 9, 'name': 'Setembro'}, {'value': 10, 'name': 'Outubro'},
+            {'value': 11, 'name': 'Novembro'}, {'value': 12, 'name': 'Dezembro'},
         ]
+        context['years'] = range(now().year - 5, now().year + 5)  # Últimos 5 anos e o atual
+        context['selected_month'] = int(self.request.GET.get('month', now().month))
+        context['selected_year'] = int(self.request.GET.get('year', now().year))
 
-        accounts = [
-            {"id": 1, "name": "Conta Corrente"},
-            {"id": 2, "name": "Conta Poupança"},
-        ]
-
-        categories = [
-            {"id": 1, "name": "Aluguel", "valor": 1000.50, "cor": "#ff0000"},
-            {"id": 2, "name": "Supermercado", "valor": 500.00, "cor": "#00ff00"},
-            {"id": 3, "name": "Transporte", "valor": 150.00, "cor": "#ff6600"},
-            {"id": 4, "name": "Internet", "valor": 120.00, "cor": "#00ffff"},
-            {"id": 5, "name": "Saúde", "valor": 300.00, "cor": "#ff99cc"},
-        ]
-
-        invoices = [
-            {"id": 1, "month": "Janeiro", "year": 2025},
-            {"id": 2, "month": "Fevereiro", "year": 2025},
-            {"id": 3, "month": "Março", "year": 2025},
-        ]
-
-        credit_card_brands = [
-            {"id": 1, "name": "Visa"},
-            {"id": 2, "name": "Mastercard"},
-            {"id": 3, "name": "American Express"},
-            {"id": 4, "name": "Elo"},
-            {"id": 5, "name": "Hipercard"},
-            {"id": 6, "name": "Diners Club"},
-        ]
-
-        for card in credit_cards:
-            card["usage_percentage"] = "{:.1f}".format((card["outstanding"] / card["limit"]) * 100)
-
-        context.update({
-            "credit_cards": credit_cards,
-            "categories": categories,
-            "accounts": accounts,
-            "invoices": invoices,
-            "credit_card_brands": credit_card_brands,
-        })
-        
         return context
+
+class CreditCardCreateView(CreateJsonView):
+    '''
+    View for creating a new credit card
+    '''
+    success_url = reverse_lazy('credit-cards')
+    model = CreditCard
+    form_class = CreditCardForm
+    success_message = 'Cartão de Crédito criado com sucesso!'
+    error_message = 'Ocorreu um erro ao criar o cartão de crédito, verifique as informações ou tente novamente mais tarde.'
+
+class CreditCardDeleteView(DeleteJsonView):
+    '''
+    View for deleting an credit card
+    '''
+    success_url = reverse_lazy('credit-cards')
+    model = CreditCard
+    success_message = 'Cartão de Crédito deletado com sucesso!'
+    error_message = 'Ocorreu um erro ao deletar o cartão de crédito, verifique as informações ou tente novamente mais tarde.'
+
+class CreditCardUpdateView(UpdateJsonView):
+    '''
+    View for updating an credit card
+    '''
+    model = CreditCard
+    form_class = CreditCardForm
+    success_url = reverse_lazy('credit-cards')
+    context_object_name = 'credit_card'
+    success_message = 'Cartão de crédito atualizado com sucesso!'
+    error_message = 'Ocorreu um erro ao atualizar o cartão de crédito, verifique as informações ou tente novamente mais tarde.'
+
+class InvoicePaymentView(CreateJsonView):
+    model = Transaction
+    form_class = InvoicePaymentForm
+    template_name = 'credit-cards.html'  # Template onde o modal está inserido
+    success_url = reverse_lazy('credit_cards')  # Redirecionar para a lista de cartões após o sucesso
+    success_message = "Pagamento registrado com sucesso!"
+    error_message = "Erro ao registrar pagamento!"
+
+    def form_valid(self, form):
+        invoice = get_object_or_404(Invoice, id=self.kwargs['pk'])
+        
+        # Salva o formulário manualmente e evita a chamada duplicada
+        transaction = form.save(invoice=invoice, user=self.request.user)
+        
+        # Define o objeto salvo para a classe genérica
+        self.object = transaction
+        
+        # Retorna a resposta JSON ou HTTP
+        if self.request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+            return JsonResponse({'success': True, 'id': self.object.id, 'message': self.success_message})
+        return HttpResponseBadRequest('Requisição inválida')

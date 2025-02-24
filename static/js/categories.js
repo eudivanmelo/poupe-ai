@@ -16,7 +16,7 @@ const handleSubmitForm = (form) => {
         .then(response => response.json())
         .then(data => {
             if (data.success) {
-                location.reload();
+                location.reload(true);
             } else {
                 alert("Erro ao criar categoria: " + JSON.stringify(data.errors));
             }
@@ -74,7 +74,7 @@ const CategoryManager = {
                                 icon: data.success ? "success" : "error",
                                 buttons: { confirm: { className: data.success ? "btn btn-success" : "btn btn-danger" } },
                             }).then(() => {
-                                if (data.success) location.reload();
+                                if (data.success) location.reload(true);
                             });
                         })
                         .catch(error => console.error("Erro:", error));
@@ -164,7 +164,7 @@ const CategoryManager = {
                     .then(response => response.json())
                     .then(data => {
                         if (data.success) {
-                            location.reload();
+                            location.reload(true);
                         } else {
                             alert("Erro ao editar categoria: " + JSON.stringify(data.errors));
                         }

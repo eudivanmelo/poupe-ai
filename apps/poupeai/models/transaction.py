@@ -71,8 +71,8 @@ class Transaction(models.Model):
 
 class CardTransaction(models.Model):
     transaction = models.ForeignKey(Transaction, on_delete=models.CASCADE, related_name="card_transactions")
-    credit_card = models.ForeignKey(CreditCard, on_delete=models.CASCADE, related_name="credit_card")
-    invoice = models.ForeignKey(Invoice, on_delete=models.SET_NULL, null=True, blank=True, related_name="invoice")
+    credit_card = models.ForeignKey(CreditCard, on_delete=models.CASCADE, related_name="card_transactions")
+    invoice = models.ForeignKey(Invoice, on_delete=models.CASCADE, null=True, blank=True, related_name="card_transactions")
     
     installment_number = models.PositiveSmallIntegerField(default=1)
     

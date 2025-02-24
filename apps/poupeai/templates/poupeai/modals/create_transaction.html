@@ -1,0 +1,189 @@
+<div
+  class="modal fade"
+  id="createModal"
+  tabindex="-1"
+  aria-labelledby="createModalLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog modal-lg modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="createModalLabel">
+          Adicionar uma Nova Transação
+        </h5>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        ></button>
+      </div>
+      <div class="modal-body">
+        <form
+          class="row needs-validation"
+          id="createTransactionForm"
+          action="{% url 'transaction-create' %}"
+          method="post"
+        >
+          {% csrf_token %}
+
+          <div class="col-md-6 col-sm-12">
+            <div class="form-group">
+              <label for="descriptionInput" class="form-label">Descrição</label>
+              <input
+                name="description"
+                type="text"
+                class="form-control"
+                id="descriptionInput"
+                placeholder="Ex: Compra de supermercado"
+                required
+              />
+            </div>
+
+            <div class="form-group">
+              <label for="valueInput" class="form-label">Valor (R$)</label>
+              <input
+                name="amount"
+                type="number"
+                class="form-control"
+                id="valueInput"
+                placeholder="0,00"
+                step="0.01"
+                required
+              />
+              <div id="emailHelp" class="form-text">
+                Em caso de parcelamento, informar o valor da parcela
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="accountInput" class="form-label">Comprovante</label>
+              <input
+                name="attachment"
+                type="file"
+                class="form-control"
+                id="receiptInput"
+              />
+            </div>
+
+            <div class="form-group">
+              <label for="paymentDateInput" class="form-label"
+                >Data de Pagamento</label
+              >
+              <input
+                name="payment_at"
+                type="date"
+                class="form-control"
+                id="paymentDateInput"
+              />
+            </div>
+          </div>
+
+          <div class="col-md-6 col-sm-12">
+            <div class="form-group">
+              <label for="categoryInput" class="form-label"
+                >Categoria</label
+              >
+              <select
+                name="category"
+                id="categoryInput"
+                class="form-select"
+              >
+                <option value="">Selecione uma categoria</option>
+                {% for category in categories %}
+                  <option value="{{ category.id }}">{{ category.name }}</option>
+                {% empty %}
+                  <option value="" selected>Nenhuma categoria cadastrada</option>
+                {% endfor %}
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="transactionType" class="form-label"
+                >Tipo de Transação</label
+              >
+              <select
+                name="transaction_type"
+                id="transactionType"
+                class="form-select"
+              >
+                <option value="account" selected>Conta Bancária</option>
+                <option value="card">Cartão de Crédito</option>
+              </select>
+            </div>
+
+            <!-- Seção para Cartão de Crédito (oculto por padrão) -->
+            <div id="cardFields" class="d-none">
+              <div class="form-group">
+                <label for="creditCardSelect" class="form-label"
+                  >Cartão de Crédito</label
+                >
+                <select
+                  name="credit_card"
+                  id="creditCardSelect"
+                  class="form-select"
+                >
+                  <option value="">Selecione um cartão</option>
+                  {% for card in credit_cards %}
+                    <option value="{{ card.id }}">{{ card.name }}</option>
+                  {% endfor %}
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label for="installmentsInput" class="form-label"
+                  >Número de Parcelas</label
+                >
+                <input
+                  name="installments"
+                  type="number"
+                  class="form-control"
+                  id="installmentsInput"
+                  value="1"
+                  min="1"
+                />
+              </div>
+            </div>
+
+            <!-- Seção para Conta Bancária -->
+            <div id="accountFields">
+              <div class="form-group">
+                <label for="accountInput" class="form-label">Conta</label>
+                <select name="account" class="form-select">
+                  <option value="">Selecione uma conta</option>
+                  {% for account in accounts %}
+                    <option value="{{ account.id }}">{{ account.name }}</option>
+                  {% endfor %}
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label for="expirationDateInput" class="form-label"
+                  >Data de Vencimento</label
+                >
+                <input
+                  name="expire_at"
+                  type="date"
+                  class="form-control"
+                  id="expirationDateInput"
+                />
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+          Cancelar
+        </button>
+        <button
+          type="submit"
+          form="createTransactionForm"
+          class="btn btn-primary"
+        >
+          Adicionar Transação
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

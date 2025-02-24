@@ -1,5 +1,5 @@
 from django.contrib import admin
-from apps.poupeai.models import Account, Goal, Category, Transaction, Brand, CreditCard, CardTransaction, Invoice, AccountTransaction, GoalDeposit
+from apps.poupeai.models import Account, Goal, Category, Transaction, CreditCard, CardTransaction, Invoice, AccountTransaction, GoalDeposit
 
 @admin.register(Account)
 class AccountAdmin(admin.ModelAdmin):
@@ -9,7 +9,7 @@ class AccountAdmin(admin.ModelAdmin):
 
 @admin.register(Goal)
 class GoalAdmin(admin.ModelAdmin):
-    list_display = ['user', 'name', 'goal', 'status', 'created_at']
+    list_display = ['user', 'name', 'goal', 'status', 'created_at', 'amount_needed']
     search_fields = ['user__email', 'name']
     ordering = ['user', 'name', 'created_at']
 
@@ -31,16 +31,10 @@ class TransactionAdmin(admin.ModelAdmin):
     search_fields = ['user__email', 'description']
     ordering = ['user', 'description', 'created_at']
 
-@admin.register(Brand)
-class BrandAdmin(admin.ModelAdmin):
-    list_display = ['name']
-    search_fields = ['name']
-    ordering = ['name']
-
 @admin.register(CreditCard)
 class CreditCardAdmin(admin.ModelAdmin):
-    list_display = ['user', 'name', 'brand', 'limit', 'closing_day', 'due_day', 'created_at']
-    search_fields = ['user__name', 'user__email', 'name', 'brand__name']
+    list_display = ['user', 'name', 'brand', 'limit', 'closing_day', 'due_day', 'outstanding', 'available', 'created_at']
+    search_fields = ['user__name', 'user__email', 'name', 'brand']
     ordering = ['user', 'name', 'limit']
 
 @admin.register(CardTransaction)
@@ -50,8 +44,8 @@ class CardTransactionAdmin(admin.ModelAdmin):
 
 @admin.register(Invoice)
 class InvoiceAdmin(admin.ModelAdmin):
-    list_display = ('credit_card', 'month', 'year', 'total_due', 'amount_paid', 'balance_due', 'paid')
-    list_filter = ('paid', 'month', 'year')
+    list_display = ('credit_card', 'month', 'year', 'total_due', 'amount_paid', 'balance_due', 'paid', 'status')
+    list_filter = ('month', 'year')
     search_fields = ('credit_card__name',)
 
 @admin.register(AccountTransaction)
