@@ -4,6 +4,7 @@ from django.core.exceptions import ValidationError
 from apps.authentication.models import CustomUser
 from decimal import Decimal
 from datetime import date
+import calendar
 
 def validate_day(value):
     """Garante que o dia esteja entre 1 e 31."""
@@ -73,8 +74,13 @@ class Invoice(models.Model):
     @property
     def status(self):
         today = date.today()
-        closing_date = date(self.year, self.month, self.credit_card.closing_day)
-        
+    
+        _, num_days_in_month = calendar.monthrange(self.year, self.month)
+    
+        closing_day = min(self.credit_card.closing_day, num_days_in_month)
+    
+        closing_date = date(self.year, self.month, closing_day)
+    
         if today > closing_date:
             return 'closed'
         else:

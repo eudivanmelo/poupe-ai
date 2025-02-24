@@ -222,12 +222,6 @@ class CreditCardForm(forms.ModelForm):
             if closing_day == due_day:
                 raise forms.ValidationError("O dia de fechamento e o dia de vencimento não podem ser iguais.")
 
-            # Regra 2: O vencimento deve ser após o fechamento OU nos primeiros dias do mês seguinte
-            if not (due_day > closing_day or (closing_day >= 27 and due_day <= 10)):
-                raise forms.ValidationError(
-                    "O dia de vencimento deve ser posterior ao fechamento ou estar dentro dos primeiros 10 dias do mês seguinte."
-                )
-
         return cleaned_data
     
 class InvoicePaymentForm(forms.ModelForm):

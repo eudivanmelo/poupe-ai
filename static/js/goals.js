@@ -224,3 +224,30 @@ const GoalManager = {
 };
 
 GoalManager.init();
+
+const form = document.getElementById('depositForm');
+form.addEventListener('submit', function (e) {
+    e.preventDefault();
+    const formData = new FormData(form);
+
+    fetch(form.action, {
+        method: 'POST',
+        body: formData,
+        headers: {
+            'X-Requested-With': 'XMLHttpRequest',
+            'X-CSRFToken': form.querySelector('[name=csrfmiddlewaretoken]').value,
+        },
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            alert(data.message);
+            location.reload(true);
+        } else {
+            alert(data.message); // Exibe mensagem de erro
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+    });
+});

@@ -12,6 +12,9 @@ from datetime import datetime, date
 class DashboardView(PoupeAIMixin, TemplateView):
     template_name = 'poupeai/dashboard.html'
 
+    def get_name(self):
+        return "dashboard"
+
     def get_context_data(self, **kwargs):
         current_month_start = now().replace(day=1, hour=0, minute=0, second=0, microsecond=0)
         current_month_end = now().replace(hour=23, minute=59, second=59, microsecond=999999)
