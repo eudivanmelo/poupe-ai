@@ -25,6 +25,10 @@ class GoalsListView(PoupeAIMixin, ListView):
             {"name": "Dashboard", "url": reverse_lazy('dashboard')},
             {"name": "Minhas Metas", "url": None},
         ]
+    
+    def get_queryset(self):
+        '''Filters categories by the logged-in user'''
+        return super().get_queryset().filter(user=self.request.user)
 
 class GoalCreateView(CreateJsonView):
     '''

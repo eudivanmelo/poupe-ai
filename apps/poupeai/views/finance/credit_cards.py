@@ -37,7 +37,7 @@ class CreditCardsListView(PoupeAIMixin, ListView):
         )
 
         # Filtrando cartões de crédito e aplicando o prefetch das faturas
-        queryset = CreditCard.objects.all().order_by('created_at').prefetch_related(invoice_filter)
+        queryset = CreditCard.objects.all().filter(user=self.request.user).order_by('created_at').prefetch_related(invoice_filter)
 
         return queryset
 
