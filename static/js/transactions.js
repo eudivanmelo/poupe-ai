@@ -178,7 +178,9 @@ var Alerts = (function () {
           if (data.success) {
             modal.find("#editDescriptionInput").val(data.transaction.description);
             modal.find("#editValueInput").val(data.transaction.amount);
-            modal.find("#editPaymentDateInput").val(new Date(data.transaction.payment_at).toISOString().split('T')[0]);
+            if (data.transaction.payment_at) {
+              modal.find("#editPaymentDateInput").val(new Date(data.transaction.payment_at).toISOString().split('T')[0]);
+            }
             modal.find("#editCategoryInput").val(data.transaction.category);
 
             if (data.transaction.type === "card") {

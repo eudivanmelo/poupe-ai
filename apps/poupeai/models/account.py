@@ -20,7 +20,7 @@ class Account(models.Model):
     @property
     def current_balance(self):
         """Retorna o saldo atual da conta."""
-        total = self.total_income - self.total_expense + self.balance
+        total = self.balance + self.total_income - self.total_expense
         return total or 0
     
     @property

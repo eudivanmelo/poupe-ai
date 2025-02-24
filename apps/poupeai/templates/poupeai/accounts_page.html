@@ -241,7 +241,7 @@ Contas - Poupe.AI {% endblock %} {% block page_title %} Contas {% endblock %}
           aria-label="Close"
         ></button>
       </div>
-      <form class="row needs-validation" id="editForm" method="post">
+      <form class="needs-validation" id="editForm" method="post">
         <div class="modal-body">
           {% csrf_token %}
 
@@ -380,7 +380,7 @@ Contas - Poupe.AI {% endblock %} {% block page_title %} Contas {% endblock %}
         ></button>
       </div>
       <form
-        class="row needs-validation"
+        class="needs-validation"
         id="create-form"
         action="{% url 'account-create' %}"
         method="post"
@@ -463,7 +463,7 @@ Contas - Poupe.AI {% endblock %} {% block page_title %} Contas {% endblock %}
             Cancelar
           </button>
           <button type="submit" class="btn btn-primary">
-            Adicionar Transação
+            Adicionar Conta
           </button>
         </div>
       </form>

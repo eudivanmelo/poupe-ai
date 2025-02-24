@@ -246,6 +246,7 @@ class InvoicePaymentForm(forms.ModelForm):
 
         account = cleaned_data.get('account')
         payment_at = cleaned_data.get('payment_at')
+        amount = cleaned_data.get('amount')
             
         if not account:
             self.add_error('account', 'Informe a conta bancária')
@@ -253,11 +254,15 @@ class InvoicePaymentForm(forms.ModelForm):
         if not payment_at:
             self.add_error('payment_at', 'Informe a data de pagamento')
         
+        if amount is not None:
+            if amount <= 0:
+                self.add_error('amount', 'O valor deve ser maior que zero')
+            elif hasattr(self, 'invoice') and amount > self.invoice.balance_due:
+                self.add_error('amount', 'O valor não pode ser maior que o saldo da fatura')
+        
         return cleaned_data
 
     def save(self, commit=True, invoice=None, user=None):
-
-        print("Caiu no save")
 
         if invoice is None:
             raise ValueError("O parâmetro 'invoice' não pode ser None")
@@ -292,9 +297,9 @@ class InvoicePaymentForm(forms.ModelForm):
             )
         
             # Atualizar o saldo da conta
-            account = self.cleaned_data.get("account")
-            account.balance -= transaction.amount
-            account.save()
+            # account = self.cleaned_data.get("account")
+            # account.balance -= transaction.amount
+            # account.save()
         
             # Atualizar o valor pago na fatura
             invoice.amount_paid += transaction.amount
