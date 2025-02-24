@@ -13,7 +13,7 @@ const handleSubmitForm = (form) => {
     .then((response) => response.json())
     .then((data) => {
       if (data.success) {
-        location.reload(); // Atualiza a página para exibir a nova conta
+        location.reload(true); // Atualiza a página para exibir a nova conta
       } else {
         alert("Erro ao criar conta: " + JSON.stringify(data.errors));
       }
@@ -190,7 +190,7 @@ var Modals = (function () {
                     },
                   },
                 }).then(() => {
-                  location.reload();
+                  location.reload(true);
                 });
               } else {
                 swal({

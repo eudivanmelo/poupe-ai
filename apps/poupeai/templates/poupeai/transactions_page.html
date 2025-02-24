@@ -529,15 +529,19 @@ Transações
   }
 
   .dropdown-menu {
-    position: fixed;
+    position: absolute;
+    top: 100%;
+    left: 0;
     min-width: 120px;
     border: none;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    z-index: 1000; /* Garante que o dropdown apareça acima de outros elementos */
   }
 
   .table-responsive {
     overflow-x: auto;
     position: relative;
+    overflow: visible; /* Garante que o dropdown não seja cortado */
   }
 </style>
 {% endblock %}

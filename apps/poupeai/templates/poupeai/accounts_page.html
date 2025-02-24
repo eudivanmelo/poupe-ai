@@ -38,7 +38,7 @@ Contas - Poupe.AI {% endblock %} {% block page_title %} Contas {% endblock %}
               <th scope="col">Saldo</th>
               <th class="d-none d-lg-table-cell" scope="col">Entradas</th>
               <th class="d-none d-xl-table-cell" scope="col">Saídas</th>
-              <th scope="col">Ações</th>
+              <th scope="col"></th>
             </tr>
           </thead>
           <tbody>
@@ -53,7 +53,7 @@ Contas - Poupe.AI {% endblock %} {% block page_title %} Contas {% endblock %}
                 R$ {{account.total_expense|floatformat:2}}
               </td>
               <td>
-                <button
+                <!-- <button
                   class="btn btn-icon btn-link btn-info"
                   id="detail-account-{{account.id}}"
                   data-url="{% url 'account-detail' account.id %}"
@@ -74,7 +74,52 @@ Contas - Poupe.AI {% endblock %} {% block page_title %} Contas {% endblock %}
                   data-url="{% url 'account-delete' account.id %}"
                 >
                   <i class="fas fa-trash"></i>
-                </button>
+                </button> -->
+
+                <div class="dropdown">
+                  <button
+                    class="btn btn-link text-dark p-0"
+                    id="dropdownMenuButton-{{account.id}}"
+                    data-bs-toggle="dropdown"
+                    aria-expanded="false"
+                  >
+                    <i class="fas fa-ellipsis-v"></i>
+                  </button>
+                  <ul
+                    class="dropdown-menu dropdown-menu-end"
+                    aria-labelledby="dropdownMenuButton-{{account.id}}"
+                  >
+                    <li>
+                      <button
+                        class="dropdown-item fs-6"
+                        id="detail-account-{{account.id}}"
+                        data-item-name="{{account.name}}"
+                        data-url="{% url 'account-detail' account.id %}"
+                      >
+                        Visualizar
+                      </button>
+                    </li>
+                    <li>
+                      <button
+                        class="dropdown-item fs-6"
+                        id="edit-account-{{account.id}}"
+                        data-url="{% url 'account-update' account.id %}"
+                      >
+                        Editar
+                      </button>
+                    </li>
+                    <li>
+                      <button
+                        class="dropdown-item fs-6"
+                        id="delete-account-{{account.id}}"
+                        data-item-name="{{account.name}}"
+                        data-url="{% url 'account-delete' account.id %}"
+                      >
+                        Excluir
+                      </button>
+                    </li>
+                  </ul>
+                </div>
               </td>
             </tr>
             {% empty %}
@@ -425,4 +470,39 @@ Contas - Poupe.AI {% endblock %} {% block page_title %} Contas {% endblock %}
     </div>
   </div>
 </div>
+
+<style>
+  .dropdown-item {
+    font-size: 1rem;
+    padding: 8px 16px;
+    background-color: transparent;
+    color: #000;
+  }
+
+  .dropdown-item:hover {
+    background-color: #f8f9fa;
+  }
+
+  .dropdown-item.active,
+  .dropdown-item:active {
+    background-color: #6c757d;
+    color: white;
+  }
+
+  .dropdown-menu {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    min-width: 120px;
+    border: none;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+  }
+
+  .table-responsive {
+    overflow-x: auto;
+    position: relative;
+    overflow: visible;
+  }
+</style>
 {% endblock %}

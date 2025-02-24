@@ -242,7 +242,7 @@ var Alerts = (function () {
                     },
                   },
                 }).then(() => {
-                  location.reload();
+                  location.reload(true);
                 });
               } else {
                 swal({
@@ -291,7 +291,7 @@ var Alerts = (function () {
                 },
               },
             }).then(() => {
-              location.reload();
+              location.reload(true);
             });
           } else {
             if (data.errors) {
